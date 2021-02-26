@@ -20,6 +20,7 @@ public class TerminalServer {
     final String FINALIZE = "finalize";
 
     private final ObjectMapper mapper = new ObjectMapper();
+    private final RequestHandler requestHandler = new RequestHandler();
 
     public void runServer() {
         Scanner scanner = new Scanner(System.in);
@@ -61,35 +62,35 @@ public class TerminalServer {
 
     private void finalizeSchedule(String data) {
         String studentId = getJsonField(data, "studentId");
-        //todo call request handler
+        this.requestHandler.finalizeSchedule(studentId);
     }
 
     private void getWeeklySchedule(String data) {
         String studentId = getJsonField(data, "studentId");
-        //todo call request handler
+        this.requestHandler.getWeeklySchedule(studentId);
     }
 
     private void removeFromWeeklySchedule(String data) {
         String studentId = getJsonField(data, "studentId");
         String offeringCode = getJsonField(data, "code");
-        //todo call request handler
+        this.requestHandler.removeFromWeeklySchedule(studentId, offeringCode);
     }
 
     private void addToWeeklySchedule(String data) {
         String studentId = getJsonField(data, "studentId");
         String offeringCode = getJsonField(data, "code");
-        //todo call request handler
+        this.requestHandler.addToWeeklySchedule(studentId, offeringCode);
     }
 
     private void getOfferings(String data) {
         String studentId = getJsonField(data, "studentId");
-        //todo call request handler
+        this.requestHandler.getOfferings(studentId);
     }
 
     private void addStudent(String data) {
         try {
             StudentEntity studentEntity = mapper.readValue(data, StudentEntity.class);
-            //todo call req handler
+            this.requestHandler.addStudent(studentEntity);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             // todo: proper exception
@@ -99,7 +100,7 @@ public class TerminalServer {
     private void addOffering(String data) {
         try {
             OfferingEntity offeringEntity = mapper.readValue(data, OfferingEntity.class);
-            //todo: call req handler
+            this.requestHandler.addOffering(offeringEntity);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             // todo: proper exception
