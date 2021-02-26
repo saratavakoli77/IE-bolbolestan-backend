@@ -14,13 +14,12 @@ public class OfferingStorage {
         offeringEntities.remove(offeringEntity);
     }
 
-    public static OfferingEntity getByCode(String code) {
+    public static OfferingEntity getByCode(String code) throws Exception {
         for (OfferingEntity entity: offeringEntities) {
             if (entity.getCode().equals(code)) {
                 return entity;
             }
         }
-        // todo: throw Exception;
-        return null; //todo: remove this
+        throw new Exception(); //todo proper exception
     }
 }

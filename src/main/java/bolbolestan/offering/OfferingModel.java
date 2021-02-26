@@ -5,4 +5,17 @@ public class OfferingModel {
         //todo: validate data
         OfferingStorage.add(offeringEntity);
     }
+
+    public OfferingEntity getOffering(String code) {
+        try {
+            return OfferingStorage.getByCode(code);
+        } catch (Exception e) {//todo proper exception
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void getOfferings() {
+        // todo:
+    }
 }
