@@ -28,6 +28,4 @@ public class StudentEntity {
     public String getEnteredAt() {
         return enteredAt;
     }
-
-    public void printStudentId() {}
 }
