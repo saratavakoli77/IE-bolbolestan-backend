@@ -1,5 +1,8 @@
 package bolbolestan.weeklySchedule;
 
+import bolbolestan.bolbolestanExceptions.OfferingCodeNotInWeeklyScheduleException;
+import bolbolestan.bolbolestanExceptions.WeeklyScheduleDoesNotExistException;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,11 +34,11 @@ public class WeeklyScheduleEntity {
         this.offeringCodes.add(offeringCode);
     }
 
-    public void removeFromOfferingCodes(String offeringCode) throws Exception {
+    public void removeFromOfferingCodes(String offeringCode) throws OfferingCodeNotInWeeklyScheduleException {
         if (this.offeringCodes.contains(offeringCode)) {
             this.offeringCodes.remove(offeringCode);
         } else {
-            throw new Exception(); // todo: proper exception
+            throw new OfferingCodeNotInWeeklyScheduleException();
         }
 
     }

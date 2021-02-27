@@ -3,13 +3,16 @@ package bolbolestan.offering;
 import bolbolestan.course.CourseEntity;
 import bolbolestan.course.DaysOfWeek;
 
+import java.util.Date;
 import java.util.List;
 
 public class OfferingEntity extends CourseEntity {
     private String code;
     private String instructor;
     private List<DaysOfWeek> classTimeDays;
-    private String classTimeHour;
+//    private String classTimeHour;
+    private Date startHour;
+    private Date endHour;
 
     public String getCode() {
         return code;
@@ -35,11 +38,5 @@ public class OfferingEntity extends CourseEntity {
         this.classTimeDays = classTimeDays;
     }
 
-    public String getClassTimeHour() {
-        return classTimeHour;
-    }
-
-    public void setClassTimeHour(String classTimeHour) {
-        this.classTimeHour = classTimeHour;
-    }
+//    public void setStartHour
 }

@@ -1,5 +1,7 @@
 package bolbolestan.offering;
 
+import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +16,12 @@ public class OfferingStorage {
         offeringEntities.remove(offeringEntity);
     }
 
-    public static OfferingEntity getByCode(String code) throws Exception {
+    public static OfferingEntity getByCode(String code) throws OfferingNotFoundException {
         for (OfferingEntity entity: offeringEntities) {
             if (entity.getCode().equals(code)) {
                 return entity;
             }
         }
-        throw new Exception(); //todo proper exception
+        throw new OfferingNotFoundException();
     }
 }

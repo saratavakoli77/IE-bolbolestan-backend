@@ -1,5 +1,7 @@
 package bolbolestan.weeklySchedule;
 
+import bolbolestan.bolbolestanExceptions.WeeklyScheduleDoesNotExistException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,12 +16,12 @@ public class WeeklyScheduleStorage {
         weeklyScheduleEntities.remove(weeklyScheduleEntity);
     }
 
-    public static WeeklyScheduleEntity getByStudentId(String studentId) throws Exception {
+    public static WeeklyScheduleEntity getByStudentId(String studentId) throws WeeklyScheduleDoesNotExistException {
         for (WeeklyScheduleEntity entity: weeklyScheduleEntities) {
             if (entity.getStudentId().equals(studentId)) {
                 return entity;
             }
         }
-        throw new Exception(); //todo proper exception
+        throw new WeeklyScheduleDoesNotExistException();
     }
 }
