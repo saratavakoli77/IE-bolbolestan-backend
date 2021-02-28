@@ -12,6 +12,7 @@ public class OfferingEntity extends CourseEntity {
     private List<DaysOfWeek> classTimeDays;
     private Date classTimeStart;
     private Date classTimeEnd;
+    private Integer registered;
 
     public String getCode() {
         return code;
@@ -51,5 +52,13 @@ public class OfferingEntity extends CourseEntity {
 
     public Date getClassTimeEnd() {
         return classTimeEnd;
+    }
+
+    public void setRegistered(Integer registered) {
+        this.registered = registered;
+    }
+
+    public Integer getRegistered() {
+        return registered;
     }
 }
