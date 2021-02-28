@@ -1,6 +1,7 @@
 package bolbolestan.userInterface;
 
 
+import bolbolestan.bolbolestanExceptions.InvalidInputException;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.requestHandler.RequestHandler;
 import bolbolestan.student.StudentEntity;
@@ -9,12 +10,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class TerminalServer {
     final String ADD_OFFERING_CMD = "addOffering";
     final String ADD_STUDENT_CMD = "addStudent";
     final String GET_OFFERINGS_CMD = "getOfferings";
+    final String GET_OFFERING_CMD = "getOffering";
     final String ADD_TO_WEEKLY_SCHEDULE = "addToWeeklySchedule";
     final String REMOVE_FROM_WEEKLY_SCHEDULE = "removeFromWeeklySchedule";
     final String GET_WEEKLY_SCHEDULE = "getWeeklySchedule";
@@ -29,88 +32,107 @@ public class TerminalServer {
         String command = userInput.substring(0, userInput.indexOf(' '));
         String data = userInput.substring(userInput.indexOf(' ') + 1);
 
-        switch (command) {
-            case ADD_OFFERING_CMD -> {
-                this.addOffering(data);
+        try {
+            switch (command) {
+                case ADD_OFFERING_CMD -> {
+                    this.addOffering(data);
+                }
+                case ADD_STUDENT_CMD -> {
+                    this.addStudent(data);
+                }
+                case GET_OFFERING_CMD -> {
+                    this.getOffering(data);
+                }
+                case GET_OFFERINGS_CMD -> {
+                    this.getOfferings(data);
+                }
+                case ADD_TO_WEEKLY_SCHEDULE -> {
+                    this.addToWeeklySchedule(data);
+                }
+                case REMOVE_FROM_WEEKLY_SCHEDULE -> {
+                    this.removeFromWeeklySchedule(data);
+                }
+                case GET_WEEKLY_SCHEDULE -> {
+                    this.getWeeklySchedule(data);
+                }
+                case FINALIZE -> {
+                    this.finalizeSchedule(data);
+                }
+                default -> {
+                    throw new InvalidInputException();
+                }
             }
-            case ADD_STUDENT_CMD -> {
-                this.addStudent(data);
-            }
-            case GET_OFFERINGS_CMD -> {
-                this.getOfferings(data);
-            }
-            case ADD_TO_WEEKLY_SCHEDULE -> {
-                this.addToWeeklySchedule(data);
-            }
-            case REMOVE_FROM_WEEKLY_SCHEDULE -> {
-                this.removeFromWeeklySchedule(data);
-            }
-            case GET_WEEKLY_SCHEDULE -> {
-                this.getWeeklySchedule(data);
-            }
-            case FINALIZE -> {
-                this.finalizeSchedule(data);
-            }
-            default -> {
-                //todo proper message
-            }
+        } catch (Exception e) {
+            System.out.println("{\n\"success\": true,\n\"error\": " + e.getMessage() + "\n}");
         }
     }
 
-    private String getJsonField(String data, String fieldName) {
+    private String getJsonField(String data, String fieldName) throws InvalidInputException {
         try {
             JsonNode jsonNode = mapper.readTree(data);
             return jsonNode.get(fieldName).textValue();
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            //todo proper excep
+            throw new InvalidInputException();
         }
-        return null;
     }
 
-    private void finalizeSchedule(String data) {
+    private void printResponse(HashMap<String, Object> response) throws InvalidInputException {
+        try {
+            System.out.println(mapper.writeValueAsString(response));
+        } catch (JsonProcessingException e) {
+            throw new InvalidInputException();
+        }
+    }
+
+    private void finalizeSchedule(String data) throws InvalidInputException {
         String studentId = getJsonField(data, "studentId");
-        this.requestHandler.finalizeSchedule(studentId);
+        printResponse(this.requestHandler.finalizeSchedule(studentId));
     }
 
-    private void getWeeklySchedule(String data) {
+    private void getWeeklySchedule(String data) throws InvalidInputException {
         String studentId = getJsonField(data, "studentId");
-        this.requestHandler.getWeeklySchedule(studentId);
+        printResponse(this.requestHandler.getWeeklySchedule(studentId));
     }
 
-    private void removeFromWeeklySchedule(String data) {
+    private void removeFromWeeklySchedule(String data) throws InvalidInputException {
         String studentId = getJsonField(data, "studentId");
         String offeringCode = getJsonField(data, "code");
-        this.requestHandler.removeFromWeeklySchedule(studentId, offeringCode);
+        printResponse(this.requestHandler.removeFromWeeklySchedule(studentId, offeringCode));
     }
 
-    private void addToWeeklySchedule(String data) {
+    private void addToWeeklySchedule(String data) throws InvalidInputException {
         String studentId = getJsonField(data, "studentId");
         String offeringCode = getJsonField(data, "code");
         this.requestHandler.addToWeeklySchedule(studentId, offeringCode);
     }
 
-    private void getOfferings(String data) {
+    private void getOffering(String data) throws InvalidInputException {
         String studentId = getJsonField(data, "studentId");
-        this.requestHandler.getOfferings(studentId);
+        String offeringCode = getJsonField(data, "code");
+        printResponse(this.requestHandler.getOffering(studentId, offeringCode));
     }
 
-    private void addStudent(String data) {
+    private void getOfferings(String data) throws InvalidInputException {
+        String studentId = getJsonField(data, "studentId");
+        printResponse(this.requestHandler.getOfferings(studentId));
+    }
+
+    private void addStudent(String data) throws InvalidInputException {
+        StudentEntity studentEntity;
         try {
-            StudentEntity studentEntity = mapper.readValue(data, StudentEntity.class);
-            this.requestHandler.addStudent(studentEntity);
+            studentEntity = mapper.readValue(data, StudentEntity.class);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            // todo: proper exception
+            throw new InvalidInputException();
         }
+        printResponse(this.requestHandler.addStudent(studentEntity));
+
     }
 
-    private void addOffering(String data) {
+    private void addOffering(String data) throws InvalidInputException {
         try {
-            this.requestHandler.addOffering(this.refineNewOfferingData(data));
+            printResponse(this.requestHandler.addOffering(this.refineNewOfferingData(data)));
         } catch (JsonProcessingException | ParseException e) {
-            e.printStackTrace();
-//            // todo: proper exception
+            throw new InvalidInputException();
         }
     }
 

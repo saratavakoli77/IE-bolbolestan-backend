@@ -166,7 +166,7 @@ public class WeeklyScheduleModel {
         }
     }
 
-    public void finalizeWeeklySchedule(String studentId) throws StudentNotFoundException {
+    public List<Exception> finalizeWeeklySchedule(String studentId) throws StudentNotFoundException {
         new StudentModel().getStudent(studentId);
         WeeklyScheduleEntity weeklyScheduleEntity;
         try {
@@ -178,5 +178,6 @@ public class WeeklyScheduleModel {
         if (exceptionList.isEmpty()) {
             this.addStudentToWeeklyScheduleOfferings(weeklyScheduleEntity);
         }
+        return exceptionList;
     }
 }

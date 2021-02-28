@@ -7,62 +7,114 @@ import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
 import bolbolestan.student.StudentEntity;
 import bolbolestan.student.StudentModel;
+import bolbolestan.weeklySchedule.WeeklyScheduleEntity;
 import bolbolestan.weeklySchedule.WeeklyScheduleModel;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class RequestHandler {
-    public void finalizeSchedule(String studentId) {
+    public HashMap<String, Object> finalizeSchedule(String studentId) {
+        HashMap<String, Object> response = new HashMap<>();
+        List<Exception> exceptionList;
         try {
-            new WeeklyScheduleModel().finalizeWeeklySchedule(studentId);
+            exceptionList = new WeeklyScheduleModel().finalizeWeeklySchedule(studentId);
+            if (exceptionList.isEmpty()) {
+                response.put("success", true);
+                response.put("data", null);
+            } else {
+                response.put("success", false);
+                response.put("error", exceptionList);
+            }
         } catch (StudentNotFoundException e) {
-            e.printStackTrace();
+            response.put("success", false);
+            response.put("error", e.getMessage());
         }
+
+        return response;
     }
 
-    public void getWeeklySchedule(String studentId) {
+    public HashMap<String, Object> getWeeklySchedule(String studentId) {
+        HashMap<String, Object> response = new HashMap<>();
         try {
-            new WeeklyScheduleModel().getWeeklySchedule(studentId);
+            WeeklyScheduleEntity weeklyScheduleEntity = new WeeklyScheduleModel().getWeeklySchedule(studentId);
+            response.put("success", true);
+            response.put("data", weeklyScheduleEntity);
         } catch (StudentNotFoundException e) {
-            e.printStackTrace();
+            response.put("success", false);
+            response.put("error", e.getMessage());
         }
+        return response;
     }
 
-    public void removeFromWeeklySchedule(String studentId, String offeringCode) {
+    public HashMap<String, Object> removeFromWeeklySchedule(String studentId, String offeringCode) {
+        HashMap<String, Object> response = new HashMap<>();
         try {
             new WeeklyScheduleModel().removeFromWeeklySchedule(studentId, offeringCode);
-        } catch (StudentNotFoundException e) {
-            e.printStackTrace();
-        } catch (OfferingCodeNotInWeeklyScheduleException e) {
-            e.printStackTrace();
+            response.put("success", true);
+            response.put("data", null);
+        } catch (StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
         }
+        return response;
     }
 
-    public void addToWeeklySchedule(String studentId, String offeringCode) {
+    public HashMap<String, Object> addToWeeklySchedule(String studentId, String offeringCode) {
+        HashMap<String, Object> response = new HashMap<>();
         try {
             new WeeklyScheduleModel().addToWeeklySchedule(studentId, offeringCode);
-        } catch (StudentNotFoundException e) {
-            e.printStackTrace();
-        } catch (OfferingNotFoundException e) {
-            e.printStackTrace();
+            response.put("success", true);
+            response.put("data", null);
+        } catch (StudentNotFoundException | OfferingNotFoundException e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
         }
+        return response;
     }
 
-    public List<OfferingEntity> getOfferings(String studentId) {
+    public HashMap<String, Object> getOffering(String studentId, String offeringCode) {
+        HashMap<String, Object> response = new HashMap<>();
         try {
-            return new OfferingModel().getOfferings(studentId);
-        } catch (StudentNotFoundException e) {
-            e.printStackTrace();
+            new StudentModel().getStudent(studentId);
+            OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
+            response.put("success", true);
+            response.put("data", offeringEntity);
+        } catch (OfferingNotFoundException | StudentNotFoundException e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
         }
-        return null;
+        return response;
     }
 
-    public void addStudent(StudentEntity studentEntity) {
+    public HashMap<String, Object> getOfferings(String studentId) {
+        HashMap<String, Object> response = new HashMap<>();
+        try {
+            new StudentModel().getStudent(studentId);
+            List<OfferingEntity> offeringEntities = new OfferingModel().getOfferings();
+            response.put("success", true);
+            response.put("data", offeringEntities);
+        } catch (StudentNotFoundException e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
+        return response;
+    }
+
+    public HashMap<String, Object> addStudent(StudentEntity studentEntity) {
         new StudentModel().addStudent(studentEntity);
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("data", null);
+        return response;
     }
 
-    public void addOffering(OfferingEntity offeringEntity) {
+    public HashMap<String, Object> addOffering(OfferingEntity offeringEntity) {
         new OfferingModel().addNewOffering(offeringEntity);
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("data", null);
+        return response;
     }
 
 }
