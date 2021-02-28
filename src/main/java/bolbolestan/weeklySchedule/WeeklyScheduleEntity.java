@@ -1,10 +1,10 @@
 package bolbolestan.weeklySchedule;
 
 import bolbolestan.bolbolestanExceptions.OfferingCodeNotInWeeklyScheduleException;
-import bolbolestan.bolbolestanExceptions.WeeklyScheduleDoesNotExistException;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class WeeklyScheduleEntity {
     public static String FINALIZED_STATUS = "finalized";
@@ -12,7 +12,7 @@ public class WeeklyScheduleEntity {
 
     private String studentId;
     private String status;
-    private final Set<String> offeringCodes = new HashSet<>();
+    private final List<String> offeringCodes = new ArrayList<>();
 
     public void setStudentId(String studentId) {
         this.studentId = studentId;
@@ -31,7 +31,9 @@ public class WeeklyScheduleEntity {
     }
 
     public void addToOfferingCodes(String offeringCode) {
-        this.offeringCodes.add(offeringCode);
+        if (!this.offeringCodes.contains(offeringCode)) {
+            this.offeringCodes.add(offeringCode);
+        }
     }
 
     public void removeFromOfferingCodes(String offeringCode) throws OfferingCodeNotInWeeklyScheduleException {
@@ -43,7 +45,7 @@ public class WeeklyScheduleEntity {
 
     }
 
-    public Set<String> getOfferingCodes() {
+    public List<String> getOfferingCodes() {
         return offeringCodes;
     }
 }
