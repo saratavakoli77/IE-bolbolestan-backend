@@ -24,4 +24,8 @@ public class OfferingStorage {
         }
         throw new OfferingNotFoundException();
     }
+
+    public static List<OfferingEntity> getAllOfferings() {
+        return offeringEntities;
+    }
 }

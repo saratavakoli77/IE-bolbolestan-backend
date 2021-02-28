@@ -2,6 +2,10 @@ package bolbolestan.offering;
 
 import bolbolestan.bolbolestanExceptions.CapacityMismatchException;
 import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
+import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
+import bolbolestan.student.StudentModel;
+
+import java.util.List;
 
 public class OfferingModel {
     public void addNewOffering(OfferingEntity offeringEntity) {
@@ -13,8 +17,9 @@ public class OfferingModel {
         return OfferingStorage.getByCode(code);
     }
 
-    public void getOfferings() {
-        // todo:
+    public List<OfferingEntity> getOfferings(String studentId) throws StudentNotFoundException {
+        new StudentModel().getStudent(studentId);
+        return OfferingStorage.getAllOfferings();
     }
 
     public Boolean doseHaveCapacity(OfferingEntity offeringEntity) {
