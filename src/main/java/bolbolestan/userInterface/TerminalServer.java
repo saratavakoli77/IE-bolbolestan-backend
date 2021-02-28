@@ -4,10 +4,11 @@ package bolbolestan.userInterface;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.requestHandler.RequestHandler;
 import bolbolestan.student.StudentEntity;
+import bolbolestan.tools.OfferingDataRefiner;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import java.text.ParseException;
 import java.util.Scanner;
 
 public class TerminalServer {
@@ -22,28 +23,35 @@ public class TerminalServer {
     private final ObjectMapper mapper = new ObjectMapper();
     private final RequestHandler requestHandler = new RequestHandler();
 
-    public void runServer() {
+    public void listen() {
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine();
         String command = userInput.substring(0, userInput.indexOf(' '));
         String data = userInput.substring(userInput.indexOf(' ') + 1);
 
         switch (command) {
-            case ADD_OFFERING_CMD: {
+            case ADD_OFFERING_CMD -> {
                 this.addOffering(data);
-            } case ADD_STUDENT_CMD: {
+            }
+            case ADD_STUDENT_CMD -> {
                 this.addStudent(data);
-            } case GET_OFFERINGS_CMD: {
+            }
+            case GET_OFFERINGS_CMD -> {
                 this.getOfferings(data);
-            } case ADD_TO_WEEKLY_SCHEDULE: {
+            }
+            case ADD_TO_WEEKLY_SCHEDULE -> {
                 this.addToWeeklySchedule(data);
-            } case REMOVE_FROM_WEEKLY_SCHEDULE: {
+            }
+            case REMOVE_FROM_WEEKLY_SCHEDULE -> {
                 this.removeFromWeeklySchedule(data);
-            } case GET_WEEKLY_SCHEDULE: {
+            }
+            case GET_WEEKLY_SCHEDULE -> {
                 this.getWeeklySchedule(data);
-            } case FINALIZE: {
+            }
+            case FINALIZE -> {
                 this.finalizeSchedule(data);
-            } default: {
+            }
+            default -> {
                 //todo proper message
             }
         }
@@ -99,12 +107,16 @@ public class TerminalServer {
 
     private void addOffering(String data) {
         try {
-            OfferingEntity offeringEntity = mapper.readValue(data, OfferingEntity.class);
-            this.requestHandler.addOffering(offeringEntity);
-        } catch (JsonProcessingException e) {
+            this.requestHandler.addOffering(this.refineNewOfferingData(data));
+        } catch (JsonProcessingException | ParseException e) {
             e.printStackTrace();
-            // todo: proper exception
+//            // todo: proper exception
         }
+    }
+
+    private OfferingEntity refineNewOfferingData(String data) throws JsonProcessingException, ParseException {
+        OfferingDataRefiner offeringDataRefiner = new OfferingDataRefiner(data);
+        return offeringDataRefiner.getRefinedOfferingEntity();
     }
 
 }
