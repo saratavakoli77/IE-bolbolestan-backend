@@ -1,9 +1,11 @@
 package bolbolestan.weeklySchedule;
 
 import bolbolestan.bolbolestanExceptions.*;
+import bolbolestan.course.DaysOfWeek;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
 import bolbolestan.student.StudentModel;
+import bolbolestan.tools.DateParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,27 +72,52 @@ public class WeeklyScheduleModel {
         return true;
     }
 
-//    private List<Exception> validateWeeklyScheduleCollision(WeeklyScheduleEntity weeklyScheduleEntity) {
-//        List<Exception> exceptionList = new ArrayList<>();
-//        for (String offeringCode1: weeklyScheduleEntity.getOfferingCodes()) {
-//            try {
-//                OfferingEntity offeringEntity1 = new OfferingModel().getOffering(offeringCode1);
-//                for (String offeringCode2: weeklyScheduleEntity.getOfferingCodes()) {
-//                    OfferingEntity offeringEntity2 = new OfferingModel().getOffering(offeringCode2);
-//
-//                }
-//
-//
-//            } catch (OfferingNotFoundException e) {
-//                System.out.println("Nooooooooooooo");
-//            }
-//        }
-//    }
+    private Boolean doesOfferingsCollied(OfferingEntity offeringEntity1, OfferingEntity offeringEntity2) {
+        List<DaysOfWeek> classTimeDays1 = offeringEntity1.getClassTimeDays();
+        List<DaysOfWeek> classTimeDays2 = offeringEntity2.getClassTimeDays();
+
+        for (DaysOfWeek dayOfWeek: classTimeDays1) {
+            if (classTimeDays2.contains(dayOfWeek)) {
+                if (DateParser.doseDatesCollide(
+                        offeringEntity1.getClassTimeStart(),
+                        offeringEntity1.getClassTimeEnd(),
+                        offeringEntity2.getClassTimeStart(),
+                        offeringEntity2.getClassTimeEnd()
+                )) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private List<Exception> validateWeeklyScheduleCollision(WeeklyScheduleEntity weeklyScheduleEntity) {
+        List<Exception> exceptionList = new ArrayList<>();
+        List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
+        for (int i = 0; i < offeringCodes.size(); i++) {
+            try {
+                String offeringCode1 = offeringCodes.get(i);
+                OfferingEntity offeringEntity1 = new OfferingModel().getOffering(offeringCode1);
+                for (int j = i; j < offeringCodes.size(); j++) {
+                    String offeringCode2 = offeringCodes.get(j);
+                    OfferingEntity offeringEntity2 = new OfferingModel().getOffering(offeringCode2);
+                    if (this.doesOfferingsCollied(offeringEntity1, offeringEntity2)) {
+                        exceptionList.add(new ClassCollisionException(offeringCode1, offeringCode2));
+                    }
+                }
+            } catch (OfferingNotFoundException e) {
+                System.out.println("Nooooooooooooo");
+            }
+        }
+
+        return exceptionList;
+    }
 
     private List<Exception> validateWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity) {
         List<Exception> exceptionList = new ArrayList<>();
         try {
             this.validateUnitLimit(weeklyScheduleEntity);
+            this.validateWeeklyScheduleCollision(weeklyScheduleEntity);
         } catch (Exception e) {
             exceptionList.add(e);
         }
