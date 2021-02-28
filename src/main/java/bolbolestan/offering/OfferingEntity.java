@@ -10,9 +10,8 @@ public class OfferingEntity extends CourseEntity {
     private String code;
     private String instructor;
     private List<DaysOfWeek> classTimeDays;
-//    private String classTimeHour;
-    private Date startHour;
-    private Date endHour;
+    private Date classTimeStart;
+    private Date classTimeEnd;
 
     public String getCode() {
         return code;
@@ -38,5 +37,19 @@ public class OfferingEntity extends CourseEntity {
         this.classTimeDays = classTimeDays;
     }
 
-//    public void setStartHour
+    public void setClassTimeStart(Date classTimeStart) {
+        this.classTimeStart = classTimeStart;
+    }
+
+    public Date getClassTimeStart() {
+        return classTimeStart;
+    }
+
+    public void setClassTimeEnd(Date classTimeEnd) {
+        this.classTimeEnd = classTimeEnd;
+    }
+
+    public Date getClassTimeEnd() {
+        return classTimeEnd;
+    }
 }
