@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WeeklyScheduleModel {
-
     public WeeklyScheduleEntity addNewWeeklySchedule(String studentId) {
         WeeklyScheduleEntity weeklyScheduleEntity = new WeeklyScheduleEntity();
         weeklyScheduleEntity.setStudentId(studentId);
@@ -127,6 +126,22 @@ public class WeeklyScheduleModel {
         return exceptionList;
     }
 
+    private List<Exception> validateWeeklyScheduleCapacity(WeeklyScheduleEntity weeklyScheduleEntity) {
+        List<Exception> exceptionList = new ArrayList<>();
+        List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
+        for (String offeringCode: offeringCodes) {
+            try {
+                OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
+                if (!(new OfferingModel().doseHaveCapacity(offeringEntity))) {
+                    exceptionList.add(new CapacityException(offeringCode));
+                }
+            } catch (OfferingNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return exceptionList;
+    }
+
     private List<Exception> validateWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity) {
         List<Exception> exceptionList = new ArrayList<>();
         try {
@@ -135,7 +150,20 @@ public class WeeklyScheduleModel {
             exceptionList.add(e);
         }
         exceptionList.addAll(this.validateWeeklyScheduleCollision(weeklyScheduleEntity));
+        exceptionList.addAll(this.validateWeeklyScheduleCapacity(weeklyScheduleEntity));
         return exceptionList;
+    }
+
+    public void addStudentToWeeklyScheduleOfferings(WeeklyScheduleEntity weeklyScheduleEntity) {
+        List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
+        for (String offeringCode: offeringCodes) {
+            try {
+                OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
+                new OfferingModel().addStudentToOffering(offeringEntity);
+            } catch (OfferingNotFoundException | CapacityMismatchException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void finalizeWeeklySchedule(String studentId) throws StudentNotFoundException {
@@ -146,6 +174,9 @@ public class WeeklyScheduleModel {
         } catch (WeeklyScheduleDoesNotExistException e) {
             weeklyScheduleEntity = addNewWeeklySchedule(studentId);
         }
-
+        List<Exception> exceptionList = validateWeeklySchedule(weeklyScheduleEntity);
+        if (exceptionList.isEmpty()) {
+            this.addStudentToWeeklyScheduleOfferings(weeklyScheduleEntity);
+        }
     }
 }
