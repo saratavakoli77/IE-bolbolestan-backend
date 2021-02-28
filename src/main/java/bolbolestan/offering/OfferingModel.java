@@ -3,7 +3,6 @@ package bolbolestan.offering;
 import bolbolestan.bolbolestanExceptions.CapacityMismatchException;
 import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
 import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
-import bolbolestan.student.StudentModel;
 
 import java.util.List;
 
@@ -17,8 +16,7 @@ public class OfferingModel {
         return OfferingStorage.getByCode(code);
     }
 
-    public List<OfferingEntity> getOfferings(String studentId) throws StudentNotFoundException {
-        new StudentModel().getStudent(studentId);
+    public List<OfferingEntity> getOfferings() throws StudentNotFoundException {
         return OfferingStorage.getAllOfferings();
     }
 
