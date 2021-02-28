@@ -2,14 +2,12 @@ package bolbolestan.course;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class CourseEntity {
     private String name;
     private Integer units;
     private Date examTimeStart;
     private Date examTimeEnd;
-
     private Integer capacity;
     private List<String> prerequisites;
 
