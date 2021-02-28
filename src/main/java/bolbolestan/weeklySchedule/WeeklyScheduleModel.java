@@ -72,7 +72,7 @@ public class WeeklyScheduleModel {
         return true;
     }
 
-    private Boolean doesOfferingsCollied(OfferingEntity offeringEntity1, OfferingEntity offeringEntity2) {
+    private Boolean doesOfferingsSessionsCollied(OfferingEntity offeringEntity1, OfferingEntity offeringEntity2) {
         List<DaysOfWeek> classTimeDays1 = offeringEntity1.getClassTimeDays();
         List<DaysOfWeek> classTimeDays2 = offeringEntity2.getClassTimeDays();
 
@@ -91,6 +91,16 @@ public class WeeklyScheduleModel {
         return false;
     }
 
+
+    private Boolean doesOfferingsExamsCollied(OfferingEntity offeringEntity1, OfferingEntity offeringEntity2) {
+        return DateParser.doseDatesCollide(
+                offeringEntity1.getExamTimeStart(),
+                offeringEntity1.getExamTimeEnd(),
+                offeringEntity2.getExamTimeStart(),
+                offeringEntity2.getExamTimeEnd()
+        );
+    }
+
     private List<Exception> validateWeeklyScheduleCollision(WeeklyScheduleEntity weeklyScheduleEntity) {
         List<Exception> exceptionList = new ArrayList<>();
         List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
@@ -101,8 +111,11 @@ public class WeeklyScheduleModel {
                 for (int j = i; j < offeringCodes.size(); j++) {
                     String offeringCode2 = offeringCodes.get(j);
                     OfferingEntity offeringEntity2 = new OfferingModel().getOffering(offeringCode2);
-                    if (this.doesOfferingsCollied(offeringEntity1, offeringEntity2)) {
+                    if (this.doesOfferingsSessionsCollied(offeringEntity1, offeringEntity2)) {
                         exceptionList.add(new ClassCollisionException(offeringCode1, offeringCode2));
+                    }
+                    if (this.doesOfferingsExamsCollied(offeringEntity1, offeringEntity2)) {
+                        exceptionList.add(new ExamTimeCollisionException(offeringCode1, offeringCode2));
                     }
                 }
             } catch (OfferingNotFoundException e) {
@@ -117,10 +130,10 @@ public class WeeklyScheduleModel {
         List<Exception> exceptionList = new ArrayList<>();
         try {
             this.validateUnitLimit(weeklyScheduleEntity);
-            this.validateWeeklyScheduleCollision(weeklyScheduleEntity);
         } catch (Exception e) {
             exceptionList.add(e);
         }
+        exceptionList.addAll(this.validateWeeklyScheduleCollision(weeklyScheduleEntity));
         return exceptionList;
     }
 
