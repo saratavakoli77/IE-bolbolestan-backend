@@ -1,6 +1,7 @@
 package bolbolestan.weeklySchedule;
 
 import bolbolestan.bolbolestanExceptions.*;
+import bolbolestan.course.CourseEntity;
 import bolbolestan.course.DaysOfWeek;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
@@ -64,9 +65,9 @@ public class WeeklyScheduleModel {
                 System.out.println("Nooooooooooooo");
             }
         }
-        if (unitsCount < 12) {
+        if (unitsCount < CourseEntity.MINIMUM_UNITS_LIMIT) {
             throw new MinimumUnitsException();
-        } else if (unitsCount > 20) {
+        } else if (unitsCount > CourseEntity.MAXIMUM_UNITS_LIMIT) {
             throw new MaximumUnitsException();
         }
         return true;
