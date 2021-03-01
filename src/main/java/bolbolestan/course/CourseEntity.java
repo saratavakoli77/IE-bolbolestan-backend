@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 public class CourseEntity {
-    final static public Integer MINIMUM_UNITS_LIMIT = 12;
-    final static public Integer MAXIMUM_UNITS_LIMIT = 20;
+    public static Integer MINIMUM_UNITS_LIMIT = 12;
+    public static Integer MAXIMUM_UNITS_LIMIT = 20;
     private String name;
     private Integer units;
     private Date examTimeStart;
