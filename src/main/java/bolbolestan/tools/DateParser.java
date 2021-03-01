@@ -21,12 +21,13 @@ public class DateParser {
             Date session1End,
             Date session2Start,
             Date session2End) {
-        return isDateBetween(session1Start, session1End, session2Start) &&
+        return isDateBetween(session1Start, session1End, session2Start) ||
                isDateBetween(session2Start, session2End, session1Start);
     }
 
     public static Boolean isDateBetween(Date session1Start, Date session1End, Date session2) {
-        return session2.after(session1Start) && session2.before(session1End);
+        return (session2.after(session1Start) || session2.compareTo(session1Start) == 0) &&
+               (session2.before(session1End) || session2.compareTo(session1Start) == 0);
     }
 
     public static Date getDateFromString(String dateString) throws ParseException {
