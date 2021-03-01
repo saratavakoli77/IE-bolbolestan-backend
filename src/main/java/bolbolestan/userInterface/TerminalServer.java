@@ -103,7 +103,7 @@ public class TerminalServer {
     private void addToWeeklySchedule(String data) throws InvalidInputException {
         String studentId = getJsonField(data, "studentId");
         String offeringCode = getJsonField(data, "code");
-        this.requestHandler.addToWeeklySchedule(studentId, offeringCode);
+        printResponse(this.requestHandler.addToWeeklySchedule(studentId, offeringCode));
     }
 
     private void getOffering(String data) throws InvalidInputException {
@@ -140,5 +140,9 @@ public class TerminalServer {
         OfferingDataRefiner offeringDataRefiner = new OfferingDataRefiner(data);
         return offeringDataRefiner.getRefinedOfferingEntity();
     }
+
+//    private String refineGetOfferingData(OfferingEntity offeringEntity) {
+//
+//    }
 
 }

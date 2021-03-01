@@ -21,7 +21,6 @@ public class OfferingDataRefiner {
     public OfferingEntity getRefinedOfferingEntity() throws ParseException, JsonProcessingException {
         this.refineClassTime();
         this.refineExamTime();
-        System.out.println(offeringMap);
         String json = new ObjectMapper().writeValueAsString(offeringMap);
         return mapper.readValue(json, OfferingEntity.class);
     }
