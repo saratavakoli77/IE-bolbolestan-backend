@@ -12,7 +12,7 @@ public class OfferingEntity extends CourseEntity {
     private List<DaysOfWeek> classTimeDays;
     private Date classTimeStart;
     private Date classTimeEnd;
-    private Integer registered;
+    private Integer registered = 0;
 
     public OfferingEntity() {}
 
