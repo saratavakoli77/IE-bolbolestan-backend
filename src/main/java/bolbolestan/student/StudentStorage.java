@@ -24,4 +24,8 @@ public class StudentStorage {
         }
         throw new StudentNotFoundException();
     }
+
+    public static void removeAll() {
+        studentEntities.clear();
+    }
 }

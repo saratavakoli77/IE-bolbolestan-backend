@@ -28,4 +28,8 @@ public class OfferingStorage {
     public static List<OfferingEntity> getAllOfferings() {
         return offeringEntities;
     }
+
+    public static void removeAll() {
+        offeringEntities.clear();
+    }
 }

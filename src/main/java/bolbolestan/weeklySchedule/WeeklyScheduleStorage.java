@@ -24,4 +24,8 @@ public class WeeklyScheduleStorage {
         }
         throw new WeeklyScheduleDoesNotExistException();
     }
+
+    public static void removeAll() {
+        weeklyScheduleEntities.clear();
+    }
 }
