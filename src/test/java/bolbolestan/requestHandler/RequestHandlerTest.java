@@ -154,14 +154,10 @@ public class RequestHandlerTest {
         OfferingEntity offeringEntity = offeringModel.getOffering("810112301");
         offeringEntity.setRegistered(offeringEntity.getCapacity());
         HashMap<String, Object> finalizeResponse = requestHandler.finalizeSchedule("810196000");
-        List<Exception> exceptionList = (List<Exception>) finalizeResponse.get("error");
-        List<String> exceptionMessageList = new ArrayList<>();
-        for (Exception exception: exceptionList) {
-            exceptionMessageList.add(exception.getMessage());
-        }
+        List<String> exceptionMessageList = (List<String>) finalizeResponse.get("error");
         Assert.assertFalse((Boolean) finalizeResponse.get("success"));
-        Assert.assertFalse(exceptionList.isEmpty());
-        Assert.assertEquals(exceptionList.size(), 4);
+        Assert.assertFalse(exceptionMessageList.isEmpty());
+        Assert.assertEquals(exceptionMessageList.size(), 4);
         Assert.assertTrue(exceptionMessageList.contains(new MaximumUnitsException().getMessage()));
         Assert.assertTrue(exceptionMessageList.contains(new CapacityException("810112301").getMessage()));
         Assert.assertTrue(

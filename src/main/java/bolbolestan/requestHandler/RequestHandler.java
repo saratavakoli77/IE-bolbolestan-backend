@@ -7,6 +7,7 @@ import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
 import bolbolestan.student.StudentEntity;
 import bolbolestan.student.StudentModel;
+import bolbolestan.tools.GetExceptionMessages;
 import bolbolestan.weeklySchedule.WeeklyScheduleEntity;
 import bolbolestan.weeklySchedule.WeeklyScheduleModel;
 
@@ -24,7 +25,7 @@ public class RequestHandler {
                 response.put("data", null);
             } else {
                 response.put("success", false);
-                response.put("error", exceptionList);
+                response.put("error", GetExceptionMessages.getExceptionMessages(exceptionList));
             }
         } catch (StudentNotFoundException e) {
             response.put("success", false);
