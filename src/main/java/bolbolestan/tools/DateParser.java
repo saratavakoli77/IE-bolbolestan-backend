@@ -44,12 +44,18 @@ public class DateParser {
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         String startString = format.format(start);
         String endString = format.format(end);
-        return startString + endString;
+        return startString + "-" + endString;
     }
 
     public static Date getDateFromExamFormat(String dateString) throws ParseException {
         String pattern = "yyyy-MM-dd'T'HH:mm:ss";
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         return format.parse(dateString);
+    }
+
+    public static String getStringFromExamDate(Date date) {
+        String pattern = "yyyy-MM-dd'T'HH:mm:ss";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+        return format.format(date);
     }
 }

@@ -5,13 +5,13 @@ import bolbolestan.bolbolestanExceptions.InvalidInputException;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.requestHandler.RequestHandler;
 import bolbolestan.student.StudentEntity;
+import bolbolestan.tools.GetOfferingDataRefiner;
 import bolbolestan.tools.OfferingDataRefiner;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class TerminalServer {
     final String ADD_OFFERING_CMD = "addOffering";
@@ -106,15 +106,15 @@ public class TerminalServer {
         printResponse(this.requestHandler.addToWeeklySchedule(studentId, offeringCode));
     }
 
-    private void getOffering(String data) throws InvalidInputException {
+    private void getOffering(String data) throws InvalidInputException, JsonProcessingException {
         String studentId = getJsonField(data, "studentId");
         String offeringCode = getJsonField(data, "code");
-        printResponse(this.requestHandler.getOffering(studentId, offeringCode));
+        printResponse(this.refineGetOfferingData(this.requestHandler.getOffering(studentId, offeringCode)));
     }
 
-    private void getOfferings(String data) throws InvalidInputException {
+    private void getOfferings(String data) throws InvalidInputException, JsonProcessingException {
         String studentId = getJsonField(data, "studentId");
-        printResponse(this.requestHandler.getOfferings(studentId));
+        printResponse(this.refineGetOfferingsData(this.requestHandler.getOfferings(studentId)));
     }
 
     private void addStudent(String data) throws InvalidInputException {
@@ -141,8 +141,34 @@ public class TerminalServer {
         return offeringDataRefiner.getRefinedOfferingEntity();
     }
 
-//    private String refineGetOfferingData(OfferingEntity offeringEntity) {
-//
-//    }
+    private HashMap<String, Object> refineGetOfferingsData(HashMap<String, Object> responseMap) throws JsonProcessingException {
+        if ((Boolean) responseMap.get("success")) {
+            List<Map<String, Object>> refinedResponseList = new ArrayList<>();
+            for (OfferingEntity offeringEntity: (List<OfferingEntity>) responseMap.get("data")) {
+                refinedResponseList.add(
+                        new GetOfferingDataRefiner().getRefinedOfferingData(offeringEntity)
+                );
+            }
+            HashMap<String, Object> refinedResponse = new HashMap<>();
+            refinedResponse.put("success", true);
+            refinedResponse.put("data", refinedResponseList);
+            return refinedResponse;
+        }
+        return responseMap;
+    }
+
+    private HashMap<String, Object> refineGetOfferingData(HashMap<String, Object> responseMap)
+            throws JsonProcessingException {
+        if ((Boolean) responseMap.get("success")) {
+            GetOfferingDataRefiner getOfferingDataRefiner = new GetOfferingDataRefiner();
+            Map<String, Object> refinedOfferingData =
+                    getOfferingDataRefiner.getRefinedOfferingData((OfferingEntity) responseMap.get("data"));
+            HashMap<String, Object> refinedResponse = new HashMap<>();
+            refinedResponse.put("success", true);
+            refinedResponse.put("data", refinedOfferingData);
+            return refinedResponse;
+        }
+        return responseMap;
+    }
 
 }
