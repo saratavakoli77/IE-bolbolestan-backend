@@ -7,7 +7,7 @@ public class StudentModel {
         return StudentStorage.getById(studentId);
     }
 
-    public void addStudent(StudentEntity studentEntity) {
+    public void addNewStudent(StudentEntity studentEntity) {
         //todo: validate data
         StudentStorage.add(studentEntity);
     }

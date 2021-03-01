@@ -102,7 +102,7 @@ public class RequestHandler {
     }
 
     public HashMap<String, Object> addStudent(StudentEntity studentEntity) {
-        new StudentModel().addStudent(studentEntity);
+        new StudentModel().addNewStudent(studentEntity);
         HashMap<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("data", null);
