@@ -5,8 +5,10 @@ import bolbolestan.course.CourseEntity;
 import bolbolestan.course.DaysOfWeek;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
+import bolbolestan.offering.OfferingStorage;
 import bolbolestan.student.StudentEntity;
 import bolbolestan.student.StudentModel;
+import bolbolestan.student.StudentStorage;
 import bolbolestan.tools.DateParser;
 import org.junit.*;
 
@@ -342,4 +344,10 @@ public class WeeklyScheduleModelTest {
         Assert.assertTrue(offeringCodes.contains("810110001"));
     }
 
+    @After
+    public void cleanUp() {
+        StudentStorage.removeAll();
+        WeeklyScheduleStorage.removeAll();
+        OfferingStorage.removeAll();
+    }
 }

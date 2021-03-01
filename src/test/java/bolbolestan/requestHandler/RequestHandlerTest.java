@@ -5,11 +5,15 @@ import bolbolestan.course.CourseEntity;
 import bolbolestan.course.DaysOfWeek;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
+import bolbolestan.offering.OfferingStorage;
 import bolbolestan.student.StudentEntity;
 import bolbolestan.student.StudentModel;
+import bolbolestan.student.StudentStorage;
 import bolbolestan.tools.DateParser;
 import bolbolestan.weeklySchedule.WeeklyScheduleEntity;
 import bolbolestan.weeklySchedule.WeeklyScheduleModel;
+import bolbolestan.weeklySchedule.WeeklyScheduleStorage;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -166,7 +170,12 @@ public class RequestHandlerTest {
         Assert.assertTrue(
                 exceptionMessageList.contains(new ExamTimeCollisionException("810110001", "810110005").getMessage())
         );
-
     }
 
+    @After
+    public void cleanUp() {
+        StudentStorage.removeAll();
+        WeeklyScheduleStorage.removeAll();
+        OfferingStorage.removeAll();
+    }
 }
