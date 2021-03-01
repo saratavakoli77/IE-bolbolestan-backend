@@ -108,7 +108,7 @@ public class WeeklyScheduleModel {
             try {
                 String offeringCode1 = offeringCodes.get(i);
                 OfferingEntity offeringEntity1 = new OfferingModel().getOffering(offeringCode1);
-                for (int j = i; j < offeringCodes.size(); j++) {
+                for (int j = i + 1; j < offeringCodes.size(); j++) {
                     String offeringCode2 = offeringCodes.get(j);
                     OfferingEntity offeringEntity2 = new OfferingModel().getOffering(offeringCode2);
                     if (this.doesOfferingsSessionsCollied(offeringEntity1, offeringEntity2)) {
