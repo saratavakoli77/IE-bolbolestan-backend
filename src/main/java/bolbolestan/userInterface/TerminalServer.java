@@ -28,42 +28,46 @@ public class TerminalServer {
 
     public void listen() {
         Scanner scanner = new Scanner(System.in);
-        String userInput = scanner.nextLine();
-        String command = userInput.substring(0, userInput.indexOf(' '));
-        String data = userInput.substring(userInput.indexOf(' ') + 1);
+        for (;;) {
+            try {
+                String userInput = scanner.nextLine();
+                String command = userInput.substring(0, userInput.indexOf(' '));
+                String data = userInput.substring(userInput.indexOf(' ') + 1);
 
-        try {
-            switch (command) {
-                case ADD_OFFERING_CMD -> {
-                    this.addOffering(data);
+                switch (command) {
+                    case ADD_OFFERING_CMD -> {
+                        this.addOffering(data);
+                    }
+                    case ADD_STUDENT_CMD -> {
+                        this.addStudent(data);
+                    }
+                    case GET_OFFERING_CMD -> {
+                        this.getOffering(data);
+                    }
+                    case GET_OFFERINGS_CMD -> {
+                        this.getOfferings(data);
+                    }
+                    case ADD_TO_WEEKLY_SCHEDULE -> {
+                        this.addToWeeklySchedule(data);
+                    }
+                    case REMOVE_FROM_WEEKLY_SCHEDULE -> {
+                        this.removeFromWeeklySchedule(data);
+                    }
+                    case GET_WEEKLY_SCHEDULE -> {
+                        this.getWeeklySchedule(data);
+                    }
+                    case FINALIZE -> {
+                        this.finalizeSchedule(data);
+                    }
+                    default -> {
+                        throw new InvalidInputException();
+                    }
                 }
-                case ADD_STUDENT_CMD -> {
-                    this.addStudent(data);
-                }
-                case GET_OFFERING_CMD -> {
-                    this.getOffering(data);
-                }
-                case GET_OFFERINGS_CMD -> {
-                    this.getOfferings(data);
-                }
-                case ADD_TO_WEEKLY_SCHEDULE -> {
-                    this.addToWeeklySchedule(data);
-                }
-                case REMOVE_FROM_WEEKLY_SCHEDULE -> {
-                    this.removeFromWeeklySchedule(data);
-                }
-                case GET_WEEKLY_SCHEDULE -> {
-                    this.getWeeklySchedule(data);
-                }
-                case FINALIZE -> {
-                    this.finalizeSchedule(data);
-                }
-                default -> {
-                    throw new InvalidInputException();
-                }
+            } catch (Exception e) {
+                System.out.println(
+                        "{\n\"success\": true,\n\"error\": " + new InvalidInputException().getMessage() + "\n}"
+                );
             }
-        } catch (Exception e) {
-            System.out.println("{\n\"success\": true,\n\"error\": " + e.getMessage() + "\n}");
         }
     }
 
