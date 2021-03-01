@@ -177,6 +177,7 @@ public class WeeklyScheduleModel {
         List<Exception> exceptionList = validateWeeklySchedule(weeklyScheduleEntity);
         if (exceptionList.isEmpty()) {
             this.addStudentToWeeklyScheduleOfferings(weeklyScheduleEntity);
+            weeklyScheduleEntity.setStatus(WeeklyScheduleEntity.FINALIZED_STATUS);
         }
         return exceptionList;
     }
