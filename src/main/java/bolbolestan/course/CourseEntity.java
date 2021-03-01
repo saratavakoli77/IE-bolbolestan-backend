@@ -13,6 +13,32 @@ public class CourseEntity {
     private Integer capacity;
     private List<String> prerequisites;
 
+    public CourseEntity() {}
+
+    public CourseEntity(
+            String name,
+            Integer units,
+            Date examTimeStart,
+            Date examTimeEnd,
+            Integer capacity,
+            List<String> prerequisites) {
+        this.name = name;
+        this.units = units;
+        this.examTimeStart = examTimeStart;
+        this.examTimeEnd = examTimeEnd;
+        this.capacity = capacity;
+        this.prerequisites = prerequisites;
+    }
+
+    public CourseEntity(CourseEntity courseEntity) {
+        this.name = courseEntity.name;
+        this.units = courseEntity.units;
+        this.examTimeStart = courseEntity.examTimeStart;
+        this.examTimeEnd = courseEntity.examTimeEnd;
+        this.capacity = courseEntity.capacity;
+        this.prerequisites = courseEntity.prerequisites;
+    }
+
     public String getName() {
         return this.name;
     }
