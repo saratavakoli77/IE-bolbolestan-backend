@@ -295,15 +295,49 @@ public class WeeklyScheduleModelTest {
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810111101");
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810110001");
 
-        List<Exception> exceptionList = weeklyScheduleModel.finalizeWeeklySchedule("810196000");
+        OfferingModel offeringModel = new OfferingModel();
+        OfferingEntity offeringEntity = offeringModel.getOffering("810112301");
+        int registeredBeforeFinalize = offeringEntity.getRegistered();
 
+        List<Exception> exceptionList = weeklyScheduleModel.finalizeWeeklySchedule("810196000");
         WeeklyScheduleEntity weeklyScheduleEntity = weeklyScheduleModel.getWeeklySchedule("810196000");
+
         Assert.assertTrue(exceptionList.isEmpty());
         Assert.assertNotNull(weeklyScheduleEntity);
         Assert.assertEquals(weeklyScheduleEntity.getStatus(), WeeklyScheduleEntity.FINALIZED_STATUS);
         Assert.assertEquals(weeklyScheduleEntity.getStudentId(), "810196000");
         List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
         Assert.assertTrue(offeringCodes.contains("810112301"));
+        Assert.assertTrue(offeringCodes.contains("810111101"));
+        Assert.assertTrue(offeringCodes.contains("810110001"));
+        Assert.assertEquals(registeredBeforeFinalize + 1, offeringEntity.getRegistered().longValue());
+    }
+
+    @Test(expected = StudentNotFoundException.class)
+    public void getWeeklyScheduleStudentNotFoundTest() throws StudentNotFoundException {
+        WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
+        weeklyScheduleModel.getWeeklySchedule("810196001");
+    }
+
+    @Test
+    public void getWeeklyScheduleTest() throws OfferingNotFoundException, StudentNotFoundException {
+        WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
+        weeklyScheduleModel.addToWeeklySchedule("810196000", "810112301");
+
+        WeeklyScheduleEntity weeklyScheduleEntity = weeklyScheduleModel.getWeeklySchedule("810196000");
+
+        Assert.assertNotNull(weeklyScheduleEntity);
+        Assert.assertEquals(weeklyScheduleEntity.getStatus(), WeeklyScheduleEntity.NON_FINALIZED_STATUS);
+        Assert.assertEquals(weeklyScheduleEntity.getStudentId(), "810196000");
+        List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
+        Assert.assertTrue(offeringCodes.contains("810112301"));
+
+        weeklyScheduleModel.addToWeeklySchedule("810196000", "810111101");
+        weeklyScheduleModel.addToWeeklySchedule("810196000", "810110001");
+
+        List<Exception> exceptionList = weeklyScheduleModel.finalizeWeeklySchedule("810196000");
+        Assert.assertTrue(exceptionList.isEmpty());
+        Assert.assertEquals(weeklyScheduleEntity.getStatus(), WeeklyScheduleEntity.FINALIZED_STATUS);
         Assert.assertTrue(offeringCodes.contains("810111101"));
         Assert.assertTrue(offeringCodes.contains("810110001"));
     }
