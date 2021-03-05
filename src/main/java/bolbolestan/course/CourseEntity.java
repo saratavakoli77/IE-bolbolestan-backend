@@ -12,6 +12,7 @@ public class CourseEntity {
     private Date examTimeEnd;
     private Integer capacity;
     private List<String> prerequisites;
+    private String type;
 
     public CourseEntity() {}
 
@@ -21,13 +22,15 @@ public class CourseEntity {
             Date examTimeStart,
             Date examTimeEnd,
             Integer capacity,
-            List<String> prerequisites) {
+            List<String> prerequisites,
+            String type) {
         this.name = name;
         this.units = units;
         this.examTimeStart = examTimeStart;
         this.examTimeEnd = examTimeEnd;
         this.capacity = capacity;
         this.prerequisites = prerequisites;
+        this.type = type;
     }
 
     public CourseEntity(CourseEntity courseEntity) {
@@ -37,6 +40,7 @@ public class CourseEntity {
         this.examTimeEnd = courseEntity.examTimeEnd;
         this.capacity = courseEntity.capacity;
         this.prerequisites = courseEntity.prerequisites;
+        this.type = courseEntity.type;
     }
 
     public String getName() {
@@ -85,5 +89,13 @@ public class CourseEntity {
 
     public void setPrerequisites(List<String> prerequisites) {
         this.prerequisites = prerequisites;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 }

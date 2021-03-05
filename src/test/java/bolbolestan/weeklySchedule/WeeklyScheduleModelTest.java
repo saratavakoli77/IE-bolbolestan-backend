@@ -20,7 +20,7 @@ public class WeeklyScheduleModelTest {
     @Before
     public void setUp() throws ParseException {
         StudentEntity testStudent = new StudentEntity(
-                "810196000", "testStudent", "1396"
+                "810196000", "testStudent", "test","1396"
         );
         new StudentModel().addNewStudent(testStudent);
 
@@ -30,7 +30,8 @@ public class WeeklyScheduleModelTest {
                 DateParser.getDateFromExamFormat("2021-10-01T08:00:00"),
                 DateParser.getDateFromExamFormat("2021-10-01T10:30:00"),
                 60,
-                null
+                null,
+                "Asli"
         );
 
         CourseEntity courseEntity2 = new CourseEntity(
@@ -39,7 +40,8 @@ public class WeeklyScheduleModelTest {
                 DateParser.getDateFromExamFormat("2021-10-02T08:00:00"),
                 DateParser.getDateFromExamFormat("2021-10-02T10:30:00"),
                 50,
-                null
+                null,
+                "Asli"
         );
 
         CourseEntity courseEntity3 = new CourseEntity(
@@ -48,7 +50,8 @@ public class WeeklyScheduleModelTest {
                 DateParser.getDateFromExamFormat("2021-10-03T08:00:00"),
                 DateParser.getDateFromExamFormat("2021-10-03T10:30:00"),
                 1,
-                null
+                null,
+                "Asli"
         );
 
         CourseEntity courseEntity4 = new CourseEntity(
@@ -57,7 +60,8 @@ public class WeeklyScheduleModelTest {
                 DateParser.getDateFromExamFormat("2021-10-04T08:00:00"),
                 DateParser.getDateFromExamFormat("2021-10-04T10:30:00"),
                 10,
-                null
+                null,
+                "Asli"
         );
 
         CourseEntity courseEntity5 = new CourseEntity(
@@ -66,7 +70,8 @@ public class WeeklyScheduleModelTest {
                 DateParser.getDateFromExamFormat("2021-10-01T08:00:00"),
                 DateParser.getDateFromExamFormat("2021-10-01T10:30:00"),
                 55,
-                null
+                null,
+                "Asli"
         );
 
         CourseEntity courseEntity6 = new CourseEntity(
@@ -75,7 +80,8 @@ public class WeeklyScheduleModelTest {
                 DateParser.getDateFromExamFormat("2021-10-01T08:00:00"),
                 DateParser.getDateFromExamFormat("2021-10-01T10:30:00"),
                 55,
-                null
+                null,
+                "Asli"
         );
 
         OfferingEntity testOffering1 = new OfferingEntity(
@@ -85,7 +91,8 @@ public class WeeklyScheduleModelTest {
                 Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
                 DateParser.getDatesFromString("14-15:30").get("start"),
                 DateParser.getDatesFromString("14-15:30").get("end"),
-                0
+                0,
+                "01"
         );
 
         OfferingEntity testOffering2 = new OfferingEntity(
@@ -95,7 +102,8 @@ public class WeeklyScheduleModelTest {
                 Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
                 DateParser.getDatesFromString("14-15:30").get("start"),
                 DateParser.getDatesFromString("14-15:30").get("end"),
-                0
+                0,
+                "01"
         );
 
         OfferingEntity testOffering3 = new OfferingEntity(
@@ -105,7 +113,8 @@ public class WeeklyScheduleModelTest {
                 Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
                 DateParser.getDatesFromString("14-15:30").get("start"),
                 DateParser.getDatesFromString("14-15:30").get("end"),
-                0
+                0,
+                "01"
         );
 
         OfferingEntity testOffering4 = new OfferingEntity(
@@ -115,7 +124,8 @@ public class WeeklyScheduleModelTest {
                 Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
                 DateParser.getDatesFromString("9-10:30").get("start"),
                 DateParser.getDatesFromString("9-10:30").get("end"),
-                0
+                0,
+                "01"
         );
 
         OfferingEntity testOffering5 = new OfferingEntity(
@@ -125,7 +135,8 @@ public class WeeklyScheduleModelTest {
                 Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
                 DateParser.getDatesFromString("9-10:30").get("start"),
                 DateParser.getDatesFromString("9-10:30").get("end"),
-                0
+                0,
+                "01"
         );
 
         OfferingEntity testOffering6 = new OfferingEntity(
@@ -135,7 +146,8 @@ public class WeeklyScheduleModelTest {
                 Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
                 DateParser.getDatesFromString("14-15:30").get("start"),
                 DateParser.getDatesFromString("14-15:30").get("end"),
-                0
+                0,
+                "01"
         );
 
         OfferingEntity testOffering7 = new OfferingEntity(
@@ -145,7 +157,8 @@ public class WeeklyScheduleModelTest {
                 Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
                 DateParser.getDatesFromString("14-15:30").get("start"),
                 DateParser.getDatesFromString("14-15:30").get("end"),
-                0
+                0,
+                "01"
         );
 
         OfferingEntity testOffering8 = new OfferingEntity(
@@ -155,7 +168,8 @@ public class WeeklyScheduleModelTest {
                 Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
                 DateParser.getDatesFromString("14-15:30").get("start"),
                 DateParser.getDatesFromString("14-15:30").get("end"),
-                0
+                0,
+                "01"
         );
 
         OfferingEntity testOffering9 = new OfferingEntity(
@@ -165,7 +179,8 @@ public class WeeklyScheduleModelTest {
                 Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
                 DateParser.getDatesFromString("9-10:30").get("start"),
                 DateParser.getDatesFromString("9-10:30").get("end"),
-                0
+                0,
+                "01"
         );
 
         OfferingModel offeringModel = new OfferingModel();

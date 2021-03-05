@@ -12,6 +12,7 @@ public class OfferingEntity extends CourseEntity {
     private List<DaysOfWeek> classTimeDays;
     private Date classTimeStart;
     private Date classTimeEnd;
+    private String classCode;
     private Integer registered = 0;
 
     public OfferingEntity() {}
@@ -23,13 +24,15 @@ public class OfferingEntity extends CourseEntity {
             List<DaysOfWeek> classTimeDays,
             Date classTimeStart,
             Date classTimeEnd,
-            Integer registered) {
+            Integer registered,
+            String classCode) {
         super(courseEntity);
         this.code = code;
         this.instructor = instructor;
         this.classTimeDays = classTimeDays;
         this.classTimeStart = classTimeStart;
         this.classTimeEnd = classTimeEnd;
+        this.classCode = classCode;
         this.registered = registered;
     }
 
@@ -71,6 +74,14 @@ public class OfferingEntity extends CourseEntity {
 
     public Date getClassTimeEnd() {
         return classTimeEnd;
+    }
+
+    public void setClassCode(String classCode) {
+        this.classCode = classCode;
+    }
+
+    public String getClassCode() {
+        return classCode;
     }
 
     public void setRegistered(Integer registered) {
