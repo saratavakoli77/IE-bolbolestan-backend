@@ -196,12 +196,12 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test(expected = StudentNotFoundException.class)
-    public void finalizeStudentNotExistTest() throws StudentNotFoundException {
+    public void finalizeStudentNotExistTest() throws StudentNotFoundException, OfferingRecordNotFoundException {
         new WeeklyScheduleModel().finalizeWeeklySchedule("8101911111");
     }
 
     @Test
-    public void finalizeUnitsUnderLimitTest() throws StudentNotFoundException, OfferingNotFoundException {
+    public void finalizeUnitsUnderLimitTest() throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810112301");
         List<Exception> exceptionList = weeklyScheduleModel.finalizeWeeklySchedule("810196000");
@@ -209,7 +209,7 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test
-    public void finalizeUnitsExceedLimitTest() throws StudentNotFoundException, OfferingNotFoundException {
+    public void finalizeUnitsExceedLimitTest() throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810112301");
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810111101");
@@ -221,7 +221,7 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test
-    public void finalize2CoursesSessionColliedTest() throws StudentNotFoundException, OfferingNotFoundException {
+    public void finalize2CoursesSessionColliedTest() throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810112301");
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810111102");
@@ -234,7 +234,7 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test
-    public void finalize3CoursesSessionColliedTest() throws StudentNotFoundException, OfferingNotFoundException {
+    public void finalize3CoursesSessionColliedTest() throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810112301");
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810111102");
@@ -253,7 +253,7 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test
-    public void finalize2CoursesExamsColliedTest() throws StudentNotFoundException, OfferingNotFoundException {
+    public void finalize2CoursesExamsColliedTest() throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810000000");
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810112301");
@@ -265,7 +265,7 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test
-    public void finalize3CoursesExamsColliedTest() throws StudentNotFoundException, OfferingNotFoundException {
+    public void finalize3CoursesExamsColliedTest() throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810000000");
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810112301");
@@ -284,7 +284,7 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test
-    public void finalizeNotEnoughCapacity() throws StudentNotFoundException, OfferingNotFoundException {
+    public void finalizeNotEnoughCapacity() throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         OfferingEntity offeringTest = new OfferingModel().getOffering("810110001");
         offeringTest.setRegistered(1);
         offeringTest.setUnits(13);
@@ -297,7 +297,7 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test
-    public void finalizeWeeklyScheduleNoInitialized() throws StudentNotFoundException {
+    public void finalizeWeeklyScheduleNoInitialized() throws StudentNotFoundException, OfferingRecordNotFoundException {
         WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
         List<Exception> exceptionList = weeklyScheduleModel.finalizeWeeklySchedule("810196000");
         Assert.assertEquals(
@@ -306,7 +306,7 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test
-    public void finalizeWeeklySchedule() throws StudentNotFoundException, OfferingNotFoundException {
+    public void finalizeWeeklySchedule() throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810112301");
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810111101");
@@ -337,7 +337,7 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test
-    public void getWeeklyScheduleTest() throws OfferingNotFoundException, StudentNotFoundException {
+    public void getWeeklyScheduleTest() throws OfferingNotFoundException, StudentNotFoundException, OfferingRecordNotFoundException {
         WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
         weeklyScheduleModel.addToWeeklySchedule("810196000", "810112301");
 

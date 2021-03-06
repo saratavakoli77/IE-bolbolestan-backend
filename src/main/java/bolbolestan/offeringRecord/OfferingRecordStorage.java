@@ -16,22 +16,23 @@ public class OfferingRecordStorage {
         offeringRecordEntities.remove(offeringRecordEntityEntity);
     }
 
-    public static OfferingRecordEntity getByCode(String code) throws OfferingRecordNotFoundException {
-        for (OfferingRecordEntity entity: offeringRecordEntities) {
-            if (entity.getOfferingCode().equals(code)) {
-                return entity;
-            }
-        }
-        throw new OfferingRecordNotFoundException();
-    }
+//    public static OfferingRecordEntity getByCode(String code) throws OfferingRecordNotFoundException {
+//        for (OfferingRecordEntity entity: offeringRecordEntities) {
+//            if (entity.getOfferingCode().equals(code)) {
+//                return entity;
+//            }
+//        }
+//        throw new OfferingRecordNotFoundException();
+//    }
 
-    public static OfferingRecordEntity getByStudentId(String studentId) throws OfferingRecordNotFoundException {
+    public static List<OfferingRecordEntity> getByStudentId(String studentId) {
+        List<OfferingRecordEntity> studentOfferingRecordEntities = new ArrayList<>();
         for (OfferingRecordEntity entity: offeringRecordEntities) {
             if (entity.getStudentId().equals(studentId)) {
-                return entity;
+                studentOfferingRecordEntities.add(entity);
             }
         }
-        throw new OfferingRecordNotFoundException();
+        return studentOfferingRecordEntities;
     }
 
     public static OfferingRecordEntity getByCodeAndStudentId(String studentId, String code)

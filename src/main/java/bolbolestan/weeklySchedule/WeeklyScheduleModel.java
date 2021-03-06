@@ -5,6 +5,8 @@ import bolbolestan.course.CourseEntity;
 import bolbolestan.course.DaysOfWeek;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
+import bolbolestan.offeringRecord.OfferingRecordEntity;
+import bolbolestan.offeringRecord.OfferingRecordModel;
 import bolbolestan.student.StudentModel;
 import bolbolestan.tools.DateParser;
 
@@ -20,7 +22,7 @@ public class WeeklyScheduleModel {
         return weeklyScheduleEntity;
     }
 
-    public void addToWeeklySchedule(String studentId, String offeringCode) throws StudentNotFoundException, OfferingNotFoundException {
+    public List<Exception> addToWeeklySchedule(String studentId, String offeringCode) throws StudentNotFoundException, OfferingNotFoundException {
         new StudentModel().getStudent(studentId);
         new OfferingModel().getOffering(offeringCode);
 
@@ -30,7 +32,14 @@ public class WeeklyScheduleModel {
         } catch (WeeklyScheduleDoesNotExistException e) {
             weeklyScheduleEntity = addNewWeeklySchedule(studentId);
         }
-        weeklyScheduleEntity.addToOfferingCodes(offeringCode);
+        List<Exception> exceptionList = validateAddToWeeklySchedule(weeklyScheduleEntity);
+        if (exceptionList.isEmpty()) {
+            weeklyScheduleEntity.addToOfferingCodes(offeringCode);
+            new OfferingRecordModel().addNewOfferingRecord(
+                    studentId, offeringCode, 0, OfferingRecordEntity.NON_FINALIZED_STATUS
+            );
+        }
+        return exceptionList;
     }
 
     public void removeFromWeeklySchedule(String studentId, String offeringCode) throws
@@ -142,15 +151,20 @@ public class WeeklyScheduleModel {
         return exceptionList;
     }
 
-    private List<Exception> validateWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity) {
+    private List<Exception> validateAddToWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity) {
+        List<Exception> exceptionList = new ArrayList<>();
+        exceptionList.addAll(this.validateWeeklyScheduleCollision(weeklyScheduleEntity));
+        exceptionList.addAll(this.validateWeeklyScheduleCapacity(weeklyScheduleEntity));
+        return exceptionList;
+    }
+
+    private List<Exception> validateFinalizeWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity) {
         List<Exception> exceptionList = new ArrayList<>();
         try {
             this.validateUnitLimit(weeklyScheduleEntity);
         } catch (Exception e) {
             exceptionList.add(e);
         }
-        exceptionList.addAll(this.validateWeeklyScheduleCollision(weeklyScheduleEntity));
-        exceptionList.addAll(this.validateWeeklyScheduleCapacity(weeklyScheduleEntity));
         return exceptionList;
     }
 
@@ -166,7 +180,18 @@ public class WeeklyScheduleModel {
         }
     }
 
-    public List<Exception> finalizeWeeklySchedule(String studentId) throws StudentNotFoundException {
+    private void finalizeOfferings(WeeklyScheduleEntity weeklyScheduleEntity) throws OfferingRecordNotFoundException {
+        List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
+        OfferingRecordModel offeringRecordModel = new OfferingRecordModel();
+        for (String offeringCode: offeringCodes) {
+            offeringRecordModel.updateStatusOfferingRecord(
+                    weeklyScheduleEntity.getStudentId(), offeringCode, OfferingRecordEntity.FINALIZED_STATUS
+            );
+        }
+    }
+
+    public List<Exception> finalizeWeeklySchedule(String studentId) throws
+            StudentNotFoundException, OfferingRecordNotFoundException {
         new StudentModel().getStudent(studentId);
         WeeklyScheduleEntity weeklyScheduleEntity;
         try {
@@ -174,10 +199,10 @@ public class WeeklyScheduleModel {
         } catch (WeeklyScheduleDoesNotExistException e) {
             weeklyScheduleEntity = addNewWeeklySchedule(studentId);
         }
-        List<Exception> exceptionList = validateWeeklySchedule(weeklyScheduleEntity);
+        List<Exception> exceptionList = validateFinalizeWeeklySchedule(weeklyScheduleEntity);
         if (exceptionList.isEmpty()) {
             this.addStudentToWeeklyScheduleOfferings(weeklyScheduleEntity);
-            weeklyScheduleEntity.setStatus(WeeklyScheduleEntity.FINALIZED_STATUS);
+            this.finalizeOfferings(weeklyScheduleEntity);
         }
         return exceptionList;
     }

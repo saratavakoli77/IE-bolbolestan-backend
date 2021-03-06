@@ -2,6 +2,7 @@ package bolbolestan.requestHandler;
 
 import bolbolestan.bolbolestanExceptions.OfferingCodeNotInWeeklyScheduleException;
 import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
+import bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
 import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
@@ -26,7 +27,7 @@ public class RequestHandler {
                         GetExceptionMessages.getExceptionMessages(exceptionList)
                 );
             }
-        } catch (StudentNotFoundException e) {
+        } catch (StudentNotFoundException | OfferingRecordNotFoundException e) {
             return makeErrorResponse(e.getMessage());
         }
     }
