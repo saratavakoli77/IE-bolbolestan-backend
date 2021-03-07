@@ -8,6 +8,7 @@ import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
 import bolbolestan.student.StudentEntity;
 import bolbolestan.student.StudentModel;
+import bolbolestan.student.StudentStorage;
 import bolbolestan.tools.GetExceptionMessages;
 import bolbolestan.weeklySchedule.WeeklyScheduleEntity;
 import bolbolestan.weeklySchedule.WeeklyScheduleModel;
@@ -88,6 +89,10 @@ public class RequestHandler {
     public HashMap<String, Object> addOffering(OfferingEntity offeringEntity) {
         new OfferingModel().addNewOffering(offeringEntity);
         return makeSuccessResponse(null);
+    }
+
+    public StudentEntity getStudentById(String id) throws StudentNotFoundException {
+        return StudentStorage.getById(id);
     }
 
     private HashMap<String, Object> makeSuccessResponse(Object data) {
