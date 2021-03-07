@@ -1,26 +1,34 @@
 package bolbolestan.student;
 
 public class StudentEntity {
-    private String studentId;
+    private String id;
     private String name;
     private String secondName;
-    private String enteredAt;
+    private String birthDate;
 
     public StudentEntity() {}
 
-    public StudentEntity(String studentId, String name, String secondName, String enteredAt) {
-        this.studentId = studentId;
+    public StudentEntity(String studentId, String name, String secondName, String birthDate) {
+        this.id = studentId;
         this.name = name;
         this.secondName = secondName;
-        this.enteredAt = enteredAt;
+        this.birthDate = birthDate;
     }
 
     public void setStudentId(String studentId) {
-        this.studentId = studentId;
+        this.id = studentId;
     }
 
     public String getStudentId() {
-        return studentId;
+        return id;
+    }
+
+    public void setId(String studentId) {
+        this.id = studentId;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setName(String name) {
@@ -39,11 +47,11 @@ public class StudentEntity {
         return secondName;
     }
 
-    public void setEnteredAt(String enteredAt) {
-        this.enteredAt = enteredAt;
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
     }
 
-    public String getEnteredAt() {
-        return enteredAt;
+    public String getBirthDate() {
+        return birthDate;
     }
 }
