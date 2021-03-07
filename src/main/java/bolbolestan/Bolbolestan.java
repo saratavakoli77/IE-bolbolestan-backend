@@ -5,12 +5,17 @@ import bolbolestan.offering.OfferingStorage;
 import bolbolestan.offeringRecord.OfferingRecordStorage;
 import bolbolestan.student.StudentStorage;
 import bolbolestan.userInterface.TerminalServer;
+import bolbolestan.userInterface.WebServer;
 
 public class Bolbolestan {
-    public static void main(String[] args) {
+    private static WebServer server;
+    public static void main(String[] args) throws Exception {
         fillStorages();
-        TerminalServer terminalServer = new TerminalServer();
-        terminalServer.listen();
+        server = new WebServer();
+        server.start(8089);
+
+//        TerminalServer terminalServer = new TerminalServer();
+//        terminalServer.listen();
     }
 
     public static void fillStorages() {
