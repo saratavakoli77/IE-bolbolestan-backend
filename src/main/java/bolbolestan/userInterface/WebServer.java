@@ -1,6 +1,7 @@
 package bolbolestan.userInterface;
 
 
+import bolbolestan.htmlHandler.StudentProfilePage;
 import bolbolestan.requestHandler.RequestHandler;
 import io.javalin.Javalin;
 
@@ -20,8 +21,8 @@ public class WebServer {
             Map<String, Object> data = new HashMap<>();
 
             try {
-                data.put("student", requestHandler.getStudentById(studentId));
-                ctx.render("profile.jte", data);
+                data = requestHandler.getStudentProfile(studentId);
+                ctx.html(new StudentProfilePage("Profile", data).getPage());
             } catch (Exception e) {
                 System.out.println("error");
                 e.fillInStackTrace();

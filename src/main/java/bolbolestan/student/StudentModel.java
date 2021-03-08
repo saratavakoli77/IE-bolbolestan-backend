@@ -8,7 +8,9 @@ import bolbolestan.offeringRecord.OfferingRecordEntity;
 import bolbolestan.offeringRecord.OfferingRecordModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StudentModel {
     public StudentEntity getStudent(String studentId) throws StudentNotFoundException {
@@ -20,7 +22,8 @@ public class StudentModel {
         StudentStorage.add(studentEntity);
     }
 
-    public double calculateGPA(String studentId) throws OfferingNotFoundException {
+    public Map<String, Double> getGpaTpu(String studentId) throws OfferingNotFoundException {
+        Map<String, Double> unitsGpa = new HashMap<>();
         List<OfferingRecordEntity> offeringRecordEntityList =
                 new OfferingRecordModel().getStudentOfferingRecords(studentId);
         double studentGPA = 0.0;
@@ -30,7 +33,9 @@ public class StudentModel {
             studentGPA += offeringRecordEntity.getGrade() * offeringEntity.getUnits();
             unitsSum += offeringEntity.getUnits();
         }
-        return studentGPA / unitsSum;
+        unitsGpa.put("gpa", studentGPA / unitsSum);
+        unitsGpa.put("tpu", unitsSum);
+        return unitsGpa;
     }
 
     public List<OfferingRecordEntity> getStudentPassedCourses(String studentId) {
