@@ -68,6 +68,22 @@ public class WebServer {
                 e.fillInStackTrace();
             }
         });
+
+
+        app.post("/course/:code/:classCode", ctx -> {
+            Map<String, Object> data = new HashMap<>();
+
+            try {
+                String studentId = ctx.formParam("std_id");
+                System.out.println(studentId);
+                requestHandler.addToWeeklySchedule(
+                        studentId, ctx.pathParam("code") + ctx.pathParam("classCode")
+                );
+            } catch (Exception e) {
+                System.out.println("error");
+                e.fillInStackTrace();
+            }
+        });
     }
 
 }

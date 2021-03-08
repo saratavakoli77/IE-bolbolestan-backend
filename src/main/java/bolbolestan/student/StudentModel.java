@@ -43,11 +43,28 @@ public class StudentModel {
                 new OfferingRecordModel().getStudentOfferingRecords(studentId);
         List<OfferingRecordEntity> studentPassedCourses = new ArrayList<>();
         for (OfferingRecordEntity offeringRecordEntity: offeringRecordEntityList) {
-            if (offeringRecordEntity.getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS) &&
-                    offeringRecordEntity.getGrade() >= 10) {
+            if (this.isCoursePassed(offeringRecordEntity)) {
                 studentPassedCourses.add(offeringRecordEntity);
             }
         }
         return studentPassedCourses;
+    }
+
+    public Boolean hasPassedCourse(String studentId, String offeringCode) {
+        List<OfferingRecordEntity> offeringRecordEntityList =
+                new OfferingRecordModel().getStudentOfferingRecords(studentId);
+        for (OfferingRecordEntity offeringRecordEntity: offeringRecordEntityList) {
+            if (this.isCoursePassed(offeringRecordEntity)) {
+                if (offeringRecordEntity.getOfferingCode().equals(offeringCode)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Boolean isCoursePassed(OfferingRecordEntity offeringRecordEntity) {
+        return offeringRecordEntity.getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS) &&
+                offeringRecordEntity.getGrade() >= offeringRecordEntity.PASSED_GRADE;
     }
 }

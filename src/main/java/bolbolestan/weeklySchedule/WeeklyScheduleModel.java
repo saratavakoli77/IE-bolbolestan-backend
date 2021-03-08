@@ -34,7 +34,7 @@ public class WeeklyScheduleModel {
         } catch (WeeklyScheduleDoesNotExistException e) {
             weeklyScheduleEntity = addNewWeeklySchedule(studentId);
         }
-        List<Exception> exceptionList = validateAddToWeeklySchedule(weeklyScheduleEntity);
+        List<Exception> exceptionList = validateAddToWeeklySchedule(weeklyScheduleEntity, studentId, offeringCode);
         if (exceptionList.isEmpty()) {
             weeklyScheduleEntity.addToOfferingCodes(offeringCode);
             new OfferingRecordModel().addNewOfferingRecord(
@@ -153,11 +153,30 @@ public class WeeklyScheduleModel {
         return exceptionList;
     }
 
-    private List<Exception> validateAddToWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity) {
+    private List<Exception> validateAddToWeeklySchedule(
+            WeeklyScheduleEntity weeklyScheduleEntity,
+            String studentId,
+            String offeringCode) throws OfferingNotFoundException {
         List<Exception> exceptionList = new ArrayList<>();
+        try {
+            this.validatePrerequisites(studentId, offeringCode);
+        } catch (PrerequisiteException e) {
+            exceptionList.add(e);
+        }
         exceptionList.addAll(this.validateWeeklyScheduleCollision(weeklyScheduleEntity));
         exceptionList.addAll(this.validateWeeklyScheduleCapacity(weeklyScheduleEntity));
         return exceptionList;
+    }
+
+    private void validatePrerequisites(String studentId, String offeringCode)
+            throws OfferingNotFoundException, PrerequisiteException {
+        OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
+        StudentModel studentModel = new StudentModel();
+        for (String prerequisite: offeringEntity.getPrerequisites()) {
+            if (!(studentModel.hasPassedCourse(studentId, prerequisite))) {
+                throw new PrerequisiteException();
+            }
+        }
     }
 
     private List<Exception> validateFinalizeWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity) {

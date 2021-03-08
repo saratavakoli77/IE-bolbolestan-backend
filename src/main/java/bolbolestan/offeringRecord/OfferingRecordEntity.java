@@ -5,6 +5,8 @@ public class OfferingRecordEntity {
     public static String NON_FINALIZED_STATUS = "non-finalized";
     public static String COMPLETED_STATUS = "completed";
 
+    public static int PASSED_GRADE = 10;
+
     private String offeringCode;
     private String studentId;
     private String status;
