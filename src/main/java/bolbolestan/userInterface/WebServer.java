@@ -1,6 +1,8 @@
 package bolbolestan.userInterface;
 
 
+import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
+import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
 import bolbolestan.htmlHandler.*;
 import bolbolestan.requestHandler.RequestHandler;
 import io.javalin.Javalin;
@@ -23,8 +25,10 @@ public class WebServer {
             try {
                 data = requestHandler.getStudentProfile(studentId);
                 ctx.html(new StudentProfilePage("Profile", data).getPage());
+            } catch (StudentNotFoundException e) {
+                ctx.status(404).html(new Error404("Plan").getPage());
             } catch (Exception e) {
-                System.out.println("error");
+                System.out.println(e);
                 e.fillInStackTrace();
             }
         });
@@ -47,7 +51,10 @@ public class WebServer {
             try {
                 data = requestHandler.getCourseDetail(ctx.pathParam("code"), ctx.pathParam("classCode"));
                 ctx.html(new CourseDetailPage("Course", data).getPage());
-            } catch (Exception e) {
+            } catch (OfferingNotFoundException e) {
+                ctx.status(404).html(new Error404("Plan").getPage());
+            }
+            catch (Exception e) {
                 System.out.println("error");
                 e.fillInStackTrace();
             }
@@ -60,6 +67,8 @@ public class WebServer {
             try {
                 data = requestHandler.getStudentWeeklySchedule(studentId);
                 ctx.html(new StudentPlanPage("Plan", data).getPage());
+            } catch (StudentNotFoundException e) {
+                ctx.status(404).html(new Error404("Plan").getPage());
             } catch (Exception e) {
                 System.out.println(e);
                 e.fillInStackTrace();
@@ -89,6 +98,8 @@ public class WebServer {
             try {
                 data = requestHandler.getWeeklyScheduleOfferings(studentId);
                 ctx.html(new ChangePlanPage("Change Plan", data).getPage());
+            } catch (StudentNotFoundException e) {
+                ctx.status(404).html(new Error404("Plan").getPage());
             } catch (Exception e) {
                 System.out.println(e);
                 e.fillInStackTrace();
@@ -137,6 +148,8 @@ public class WebServer {
             try {
                 data = requestHandler.getSubmitRequest(studentId);
                 ctx.html(new SubmitPage("Submit", data).getPage());
+            } catch (StudentNotFoundException e) {
+                ctx.status(404).html(new Error404("Plan").getPage());
             } catch (Exception e) {
                 System.out.println(e);
                 e.fillInStackTrace();
