@@ -221,12 +221,14 @@ public class WeeklyScheduleModel {
 
     private HashMap<String, Object> initWeekDaysMap() {
         HashMap<String, Object> data = new HashMap<>();
-        HashMap<String, String> hours = new HashMap<>();
+
         List<String> classHours = classHours();
-        for (String hour: classHours) {
-            hours.put(hour, "");
-        }
+
         for (DaysOfWeek daysOfWeek: DaysOfWeek.values()) {
+            HashMap<String, String> hours = new HashMap<>();
+            for (String hour: classHours) {
+                hours.put(hour, "");
+            }
             data.put(daysOfWeek.name(), hours);
         }
         return data;
@@ -240,11 +242,12 @@ public class WeeklyScheduleModel {
         for (String offeringCode: weeklyScheduleOfferingCodes) {
             OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
             for (DaysOfWeek day: offeringEntity.getClassTimeDays()) {
-                System.out.println(day.name());
                 String classTimeRange = DateParser.getStringFromDates(
                         offeringEntity.getClassTimeStart(),
                         offeringEntity.getClassTimeEnd()
                 );
+//                HashMap<String, String> dayMap = (HashMap<String, String>) data.get(day.name());
+//                dayMap.put(classTimeRange, offeringEntity.getName());
                 ((HashMap<String, String>) data.get(day.name())).put(classTimeRange, offeringEntity.getName());
             }
         }
