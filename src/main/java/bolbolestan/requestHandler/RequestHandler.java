@@ -97,60 +97,33 @@ public class RequestHandler {
         return new StudentModel().getStudent(id);
     }
 
-    public HashMap<String, Object> getStudentProfile(String id) {
-        try {
-            return new StudentView().getStudentProfile(id);
-        }  catch (StudentNotFoundException | OfferingNotFoundException e) {
-            return makeErrorResponse(e); //todo: proper exception
-        }
+    public HashMap<String, Object> getStudentProfile(String id) throws OfferingNotFoundException, StudentNotFoundException {
+//        try {
+        return new StudentView().getStudentProfile(id);
+//        }
+//        catch (StudentNotFoundException | OfferingNotFoundException e) {
+//            return makeErrorResponse(e); //todo: proper exception
+//        }
     }
 
-    public HashMap<String, Object> getStudentWeeklySchedule(String studentId) {
-        try {
-            return new WeeklyScheduleView().getStudentWeeklySchedule(studentId);
-        }  catch (StudentNotFoundException | OfferingNotFoundException e) {
-            return makeErrorResponse(e); //todo: proper exception
-        }
+    public HashMap<String, Object> getStudentWeeklySchedule(String studentId) throws StudentNotFoundException, OfferingNotFoundException {
+        return new WeeklyScheduleView().getStudentWeeklySchedule(studentId);
     }
 
-    public HashMap<String, Object> getWeeklyScheduleOfferings(String studentId) {
-        try {
-            return new WeeklyScheduleView().getWeeklyScheduleOfferings(studentId);
-        }  catch (StudentNotFoundException | OfferingNotFoundException e) {
-            return makeErrorResponse(e); //todo: proper exception
-        }
+    public HashMap<String, Object> getWeeklyScheduleOfferings(String studentId) throws OfferingNotFoundException, StudentNotFoundException {
+        return new WeeklyScheduleView().getWeeklyScheduleOfferings(studentId);
     }
 
     public HashMap<String, Object> getCourseList() {
-//        try {
-//            return new OfferingView().getOfferingList();
-//        }  catch (StudentNotFoundException) {
-//            return makeErrorResponse(e); //todo: proper exception
-//        }
         return new OfferingView().getOfferingList();
     }
 
-    public HashMap<String, Object> getCourseDetail(String code, String classCode) {
-//        try {
-//            return new OfferingView().getOfferingList();
-//        }  catch (StudentNotFoundException) {
-//            return makeErrorResponse(e); //todo: proper exception
-//        }
-        try {
-            return new OfferingView().getOfferingDetail(code + classCode);
-        } catch (OfferingNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public HashMap<String, Object> getCourseDetail(String code, String classCode) throws OfferingNotFoundException {
+        return new OfferingView().getOfferingDetail(code + classCode);
     }
 
-    public HashMap<String, Object> getSubmitRequest(String studentId) {
-        try {
-            return new WeeklyScheduleView().getFinalizeWeeklySchedule(studentId);
-        } catch (OfferingNotFoundException | StudentNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null; //todo
+    public HashMap<String, Object> getSubmitRequest(String studentId) throws StudentNotFoundException, OfferingNotFoundException {
+        return new WeeklyScheduleView().getFinalizeWeeklySchedule(studentId);
     }
 
     private HashMap<String, Object> makeSuccessResponse(Object data) {
