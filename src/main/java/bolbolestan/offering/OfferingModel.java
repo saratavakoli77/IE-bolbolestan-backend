@@ -16,7 +16,7 @@ public class OfferingModel {
         return OfferingStorage.getByCode(code);
     }
 
-    public List<OfferingEntity> getOfferings() throws StudentNotFoundException {
+    public List<OfferingEntity> getOfferings() {
         return OfferingStorage.getAllOfferings();
     }
 

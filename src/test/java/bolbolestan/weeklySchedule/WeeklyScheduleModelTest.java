@@ -24,175 +24,175 @@ public class WeeklyScheduleModelTest {
         );
         new StudentModel().addNewStudent(testStudent);
 
-        CourseEntity courseEntity1 = new CourseEntity(
-                "course1",
-                4,
-                DateParser.getDateFromExamFormat("2021-10-01T08:00:00"),
-                DateParser.getDateFromExamFormat("2021-10-01T10:30:00"),
-                60,
-                null,
-                "Asli"
-        );
-
-        CourseEntity courseEntity2 = new CourseEntity(
-                "course2",
-                5,
-                DateParser.getDateFromExamFormat("2021-10-02T08:00:00"),
-                DateParser.getDateFromExamFormat("2021-10-02T10:30:00"),
-                50,
-                null,
-                "Asli"
-        );
-
-        CourseEntity courseEntity3 = new CourseEntity(
-                "course3",
-                6,
-                DateParser.getDateFromExamFormat("2021-10-03T08:00:00"),
-                DateParser.getDateFromExamFormat("2021-10-03T10:30:00"),
-                1,
-                null,
-                "Asli"
-        );
-
-        CourseEntity courseEntity4 = new CourseEntity(
-                "course4",
-                6,
-                DateParser.getDateFromExamFormat("2021-10-04T08:00:00"),
-                DateParser.getDateFromExamFormat("2021-10-04T10:30:00"),
-                10,
-                null,
-                "Asli"
-        );
-
-        CourseEntity courseEntity5 = new CourseEntity(
-                "course5",
-                8,
-                DateParser.getDateFromExamFormat("2021-10-01T08:00:00"),
-                DateParser.getDateFromExamFormat("2021-10-01T10:30:00"),
-                55,
-                null,
-                "Asli"
-        );
-
-        CourseEntity courseEntity6 = new CourseEntity(
-                "course6",
-                8,
-                DateParser.getDateFromExamFormat("2021-10-01T08:00:00"),
-                DateParser.getDateFromExamFormat("2021-10-01T10:30:00"),
-                55,
-                null,
-                "Asli"
-        );
-
-        OfferingEntity testOffering1 = new OfferingEntity(
-                courseEntity1,
-                "810112301",
-                "testInstructor",
-                Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
-                DateParser.getDatesFromString("14-15:30").get("start"),
-                DateParser.getDatesFromString("14-15:30").get("end"),
-                0,
-                "01"
-        );
-
-        OfferingEntity testOffering2 = new OfferingEntity(
-                courseEntity1,
-                "810112302",
-                "testInstructor",
-                Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
-                DateParser.getDatesFromString("14-15:30").get("start"),
-                DateParser.getDatesFromString("14-15:30").get("end"),
-                0,
-                "01"
-        );
-
-        OfferingEntity testOffering3 = new OfferingEntity(
-                courseEntity2,
-                "810111101",
-                "testInstructor",
-                Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
-                DateParser.getDatesFromString("14-15:30").get("start"),
-                DateParser.getDatesFromString("14-15:30").get("end"),
-                0,
-                "01"
-        );
-
-        OfferingEntity testOffering4 = new OfferingEntity(
-                courseEntity3,
-                "810110001",
-                "testInstructor",
-                Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
-                DateParser.getDatesFromString("9-10:30").get("start"),
-                DateParser.getDatesFromString("9-10:30").get("end"),
-                0,
-                "01"
-        );
-
-        OfferingEntity testOffering5 = new OfferingEntity(
-                courseEntity4,
-                "810120001",
-                "testInstructor",
-                Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
-                DateParser.getDatesFromString("9-10:30").get("start"),
-                DateParser.getDatesFromString("9-10:30").get("end"),
-                0,
-                "01"
-        );
-
-        OfferingEntity testOffering6 = new OfferingEntity(
-                courseEntity2,
-                "810111102",
-                "testInstructor",
-                Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
-                DateParser.getDatesFromString("14-15:30").get("start"),
-                DateParser.getDatesFromString("14-15:30").get("end"),
-                0,
-                "01"
-        );
-
-        OfferingEntity testOffering7 = new OfferingEntity(
-                courseEntity3,
-                "810110002",
-                "testInstructor",
-                Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
-                DateParser.getDatesFromString("14-15:30").get("start"),
-                DateParser.getDatesFromString("14-15:30").get("end"),
-                0,
-                "01"
-        );
-
-        OfferingEntity testOffering8 = new OfferingEntity(
-                courseEntity5,
-                "810000000",
-                "testInstructor",
-                Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
-                DateParser.getDatesFromString("14-15:30").get("start"),
-                DateParser.getDatesFromString("14-15:30").get("end"),
-                0,
-                "01"
-        );
-
-        OfferingEntity testOffering9 = new OfferingEntity(
-                courseEntity6,
-                "810000100",
-                "testInstructor",
-                Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
-                DateParser.getDatesFromString("9-10:30").get("start"),
-                DateParser.getDatesFromString("9-10:30").get("end"),
-                0,
-                "01"
-        );
-
-        OfferingModel offeringModel = new OfferingModel();
-        offeringModel.addNewOffering(testOffering1);
-        offeringModel.addNewOffering(testOffering2);
-        offeringModel.addNewOffering(testOffering3);
-        offeringModel.addNewOffering(testOffering4);
-        offeringModel.addNewOffering(testOffering5);
-        offeringModel.addNewOffering(testOffering6);
-        offeringModel.addNewOffering(testOffering7);
-        offeringModel.addNewOffering(testOffering8);
-        offeringModel.addNewOffering(testOffering9);
+//        CourseEntity courseEntity1 = new CourseEntity(
+//                "course1",
+//                4,
+//                DateParser.getDateFromExamFormat("2021-10-01T08:00:00"),
+//                DateParser.getDateFromExamFormat("2021-10-01T10:30:00"),
+//                60,
+//                null,
+//                "Asli"
+//        );
+//
+//        CourseEntity courseEntity2 = new CourseEntity(
+//                "course2",
+//                5,
+//                DateParser.getDateFromExamFormat("2021-10-02T08:00:00"),
+//                DateParser.getDateFromExamFormat("2021-10-02T10:30:00"),
+//                50,
+//                null,
+//                "Asli"
+//        );
+//
+//        CourseEntity courseEntity3 = new CourseEntity(
+//                "course3",
+//                6,
+//                DateParser.getDateFromExamFormat("2021-10-03T08:00:00"),
+//                DateParser.getDateFromExamFormat("2021-10-03T10:30:00"),
+//                1,
+//                null,
+//                "Asli"
+//        );
+//
+//        CourseEntity courseEntity4 = new CourseEntity(
+//                "course4",
+//                6,
+//                DateParser.getDateFromExamFormat("2021-10-04T08:00:00"),
+//                DateParser.getDateFromExamFormat("2021-10-04T10:30:00"),
+//                10,
+//                null,
+//                "Asli"
+//        );
+//
+//        CourseEntity courseEntity5 = new CourseEntity(
+//                "course5",
+//                8,
+//                DateParser.getDateFromExamFormat("2021-10-01T08:00:00"),
+//                DateParser.getDateFromExamFormat("2021-10-01T10:30:00"),
+//                55,
+//                null,
+//                "Asli"
+//        );
+//
+//        CourseEntity courseEntity6 = new CourseEntity(
+//                "course6",
+//                8,
+//                DateParser.getDateFromExamFormat("2021-10-01T08:00:00"),
+//                DateParser.getDateFromExamFormat("2021-10-01T10:30:00"),
+//                55,
+//                null,
+//                "Asli"
+//        );
+//
+//        OfferingEntity testOffering1 = new OfferingEntity(
+//                courseEntity1,
+//                "810112301",
+//                "testInstructor",
+//                Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
+//                DateParser.getDatesFromString("14-15:30").get("start"),
+//                DateParser.getDatesFromString("14-15:30").get("end"),
+//                0,
+//                "01"
+//        );
+//
+//        OfferingEntity testOffering2 = new OfferingEntity(
+//                courseEntity1,
+//                "810112302",
+//                "testInstructor",
+//                Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
+//                DateParser.getDatesFromString("14-15:30").get("start"),
+//                DateParser.getDatesFromString("14-15:30").get("end"),
+//                0,
+//                "01"
+//        );
+//
+//        OfferingEntity testOffering3 = new OfferingEntity(
+//                courseEntity2,
+//                "810111101",
+//                "testInstructor",
+//                Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
+//                DateParser.getDatesFromString("14-15:30").get("start"),
+//                DateParser.getDatesFromString("14-15:30").get("end"),
+//                0,
+//                "01"
+//        );
+//
+//        OfferingEntity testOffering4 = new OfferingEntity(
+//                courseEntity3,
+//                "810110001",
+//                "testInstructor",
+//                Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
+//                DateParser.getDatesFromString("9-10:30").get("start"),
+//                DateParser.getDatesFromString("9-10:30").get("end"),
+//                0,
+//                "01"
+//        );
+//
+//        OfferingEntity testOffering5 = new OfferingEntity(
+//                courseEntity4,
+//                "810120001",
+//                "testInstructor",
+//                Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
+//                DateParser.getDatesFromString("9-10:30").get("start"),
+//                DateParser.getDatesFromString("9-10:30").get("end"),
+//                0,
+//                "01"
+//        );
+//
+//        OfferingEntity testOffering6 = new OfferingEntity(
+//                courseEntity2,
+//                "810111102",
+//                "testInstructor",
+//                Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
+//                DateParser.getDatesFromString("14-15:30").get("start"),
+//                DateParser.getDatesFromString("14-15:30").get("end"),
+//                0,
+//                "01"
+//        );
+//
+//        OfferingEntity testOffering7 = new OfferingEntity(
+//                courseEntity3,
+//                "810110002",
+//                "testInstructor",
+//                Arrays.asList(DaysOfWeek.Saturday, DaysOfWeek.Monday),
+//                DateParser.getDatesFromString("14-15:30").get("start"),
+//                DateParser.getDatesFromString("14-15:30").get("end"),
+//                0,
+//                "01"
+//        );
+//
+//        OfferingEntity testOffering8 = new OfferingEntity(
+//                courseEntity5,
+//                "810000000",
+//                "testInstructor",
+//                Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
+//                DateParser.getDatesFromString("14-15:30").get("start"),
+//                DateParser.getDatesFromString("14-15:30").get("end"),
+//                0,
+//                "01"
+//        );
+//
+//        OfferingEntity testOffering9 = new OfferingEntity(
+//                courseEntity6,
+//                "810000100",
+//                "testInstructor",
+//                Arrays.asList(DaysOfWeek.Sunday, DaysOfWeek.Tuesday),
+//                DateParser.getDatesFromString("9-10:30").get("start"),
+//                DateParser.getDatesFromString("9-10:30").get("end"),
+//                0,
+//                "01"
+//        );
+//
+//        OfferingModel offeringModel = new OfferingModel();
+//        offeringModel.addNewOffering(testOffering1);
+//        offeringModel.addNewOffering(testOffering2);
+//        offeringModel.addNewOffering(testOffering3);
+//        offeringModel.addNewOffering(testOffering4);
+//        offeringModel.addNewOffering(testOffering5);
+//        offeringModel.addNewOffering(testOffering6);
+//        offeringModel.addNewOffering(testOffering7);
+//        offeringModel.addNewOffering(testOffering8);
+//        offeringModel.addNewOffering(testOffering9);
     }
 
     @Test(expected = StudentNotFoundException.class)

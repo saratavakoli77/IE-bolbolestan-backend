@@ -6,6 +6,7 @@ import bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
 import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
+import bolbolestan.offering.OfferingView;
 import bolbolestan.student.StudentEntity;
 import bolbolestan.student.StudentModel;
 import bolbolestan.student.StudentView;
@@ -111,6 +112,31 @@ public class RequestHandler {
             return makeErrorResponse(e); //todo: proper exception
         }
     }
+
+    public HashMap<String, Object> getCourseList() {
+//        try {
+//            return new OfferingView().getOfferingList();
+//        }  catch (StudentNotFoundException) {
+//            return makeErrorResponse(e); //todo: proper exception
+//        }
+        return new OfferingView().getOfferingList();
+    }
+
+    public HashMap<String, Object> getCourseDetail(String code, String classCode) {
+//        try {
+//            return new OfferingView().getOfferingList();
+//        }  catch (StudentNotFoundException) {
+//            return makeErrorResponse(e); //todo: proper exception
+//        }
+        try {
+            return new OfferingView().getOfferingDetail(code + classCode);
+        } catch (OfferingNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
 
     private HashMap<String, Object> makeSuccessResponse(Object data) {
         HashMap<String, Object> response = new HashMap<>();
