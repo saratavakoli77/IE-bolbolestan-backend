@@ -6,9 +6,15 @@ public class CourseDetailPage extends BasePage {
 
     public CourseDetailPage(String title, Map<String, Object> map) {
         templateName = "src/main/static/course.html";
+        style = """
+                li {
+                        	padding: 5px
+                        }
+                """;
         data = map;
         htmlPage = htmlPage.replace("%title%", title);
         generateBody();
+        generateStyle();
     }
 
 

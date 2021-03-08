@@ -16,9 +16,15 @@ public class ChangePlanPage extends BasePage {
 
     public ChangePlanPage(String title, Map<String, Object> map) {
         templateName = "src/main/static/changePlan.html";
+        style = """
+            table{
+                        text-align: center;
+                    }
+            """;
         data = map;
         htmlPage = htmlPage.replace("%title%", title);
         generateBody();
+        generateStyle();
     }
 
     private String generateTable() {

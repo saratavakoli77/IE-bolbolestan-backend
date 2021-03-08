@@ -9,6 +9,7 @@ public class BasePage {
     protected String htmlPage;
     protected String templateName;
     Map<String , Object> data;
+    protected String style;
 
     public BasePage() {
         templateName = "src/main/static/base.html";
@@ -36,5 +37,9 @@ public class BasePage {
     }
 
     protected void generateBody() {
+    }
+
+    protected void generateStyle() {
+        htmlPage.replace("%style%", style);
     }
 }

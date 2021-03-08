@@ -4,7 +4,6 @@ package bolbolestan;
 import bolbolestan.offering.OfferingStorage;
 import bolbolestan.offeringRecord.OfferingRecordStorage;
 import bolbolestan.student.StudentStorage;
-import bolbolestan.userInterface.TerminalServer;
 import bolbolestan.userInterface.WebServer;
 
 public class Bolbolestan {

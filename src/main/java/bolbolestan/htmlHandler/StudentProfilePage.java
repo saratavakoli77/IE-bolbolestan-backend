@@ -10,9 +10,19 @@ public class StudentProfilePage extends BasePage {
 
     public StudentProfilePage(String title, Map<String, Object> map) {
         templateName = "src/main/static/profile.html";
+        style = """
+                li {
+                        	padding: 5px
+                        }
+                        table{
+                            width: 10%;
+                            text-align: center;
+                        }
+                """;
         data = map;
         htmlPage = htmlPage.replace("%title%", title);
         generateBody();
+        generateStyle();
     }
 
     private String generateTable() {

@@ -1,18 +1,20 @@
 package bolbolestan.htmlHandler;
 
-import bolbolestan.offeringRecord.OfferingRecordEntity;
-import bolbolestan.student.StudentEntity;
-
-import java.util.List;
 import java.util.Map;
 
 public class SubmitPage extends BasePage {
 
     public SubmitPage(String title, Map<String, Object> map) {
         templateName = "src/main/static/submit.html";
+        style = """
+                li {
+                        	padding: 5px
+                        }
+                """;
         data = map;
         htmlPage = htmlPage.replace("%title%", title);
         generateBody();
+        generateStyle();
     }
 
     @Override

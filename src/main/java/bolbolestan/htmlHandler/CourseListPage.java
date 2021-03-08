@@ -7,9 +7,16 @@ public class CourseListPage extends BasePage {
 
     public CourseListPage(String title, Map<String, Object> map) {
         templateName = "src/main/static/courses.html";
+        style = """
+                table{
+                            width: 100%;
+                            text-align: center;
+                        }
+                """;
         data = map;
         htmlPage = htmlPage.replace("%title%", title);
         generateBody();
+        generateStyle();
     }
 
     private String generateTable() {
