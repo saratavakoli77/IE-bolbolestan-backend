@@ -21,8 +21,8 @@
     <li id="first_name">First Name: ${student.getName()}</li>
     <li id="last_name">Last Name: ${student.getSecondName()}</li>
     <li id="birthdate">Birthdate: ${student.getBirthDate()}</li>
-    <li id="gpa">GPA: 17.33</li>
-    <li id="tpu">Total Passed Units: 70</li>
+    <li id="gpa">GPA: ${student.getBirthDate()}</li>
+    <li id="tpu">Total Passed Units: ${student.getBirthDate()}</li>
 </ul>
 <table>
     <tr>

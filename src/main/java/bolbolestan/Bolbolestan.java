@@ -13,9 +13,6 @@ public class Bolbolestan {
         fillStorages();
         server = new WebServer();
         server.start(8089);
-
-//        TerminalServer terminalServer = new TerminalServer();
-//        terminalServer.listen();
     }
 
     public static void fillStorages() {

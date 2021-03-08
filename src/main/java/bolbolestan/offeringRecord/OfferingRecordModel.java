@@ -2,8 +2,10 @@ package bolbolestan.offeringRecord;
 
 import bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
 
+import java.util.List;
+
 public class OfferingRecordModel {
-    public void addNewOfferingRecord(String studentId, String offeringCode, Integer grade, String status) {
+    public void addNewOfferingRecord(String studentId, String offeringCode, Double grade, String status) {
         OfferingRecordEntity offeringRecordEntity = new OfferingRecordEntity(studentId, offeringCode, grade, status);
         OfferingRecordStorage.add(offeringRecordEntity);
     }
@@ -18,5 +20,7 @@ public class OfferingRecordModel {
         offeringRecordEntity.setStatus(status);
     } // todo : nemidunim vaghean avaz mishe ya na
 
-
+    public List<OfferingRecordEntity> getStudentOfferingRecords(String studentId) {
+        return OfferingRecordStorage.getByStudentId(studentId);
+    }
 }

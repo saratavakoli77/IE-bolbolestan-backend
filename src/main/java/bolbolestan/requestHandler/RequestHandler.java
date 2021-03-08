@@ -92,7 +92,7 @@ public class RequestHandler {
     }
 
     public StudentEntity getStudentById(String id) throws StudentNotFoundException {
-        return StudentStorage.getById(id);
+        return new StudentModel().getStudent(id);
     }
 
     private HashMap<String, Object> makeSuccessResponse(Object data) {
