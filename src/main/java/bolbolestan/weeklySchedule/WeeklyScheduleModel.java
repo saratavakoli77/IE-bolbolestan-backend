@@ -34,12 +34,19 @@ public class WeeklyScheduleModel {
         } catch (WeeklyScheduleDoesNotExistException e) {
             weeklyScheduleEntity = addNewWeeklySchedule(studentId);
         }
+        weeklyScheduleEntity.addToOfferingCodes(offeringCode);
         List<Exception> exceptionList = validateAddToWeeklySchedule(weeklyScheduleEntity, studentId, offeringCode);
         if (exceptionList.isEmpty()) {
-            weeklyScheduleEntity.addToOfferingCodes(offeringCode);
+            weeklyScheduleEntity.getOfferingCodes().size();
             new OfferingRecordModel().addNewOfferingRecord(
                     studentId, offeringCode, 0.0, OfferingRecordEntity.NON_FINALIZED_STATUS
             );
+        } else {
+            try {
+                weeklyScheduleEntity.removeFromOfferingCodes(offeringCode);
+            } catch (OfferingCodeNotInWeeklyScheduleException e) {
+                e.printStackTrace();
+            }
         }
         return exceptionList;
     }
@@ -172,6 +179,9 @@ public class WeeklyScheduleModel {
             throws OfferingNotFoundException, PrerequisiteException {
         OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
         StudentModel studentModel = new StudentModel();
+        if (offeringEntity.getPrerequisites() == null) {
+            return;
+        }
         for (String prerequisite: offeringEntity.getPrerequisites()) {
             if (!(studentModel.hasPassedCourse(studentId, prerequisite))) {
                 throw new PrerequisiteException();

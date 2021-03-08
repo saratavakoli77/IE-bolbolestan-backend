@@ -1,5 +1,6 @@
 package bolbolestan.course;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class CourseEntity {
     private Date examTimeStart;
     private Date examTimeEnd;
     private Integer capacity;
-    private List<String> prerequisites;
+    private List<String> prerequisites = new ArrayList<>();
     private String type;
 
     public CourseEntity() {}
