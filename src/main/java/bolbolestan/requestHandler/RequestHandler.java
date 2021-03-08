@@ -113,6 +113,14 @@ public class RequestHandler {
         }
     }
 
+    public HashMap<String, Object> getWeeklyScheduleOfferings(String studentId) {
+        try {
+            return new WeeklyScheduleView().getWeeklyScheduleOfferings(studentId);
+        }  catch (StudentNotFoundException | OfferingNotFoundException e) {
+            return makeErrorResponse(e); //todo: proper exception
+        }
+    }
+
     public HashMap<String, Object> getCourseList() {
 //        try {
 //            return new OfferingView().getOfferingList();

@@ -1,10 +1,7 @@
 package bolbolestan.userInterface;
 
 
-import bolbolestan.htmlHandler.StudentPlanPage;
-import bolbolestan.htmlHandler.CourseDetailPage;
-import bolbolestan.htmlHandler.CourseListPage;
-import bolbolestan.htmlHandler.StudentProfilePage;
+import bolbolestan.htmlHandler.*;
 import bolbolestan.requestHandler.RequestHandler;
 import io.javalin.Javalin;
 
@@ -62,9 +59,9 @@ public class WebServer {
 
             try {
                 data = requestHandler.getStudentWeeklySchedule(studentId);
-                ctx.html(new StudentPlanPage("Profile", data).getPage());
+                ctx.html(new StudentPlanPage("Plan", data).getPage());
             } catch (Exception e) {
-                System.out.println("error");
+                System.out.println(e);
                 e.fillInStackTrace();
             }
         });
@@ -80,10 +77,40 @@ public class WebServer {
                         studentId, ctx.pathParam("code") + ctx.pathParam("classCode")
                 );
             } catch (Exception e) {
-                System.out.println("error");
+                System.out.println(e);
                 e.fillInStackTrace();
             }
         });
+
+        app.get("/change_plan/:student-id", ctx -> {
+            String studentId = ctx.pathParam("student-id");
+            Map<String, Object> data = new HashMap<>();
+
+            try {
+                data = requestHandler.getWeeklyScheduleOfferings(studentId);
+                ctx.html(new ChangePlanPage("Change Plan", data).getPage());
+            } catch (Exception e) {
+                System.out.println(e);
+                e.fillInStackTrace();
+            }
+        });
+
+        app.post("/change_plan/:student-id", ctx -> {
+            String studentId = ctx.pathParam("student-id");
+            String courseCode = ctx.formParam("course_code");
+            String classCode = ctx.formParam("class_code");
+            Map<String, Object> data = new HashMap<>();
+
+            try {
+                data = requestHandler.removeFromWeeklySchedule(
+                        studentId, courseCode + classCode);
+                ctx.html(new ChangePlanPage("Change Plan", data).getPage());
+            } catch (Exception e) {
+                System.out.println(e);
+                e.fillInStackTrace();
+            }
+        });
+
     }
 
 }
