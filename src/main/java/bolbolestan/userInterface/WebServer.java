@@ -81,7 +81,6 @@ public class WebServer {
 
             try {
                 String studentId = ctx.formParam("std_id");
-                System.out.println(studentId);
                 requestHandler.addToWeeklySchedule(
                         studentId, ctx.pathParam("code") + ctx.pathParam("classCode")
                 );

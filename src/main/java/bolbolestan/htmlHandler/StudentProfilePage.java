@@ -48,8 +48,8 @@ public class StudentProfilePage extends BasePage {
         body = body.replace("${studentName}", ((StudentEntity) data.get("student")).getName());
         body = body.replace("${studentSecondName}", ((StudentEntity) data.get("student")).getSecondName());
         body = body.replace("${studentBirthDate}", ((StudentEntity) data.get("student")).getBirthDate());
-        body = body.replace("${studentGpa}", data.get("gpa").toString());
-        body = body.replace("${studentTpu}", data.get("tpu").toString());
+        body = body.replace("${studentGpa}", String.format("%.2f", (Double) data.get("gpa")));
+        body = body.replace("${tpu}", data.get("tpu").toString());
         body = body.replace("%table%", generateTable());
         htmlPage = htmlPage.replace("%body%", body);
     }

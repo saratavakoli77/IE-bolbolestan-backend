@@ -29,7 +29,7 @@ public class StudentModel {
         double studentGPA = 0.0;
         double unitsSum = 0.0;
         for (OfferingRecordEntity offeringRecordEntity: offeringRecordEntityList) {
-            OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringRecordEntity.getOfferingCode());
+            OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringRecordEntity.getOfferingCode() + "01");
             studentGPA += offeringRecordEntity.getGrade() * offeringEntity.getUnits();
             unitsSum += offeringEntity.getUnits();
         }
