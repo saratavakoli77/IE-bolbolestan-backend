@@ -1,6 +1,7 @@
 package bolbolestan.userInterface;
 
 
+import bolbolestan.htmlHandler.StudentPlanPage;
 import bolbolestan.htmlHandler.StudentProfilePage;
 import bolbolestan.requestHandler.RequestHandler;
 import io.javalin.Javalin;
@@ -40,5 +41,19 @@ public class WebServer {
 //                e.fillInStackTrace();
 //            }
 //        });
+
+        app.get("/plan/:student-id", ctx -> {
+            String studentId = ctx.pathParam("student-id");
+            Map<String, Object> data = new HashMap<>();
+
+            try {
+                data = requestHandler.getStudentWeeklySchedule(studentId);
+                ctx.html(new StudentPlanPage("Profile", data).getPage());
+            } catch (Exception e) {
+                System.out.println("error");
+                e.fillInStackTrace();
+            }
+        });
+
     }
 }

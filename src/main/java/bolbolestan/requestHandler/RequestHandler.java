@@ -12,6 +12,7 @@ import bolbolestan.student.StudentView;
 import bolbolestan.tools.GetExceptionMessages;
 import bolbolestan.weeklySchedule.WeeklyScheduleEntity;
 import bolbolestan.weeklySchedule.WeeklyScheduleModel;
+import bolbolestan.weeklySchedule.WeeklyScheduleView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -98,6 +99,14 @@ public class RequestHandler {
     public HashMap<String, Object> getStudentProfile(String id) {
         try {
             return new StudentView().getStudentProfile(id);
+        }  catch (StudentNotFoundException | OfferingNotFoundException e) {
+            return makeErrorResponse(e); //todo: proper exception
+        }
+    }
+
+    public HashMap<String, Object> getStudentWeeklySchedule(String studentId) {
+        try {
+            return new WeeklyScheduleView().getStudentWeeklySchedule(studentId);
         }  catch (StudentNotFoundException | OfferingNotFoundException e) {
             return makeErrorResponse(e); //todo: proper exception
         }

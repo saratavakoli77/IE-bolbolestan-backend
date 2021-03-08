@@ -9,8 +9,10 @@ import bolbolestan.offeringRecord.OfferingRecordEntity;
 import bolbolestan.offeringRecord.OfferingRecordModel;
 import bolbolestan.student.StudentModel;
 import bolbolestan.tools.DateParser;
+import bolbolestan.tools.DateParser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class WeeklyScheduleModel {
@@ -206,4 +208,47 @@ public class WeeklyScheduleModel {
         }
         return exceptionList;
     }
+
+    private List<String> classHours() {
+        List<String> hoursList = new ArrayList<>();
+        hoursList.add("7:30-9:00");
+        hoursList.add("9:00-10:30");
+        hoursList.add("10:30-12:00");
+        hoursList.add("14:00-15:30");
+        hoursList.add("16:00-17:30");
+        return hoursList;
+    }
+
+    private HashMap<String, Object> initWeekDaysMap() {
+        HashMap<String, Object> data = new HashMap<>();
+        HashMap<String, String> hours = new HashMap<>();
+        List<String> classHours = classHours();
+        for (String hour: classHours) {
+            hours.put(hour, "");
+        }
+        for (DaysOfWeek daysOfWeek: DaysOfWeek.values()) {
+            data.put(daysOfWeek.name(), hours);
+        }
+        return data;
+    }
+
+    public HashMap<String, Object> getWeeklySchedulePlan(String studentId) throws
+            StudentNotFoundException, OfferingNotFoundException {
+        HashMap<String, Object> data = initWeekDaysMap();
+        WeeklyScheduleEntity weeklyScheduleEntity = getWeeklySchedule(studentId);
+        List<String> weeklyScheduleOfferingCodes = weeklyScheduleEntity.getOfferingCodes();
+        for (String offeringCode: weeklyScheduleOfferingCodes) {
+            OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
+            for (DaysOfWeek day: offeringEntity.getClassTimeDays()) {
+                System.out.println(day.name());
+                String classTimeRange = DateParser.getStringFromDates(
+                        offeringEntity.getClassTimeStart(),
+                        offeringEntity.getClassTimeEnd()
+                );
+                ((HashMap<String, String>) data.get(day.name())).put(classTimeRange, offeringEntity.getName());
+            }
+        }
+        return data;
+    }
+
 }
