@@ -273,4 +273,15 @@ public class WeeklyScheduleModel {
         return data;
     }
 
+    public Integer calculateUnitsSum(String studentId) throws StudentNotFoundException, OfferingNotFoundException {
+        WeeklyScheduleEntity weeklyScheduleEntity = getWeeklySchedule(studentId);
+        List<String> weeklyScheduleOfferingCodes = weeklyScheduleEntity.getOfferingCodes();
+        Integer sum = 0;
+        for (String offeringCode: weeklyScheduleOfferingCodes) {
+            OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
+            sum += offeringEntity.getUnits();
+        }
+        return sum;
+    }
+
 }

@@ -111,6 +111,55 @@ public class WebServer {
             }
         });
 
+        app.post("/submit/:student-id", ctx -> {
+            String studentId = ctx.pathParam("student-id");
+
+            Map<String, Object> data = new HashMap<>();
+
+            try {
+                data = requestHandler.finalizeSchedule(studentId);
+                if ((Boolean) data.get("success")) {
+                    ctx.redirect("/submit_ok");
+                } else {
+                    ctx.redirect("/submit_failed");
+                }
+
+            } catch (Exception e) {
+                System.out.println(e);
+                e.fillInStackTrace();
+            }
+        });
+
+        app.get("/submit/:student-id", ctx -> {
+            String studentId = ctx.pathParam("student-id");
+
+            Map<String, Object> data = new HashMap<>();
+            try {
+                data = requestHandler.getSubmitRequest(studentId);
+                ctx.html(new SubmitPage("Submit", data).getPage());
+            } catch (Exception e) {
+                System.out.println(e);
+                e.fillInStackTrace();
+            }
+        });
+
+        app.get("/submit_ok", ctx -> {
+            try {
+                ctx.html(new SubmitOk("Submit Ok").getPage());
+            } catch (Exception e) {
+                System.out.println(e);
+                e.fillInStackTrace();
+            }
+        });
+
+        app.get("/submit_failed", ctx -> {
+            try {
+                ctx.html(new SubmitFailed("Submit Failed").getPage());
+            } catch (Exception e) {
+                System.out.println(e);
+                e.fillInStackTrace();
+            }
+        });
     }
 
 }

@@ -144,7 +144,14 @@ public class RequestHandler {
         return null;
     }
 
-
+    public HashMap<String, Object> getSubmitRequest(String studentId) {
+        try {
+            return new WeeklyScheduleView().getFinalizeWeeklySchedule(studentId);
+        } catch (OfferingNotFoundException | StudentNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null; //todo
+    }
 
     private HashMap<String, Object> makeSuccessResponse(Object data) {
         HashMap<String, Object> response = new HashMap<>();

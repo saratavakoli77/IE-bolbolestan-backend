@@ -39,4 +39,13 @@ public class WeeklyScheduleView {
 
         return data;
     }
+
+    public HashMap<String, Object> getFinalizeWeeklySchedule(String studentId) throws
+            OfferingNotFoundException, StudentNotFoundException {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("studentId", studentId);
+        data.put("unitsSum", valueOf(model.calculateUnitsSum(studentId)));
+        return data;
+    }
+
 }
