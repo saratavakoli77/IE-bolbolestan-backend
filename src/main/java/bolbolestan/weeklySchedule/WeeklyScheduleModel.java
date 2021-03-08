@@ -36,7 +36,7 @@ public class WeeklyScheduleModel {
         if (exceptionList.isEmpty()) {
             weeklyScheduleEntity.addToOfferingCodes(offeringCode);
             new OfferingRecordModel().addNewOfferingRecord(
-                    studentId, offeringCode, 0, OfferingRecordEntity.NON_FINALIZED_STATUS
+                    studentId, offeringCode, 0.0, OfferingRecordEntity.NON_FINALIZED_STATUS
             );
         }
         return exceptionList;

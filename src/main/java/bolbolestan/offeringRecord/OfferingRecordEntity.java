@@ -8,11 +8,11 @@ public class OfferingRecordEntity {
     private String offeringCode;
     private String studentId;
     private String status;
-    private Integer grade;
+    private Double grade;
 
     public OfferingRecordEntity() {}
 
-    public OfferingRecordEntity(String studentId, String offeringCode, Integer grade, String status) {
+    public OfferingRecordEntity(String studentId, String offeringCode, Double grade, String status) {
         this.studentId = studentId;
         this.offeringCode = offeringCode;
         this.grade = grade;
@@ -43,11 +43,11 @@ public class OfferingRecordEntity {
         return status;
     }
 
-    public void setGrade(Integer grade) {
+    public void setGrade(Double grade) {
         this.grade = grade;
     }
 
-    public Integer getGrade() {
+    public Double getGrade() {
         return grade;
     }
 }
