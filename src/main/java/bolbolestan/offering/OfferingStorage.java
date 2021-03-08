@@ -20,7 +20,7 @@ public class OfferingStorage {
 
     public static OfferingEntity getByCode(String code) throws OfferingNotFoundException {
         for (OfferingEntity entity: offeringEntities) {
-            if (entity.getCode().equals(code)) {
+            if (entity.getOfferingCode().equals(code)) {
                 return entity;
             }
         }

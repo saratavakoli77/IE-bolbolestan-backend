@@ -6,6 +6,7 @@ import java.util.List;
 public class CourseEntity {
     public static Integer MINIMUM_UNITS_LIMIT = 12;
     public static Integer MAXIMUM_UNITS_LIMIT = 20;
+    private String code;
     private String name;
     private Integer units;
     private Date examTimeStart;
@@ -17,6 +18,7 @@ public class CourseEntity {
     public CourseEntity() {}
 
     public CourseEntity(
+            String code,
             String name,
             Integer units,
             Date examTimeStart,
@@ -24,6 +26,7 @@ public class CourseEntity {
             Integer capacity,
             List<String> prerequisites,
             String type) {
+        this.code = code;
         this.name = name;
         this.units = units;
         this.examTimeStart = examTimeStart;
@@ -34,6 +37,7 @@ public class CourseEntity {
     }
 
     public CourseEntity(CourseEntity courseEntity) {
+        this.code = courseEntity.code;
         this.name = courseEntity.name;
         this.units = courseEntity.units;
         this.examTimeStart = courseEntity.examTimeStart;
@@ -97,5 +101,13 @@ public class CourseEntity {
 
     public String getType() {
         return type;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCode() {
+        return this.code;
     }
 }

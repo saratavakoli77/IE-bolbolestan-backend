@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 public class OfferingEntity extends CourseEntity {
-    private String code;
     private String instructor;
     private List<DaysOfWeek> classTimeDays;
     private Date classTimeStart;
@@ -19,7 +18,6 @@ public class OfferingEntity extends CourseEntity {
 
     public OfferingEntity(
             CourseEntity courseEntity,
-            String code,
             String instructor,
             List<DaysOfWeek> classTimeDays,
             Date classTimeStart,
@@ -27,7 +25,6 @@ public class OfferingEntity extends CourseEntity {
             Integer registered,
             String classCode) {
         super(courseEntity);
-        this.code = code;
         this.instructor = instructor;
         this.classTimeDays = classTimeDays;
         this.classTimeStart = classTimeStart;
@@ -36,12 +33,8 @@ public class OfferingEntity extends CourseEntity {
         this.registered = registered;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public String getOfferingCode() {
+        return this.getCode() + this.classCode;
     }
 
     public String getInstructor() {

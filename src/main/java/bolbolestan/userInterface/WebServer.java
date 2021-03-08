@@ -28,5 +28,17 @@ public class WebServer {
                 e.fillInStackTrace();
             }
         });
+
+//        app.get("/courses", ctx -> {
+//            Map<String, Object> data = new HashMap<>();
+//
+//            try {
+//                data = requestHandler.getStudentProfile(studentId);
+//                ctx.html(new StudentProfilePage("Profile", data).getPage());
+//            } catch (Exception e) {
+//                System.out.println("error");
+//                e.fillInStackTrace();
+//            }
+//        });
     }
 }
