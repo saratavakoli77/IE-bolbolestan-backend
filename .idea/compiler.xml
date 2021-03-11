@@ -6,8 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="IE-01" />
+        <module name="bolbolestan" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="bolbolestan" target="14" />
+    </bytecodeTargetLevel>
   </component>
 </project>
