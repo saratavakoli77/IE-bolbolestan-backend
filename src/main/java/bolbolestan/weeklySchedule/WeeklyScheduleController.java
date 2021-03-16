@@ -41,7 +41,7 @@ public class WeeklyScheduleController extends HttpServlet {
         switch (request.getParameter("action")) {
             case "submit":
                 submitWeeklySchedule();
-                request.getRequestDispatcher("/WEB-INF/courses.jsp").forward(request, response);
+                response.sendRedirect(request.getContextPath() + "/courses/");
                 //todo: weeklySchedule plan
                 break;
             case "reset":
@@ -50,6 +50,10 @@ public class WeeklyScheduleController extends HttpServlet {
                 break;
             case "remove":
                 removeFromWeeklySchedule(request);
+                response.sendRedirect(request.getContextPath() + "/courses/");
+                break;
+            case "add":
+                addToWeeklySchedule(request);
                 response.sendRedirect(request.getContextPath() + "/courses/");
                 break;
             default:
@@ -63,12 +67,25 @@ public class WeeklyScheduleController extends HttpServlet {
         request.setAttribute("offeringEntities", offeringEntities);
     }
 
+    private void addToWeeklySchedule(HttpServletRequest request) {
+        String classCode = request.getParameter("class_code");
+        String courseCode = request.getParameter("course_code");
+        List<Exception> exceptions;
+        try {
+            exceptions = model.addToWeeklySchedule(
+                    authenticatedStudent.getStudentId(), courseCode + classCode
+            );
+        } catch (StudentNotFoundException | OfferingNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void removeFromWeeklySchedule(HttpServletRequest request) {
         String classCode = request.getParameter("class_code");
         String courseCode = request.getParameter("course_code");
         try {
             model.removeFromWeeklySchedule(authenticatedStudent.getStudentId(), courseCode + classCode);
-        } catch (StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException e) {
+        } catch (StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingRecordNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -86,7 +103,7 @@ public class WeeklyScheduleController extends HttpServlet {
     private void submitWeeklySchedule() {
         try {
             model.finalizeWeeklySchedule(authenticatedStudent.getStudentId());
-        } catch (StudentNotFoundException | OfferingRecordNotFoundException e) {
+        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException e) {
             e.printStackTrace();
         }
     }
@@ -99,7 +116,7 @@ public class WeeklyScheduleController extends HttpServlet {
                     "weeklyScheduleOfferings",
                     model.getWeeklyScheduleOfferingEntities(weeklyScheduleEntity)
             );
-        } catch (StudentNotFoundException | OfferingNotFoundException e) {
+        } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -109,7 +126,7 @@ public class WeeklyScheduleController extends HttpServlet {
 
         try {
             request.setAttribute("units", model.calculateUnitsSum(authenticatedStudent.getStudentId()));
-        } catch (StudentNotFoundException | OfferingNotFoundException e) {
+        } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
             e.printStackTrace();
         }
     }

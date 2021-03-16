@@ -30,7 +30,7 @@ public class RequestHandler {
                         GetExceptionMessages.getExceptionMessages(exceptionList)
                 );
             }
-        } catch (StudentNotFoundException | OfferingRecordNotFoundException e) {
+        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException e) {
             return makeErrorResponse(e.getMessage());
         }
     }
@@ -49,7 +49,7 @@ public class RequestHandler {
         try {
             new WeeklyScheduleModel().removeFromWeeklySchedule(studentId, offeringCode);
             return makeSuccessResponse(null);
-        } catch (StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException e) {
+        } catch (StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingRecordNotFoundException e) {
             return makeErrorResponse(e.getMessage());
         }
     }
@@ -122,7 +122,7 @@ public class RequestHandler {
         return new OfferingView().getOfferingDetail(code + classCode);
     }
 
-    public HashMap<String, Object> getSubmitRequest(String studentId) throws StudentNotFoundException, OfferingNotFoundException {
+    public HashMap<String, Object> getSubmitRequest(String studentId) throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         return new WeeklyScheduleView().getFinalizeWeeklySchedule(studentId);
     }
 

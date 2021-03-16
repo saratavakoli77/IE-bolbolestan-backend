@@ -1,6 +1,7 @@
 package bolbolestan.weeklySchedule;
 
 import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
+import bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
 import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
@@ -41,7 +42,7 @@ public class WeeklyScheduleView {
     }
 
     public HashMap<String, Object> getFinalizeWeeklySchedule(String studentId) throws
-            OfferingNotFoundException, StudentNotFoundException {
+            OfferingNotFoundException, StudentNotFoundException, OfferingRecordNotFoundException {
         HashMap<String, Object> data = new HashMap<>();
         data.put("studentId", studentId);
         data.put("unitsSum", valueOf(model.calculateUnitsSum(studentId)));
