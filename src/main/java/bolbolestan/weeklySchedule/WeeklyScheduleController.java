@@ -9,7 +9,9 @@ import bolbolestan.middlewares.SearchHistory;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
 import bolbolestan.student.StudentEntity;
+import bolbolestan.tools.GetExceptionMessages;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -39,12 +41,16 @@ public class WeeklyScheduleController extends HttpServlet {
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         switch (request.getParameter("action")) {
             case "submit":
-                submitWeeklySchedule();
-                response.sendRedirect(request.getContextPath() + "/courses/");
-                //todo: weeklySchedule plan
+                Boolean noError = submitWeeklySchedule(request);
+                if (noError) {
+                    response.sendRedirect(request.getContextPath() + "/plan/");
+                } else {
+                    RequestDispatcher rd = request.getRequestDispatcher("/submit_failed/");
+                    rd.forward(request, response);
+                }
                 break;
             case "reset":
                 resetWeeklySchedule();
@@ -127,12 +133,16 @@ public class WeeklyScheduleController extends HttpServlet {
 
     }
 
-    private void submitWeeklySchedule() {
+    private Boolean submitWeeklySchedule(HttpServletRequest request) {
         try {
-            model.finalizeWeeklySchedule(authenticatedStudent.getStudentId());
+            List<Exception> exceptionList = model.finalizeWeeklySchedule(authenticatedStudent.getStudentId());
+            request.setAttribute("errorList", GetExceptionMessages.getExceptionMessages(exceptionList));
+            request.setAttribute("name", "sara");
+            return exceptionList.isEmpty();
         } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     private void setWeeklyScheduleOfferings(HttpServletRequest request) {

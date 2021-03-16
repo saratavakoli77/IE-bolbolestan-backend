@@ -285,10 +285,10 @@ public class WeeklyScheduleModel {
         return exceptionList;
     }
 
-    private List<String> classHours() {
+    public List<String> classHours() {
         List<String> hoursList = new ArrayList<>();
-        hoursList.add("7:30-9:00");
-        hoursList.add("9:00-10:30");
+        hoursList.add("07:30-09:00");
+        hoursList.add("09:00-10:30");
         hoursList.add("10:30-12:00");
         hoursList.add("14:00-15:30");
         hoursList.add("16:00-17:30");
@@ -322,8 +322,6 @@ public class WeeklyScheduleModel {
                         offeringEntity.getClassTimeStart(),
                         offeringEntity.getClassTimeEnd()
                 );
-//                HashMap<String, String> dayMap = (HashMap<String, String>) data.get(day.name());
-//                dayMap.put(classTimeRange, offeringEntity.getName());
                 ((HashMap<String, String>) data.get(day.name())).put(classTimeRange, offeringEntity.getName());
             }
         }
