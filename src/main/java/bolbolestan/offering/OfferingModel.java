@@ -30,4 +30,11 @@ public class OfferingModel {
             throw new CapacityMismatchException(offeringEntity.getOfferingCode());
         }
     }
+
+    public void removeStudentFromOffering(OfferingEntity offeringEntity) throws CapacityMismatchException {
+        offeringEntity.setRegistered(offeringEntity.getRegistered() - 1);
+        if (offeringEntity.getRegistered() < 0) {
+            throw new CapacityMismatchException(offeringEntity.getOfferingCode());
+        }
+    }
 }
