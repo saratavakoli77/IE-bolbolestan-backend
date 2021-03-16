@@ -10,7 +10,6 @@
 <%@ page isELIgnored="false" %>
 <%@ page import="bolbolestan.tools.DateParser" %>
 <%@ page import="bolbolestan.offering.OfferingEntity" %>
-<%@ page import="java.util.List" %>
 <%@ page import="bolbolestan.tools.ListParser" %>
 
 <!DOCTYPE html>
@@ -119,9 +118,9 @@
         <td><%= ListParser.getStringFromList(offeringEntity.getPrerequisites())%></td>
 
         <td>
-            <form action="" method="POST" >--%>
+            <form action="" method="POST" >
                 <input id="form_action" type="hidden" name="action" value="add">
-                <input id="form_class_code" type="hidden" name="course_code" value=${offering.courseCode}>
+                <input id="form_class_code" type="hidden" name="course_code" value=${offering.code}>
                 <input id="form_class_code" type="hidden" name="class_code" value=${offering.classCode}>
                 <button type="submit">Add</button>
             </form>
