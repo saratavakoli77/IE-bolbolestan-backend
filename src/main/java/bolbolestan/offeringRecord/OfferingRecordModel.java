@@ -15,12 +15,19 @@ public class OfferingRecordModel {
         OfferingRecordStorage.remove(offeringRecordEntity);
     }
 
-    public void updateStatusOfferingRecord(String studentId, String offeringCode, String status) throws OfferingRecordNotFoundException {
-        OfferingRecordEntity offeringRecordEntity = OfferingRecordStorage.getByCodeAndStudentId(studentId, offeringCode);
+    public void updateStatusOfferingRecord(String studentId, String offeringCode, String status)
+            throws OfferingRecordNotFoundException {
+        OfferingRecordEntity offeringRecordEntity =
+                OfferingRecordStorage.getByCodeAndStudentId(studentId, offeringCode);
         offeringRecordEntity.setStatus(status);
     } // todo : nemidunim vaghean avaz mishe ya na
 
     public List<OfferingRecordEntity> getStudentOfferingRecords(String studentId) {
         return OfferingRecordStorage.getByStudentId(studentId);
+    }
+
+    public OfferingRecordEntity getOfferingRecord(String studentId, String offeringCode)
+            throws OfferingRecordNotFoundException {
+        return OfferingRecordStorage.getByCodeAndStudentId(studentId, offeringCode);
     }
 }

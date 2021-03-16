@@ -57,7 +57,8 @@ public class WeeklyScheduleModel {
         new StudentModel().getStudent(studentId);
         try {
             WeeklyScheduleStorage.getByStudentId(studentId).removeFromOfferingCodes(offeringCode);
-        } catch (WeeklyScheduleDoesNotExistException e) {
+            new OfferingRecordModel().removeOfferingRecord(studentId, offeringCode);
+        } catch (WeeklyScheduleDoesNotExistException | OfferingRecordNotFoundException e) {
             throw new OfferingCodeNotInWeeklyScheduleException();
         }
     }
@@ -286,12 +287,39 @@ public class WeeklyScheduleModel {
     public Integer calculateUnitsSum(String studentId) throws StudentNotFoundException, OfferingNotFoundException {
         WeeklyScheduleEntity weeklyScheduleEntity = getWeeklySchedule(studentId);
         List<String> weeklyScheduleOfferingCodes = weeklyScheduleEntity.getOfferingCodes();
-        Integer sum = 0;
+        int sum = 0;
         for (String offeringCode: weeklyScheduleOfferingCodes) {
             OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
             sum += offeringEntity.getUnits();
         }
         return sum;
+    }
+
+    public List<OfferingEntity> getWeeklyScheduleOfferingEntities(WeeklyScheduleEntity weeklyScheduleEntity) throws OfferingNotFoundException {
+        OfferingModel offeringModel = new OfferingModel();
+        List<OfferingEntity> offeringEntities = new ArrayList<>();
+        for (String offeringCode : weeklyScheduleEntity.getOfferingCodes()) {
+            offeringEntities.add(offeringModel.getOffering(offeringCode));
+        }
+        return offeringEntities;
+    }
+
+    public void resetWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity)
+            throws OfferingRecordNotFoundException, OfferingCodeNotInWeeklyScheduleException {
+        OfferingRecordModel offeringRecordModel = new OfferingRecordModel();
+        List<String> removeOfferingCodes = new ArrayList<>();
+        for (String offeringCode: weeklyScheduleEntity.getOfferingCodes()) {
+            OfferingRecordEntity offeringRecordEntity =
+                    offeringRecordModel.getOfferingRecord(weeklyScheduleEntity.getStudentId(), offeringCode);
+            if (offeringRecordEntity.getStatus().equals(OfferingRecordEntity.NON_FINALIZED_STATUS)) {
+                removeOfferingCodes.add(offeringCode);
+                offeringRecordModel.removeOfferingRecord(weeklyScheduleEntity.getStudentId(), offeringCode);
+            }
+        }
+
+        for (String offeringCode: removeOfferingCodes) {
+            weeklyScheduleEntity.removeFromOfferingCodes(offeringCode);
+        }
     }
 
 }
