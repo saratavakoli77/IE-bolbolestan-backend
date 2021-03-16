@@ -28,7 +28,7 @@
     </style>
 </head>
 <body>
-<a href="/">Home</a>
+<a href="${pageContext.request.contextPath}/">Home</a>
 <li id="code">Student Id: <c:out value="${studentId}"/></li>
 <li id="units">Total Selected Units: <c:out value="${units}"/></li>
 

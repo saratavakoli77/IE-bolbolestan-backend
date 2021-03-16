@@ -25,7 +25,7 @@
     </style>
 </head>
 <body>
-<a href="/">Home</a>
+<a href="${pageContext.request.contextPath}/">Home</a>
 <ul>
     <li id="std_id">Student Id: ${studentProfile["student"].id}</li>
     <li id="first_name">First Name: ${studentProfile["student"].name}</li>

@@ -5,13 +5,16 @@
 <%@ page import="bolbolestan.weeklySchedule.WeeklyScheduleModel" %>
 <%@ page import="bolbolestan.bolbolestanExceptions.StudentNotFoundException" %>
 <%@ page import="bolbolestan.bolbolestanExceptions.OfferingNotFoundException" %>
-<%@ page import="bolbolestan.middlewares.Authentication" %><%--
-  Created by IntelliJ IDEA.
-  User: 98919
-  Date: 3/16/2021
-  Time: 8:59 PM
-  To change this template use File | Settings | File Templates.
---%>
+<%@ page import="bolbolestan.middlewares.Authentication" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page isELIgnored="false" %>
+
+<%--  Created by IntelliJ IDEA.--%>
+<%--  User: 98919--%>
+<%--  Date: 3/16/2021--%>
+<%--  Time: 8:59 PM--%>
+<%--  To change this template use File | Settings | File Templates.--%>
+<%--&ndash;%&gt;--%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -31,8 +34,9 @@
     </style>
 </head>
 <body>
-<a href="/">Home</a>
-<li id="code">Student Id: 810196000</li>
+
+<a href="${pageContext.request.contextPath}/">Home</a>
+<li id="code">Student Id: ${Authentication.getAuthenticated().getStudentId()}</li>
 <br>
 <table>
     <tr>

@@ -21,7 +21,7 @@
     </style>
 </head>
 <body>
-<a href="/">Home</a>
+<a href="${pageContext.request.contextPath}/">Home</a>
 <h1>
     Error:
 
