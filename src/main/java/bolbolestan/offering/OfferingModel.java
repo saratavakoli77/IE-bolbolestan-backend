@@ -4,6 +4,7 @@ import bolbolestan.bolbolestanExceptions.CapacityMismatchException;
 import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
 import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OfferingModel {
@@ -37,4 +38,15 @@ public class OfferingModel {
             throw new CapacityMismatchException(offeringEntity.getOfferingCode());
         }
     }
+
+    public List<OfferingEntity> getSearchResult(String searchValue) {
+        List<OfferingEntity> offeringEntities = new ArrayList<>();
+        for (OfferingEntity offeringEntity: OfferingStorage.getAllOfferings()) {
+            if (offeringEntity.getName().contains(searchValue)) {
+                offeringEntities.add(offeringEntity);
+            }
+        }
+        return offeringEntities;
+    }
+
 }

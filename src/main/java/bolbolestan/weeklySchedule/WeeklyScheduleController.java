@@ -5,6 +5,7 @@ import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
 import bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
 import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
 import bolbolestan.middlewares.Authentication;
+import bolbolestan.middlewares.SearchHistory;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
 import bolbolestan.student.StudentEntity;
@@ -24,7 +25,9 @@ public class WeeklyScheduleController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         authenticatedStudent = Authentication.getAuthenticated();
+        request.setAttribute("searchValue", SearchHistory.getLastSearch());
 
         if (authenticatedStudent != null) {
             this.setStudentData(request);
@@ -36,8 +39,7 @@ public class WeeklyScheduleController extends HttpServlet {
         }
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         switch (request.getParameter("action")) {
             case "submit":
                 submitWeeklySchedule();
@@ -56,14 +58,39 @@ public class WeeklyScheduleController extends HttpServlet {
                 addToWeeklySchedule(request);
                 response.sendRedirect(request.getContextPath() + "/courses/");
                 break;
+            case "search":
+                getMatchedOfferings(request);
+                response.sendRedirect(request.getContextPath() + "/courses/");
+                break;
+            case "clear":
+                clearSearchHistory(request);
+                response.sendRedirect(request.getContextPath() + "/courses/");
+                break;
             default:
                 //
         }
 
     }
 
+    private void getMatchedOfferings(HttpServletRequest request) {
+        String searchValue = request.getParameter("search");
+        SearchHistory.setLastSearch(searchValue);
+        setOfferingEntities(request);
+    }
+
+    private void clearSearchHistory(HttpServletRequest request) {
+        SearchHistory.setLastSearch("");
+        setOfferingEntities(request);
+    }
+
     private void setOfferingEntities(HttpServletRequest request) {
-        List<OfferingEntity> offeringEntities = new OfferingModel().getOfferings();
+        List<OfferingEntity> offeringEntities;
+        OfferingModel offeringModel = new OfferingModel();
+        if (SearchHistory.getLastSearch().equals("")) {
+            offeringEntities = offeringModel.getOfferings();
+        } else {
+            offeringEntities = offeringModel.getSearchResult(SearchHistory.getLastSearch());
+        }
         request.setAttribute("offeringEntities", offeringEntities);
     }
 

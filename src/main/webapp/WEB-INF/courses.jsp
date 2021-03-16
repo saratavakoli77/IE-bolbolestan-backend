@@ -72,16 +72,16 @@
 
 <br>
 
-<%--<form class="search_form" action="" method="POST">--%>
-<%--    <label>Search:</label>--%>
-<%--    <input type="text" name="search" value="">--%>
-<%--    <button type="submit" name="action" value="search">Search</button>--%>
-<%--    <button type="submit" name="action" value="clear">Clear Search</button>--%>
-<%--</form>--%>
+<form class="search_form" action="" method="POST">
+    <label>Search:</label>
+    <input type="text" name="search" value="${searchValue}">
+    <button type="submit" name="action" value="search">Search</button>
+    <button type="submit" name="action" value="clear">Clear Search</button>
+</form>
 
 
 
-<%--<br>--%>
+<br>
 
 <table class="course_table">
     <tr>
