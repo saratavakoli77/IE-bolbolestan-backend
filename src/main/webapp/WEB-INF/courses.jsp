@@ -8,6 +8,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false" %>
+<%@ page import="bolbolestan.tools.DateParser" %>
+<%@ page import="bolbolestan.offering.OfferingEntity" %>
+<%@ page import="java.util.List" %>
+<%@ page import="bolbolestan.tools.ListParser" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -97,73 +101,33 @@
         <th></th>
     </tr>
     <c:forEach var="offering" items="${offeringEntities}">
-        <tr>
-            <td><c:out value="${offering.code}"/></td>
-            <td><c:out value="${offering.classCode}"/></td>
-            <td><c:out value="${offering.name}"/></td>
-            <td><c:out value="${offering.units}"/></td>
-            <td><c:out value="${offering.registered}"/></td>
-            <td><c:out value="${offering.capacity}"/></td>
-            <td><c:out value="${offering.type}"/></td>
-            <td><c:out value="${offering.classTimeDays}"/></td>
-            <td><c:out value="${offering.classTimeStart}"/></td>
-            <td><c:out value="${offering.classTimeDays}"/></td>
+        <%
+            OfferingEntity offeringEntity = (OfferingEntity) pageContext.getAttribute("offering");
+        %>
+    <tr>
+        <td><c:out value="${offering.code}"/></td>
+        <td><c:out value="${offering.classCode}"/></td>
+        <td><c:out value="${offering.name}"/></td>
+        <td><c:out value="${offering.units}"/></td>
+        <td><c:out value="${offering.registered}"/></td>
+        <td><c:out value="${offering.capacity}"/></td>
+        <td><c:out value="${offering.type}"/></td>
+        <td><%= ListParser.getStringFromListOfDaysOfWeek(offeringEntity.getClassTimeDays())%></td>
+        <td><%= DateParser.getStringFromDates(offeringEntity.getClassTimeStart(), offeringEntity.getClassTimeEnd())%></td>
+        <td><%= DateParser.getStringFromExamDate(offeringEntity.getExamTimeStart())%></td>
+        <td><%= DateParser.getStringFromExamDate(offeringEntity.getExamTimeEnd())%></td>
+        <td><%= ListParser.getStringFromList(offeringEntity.getPrerequisites())%></td>
 
-            <td>
-                <form action="" method="POST" >
-                    <input id="form_action" type="hidden" name="action" value="remove">
-                    <input id="form_course_code" type="hidden" name="course_code" value="${offering.code}">
-                    <input id="form_class_code" type="hidden" name="class_code" value="${offering.classCode}">
-                    <button type="submit">Remove</button>
-                </form>
-            </td>
-        </tr>
-
+        <td>
+            <form action="" method="POST" >--%>
+                <input id="form_action" type="hidden" name="action" value="add">
+                <input id="form_class_code" type="hidden" name="course_code" value=${offering.courseCode}>
+                <input id="form_class_code" type="hidden" name="class_code" value=${offering.classCode}>
+                <button type="submit">Add</button>
+            </form>
+        </td>
+    </tr>
     </c:forEach>
-<%--    <tr>--%>
-<%--        <td>8101001</td>--%>
-<%--        <td>01</td>--%>
-<%--        <td>Advanced Programming</td>--%>
-<%--        <td>3</td>--%>
-<%--        <td>0</td>--%>
-<%--        <td>45</td>--%>
-<%--        <td>Asli</td>--%>
-<%--        <td>Sunday|Tuesday</td>--%>
-<%--        <td>10:30-12:00</td>--%>
-<%--        <td>2021-06-21T14:00:00</td>--%>
-<%--        <td>2021-06-21T17:00:00</td>--%>
-<%--        <td>8101013|8101002</td>--%>
-<%--        <td>--%>
-<%--            <form action="" method="POST" >--%>
-<%--                <input id="form_action" type="hidden" name="action" value="add">--%>
-<%--                <input id="form_class_code" type="hidden" name="course_code" value="8101001">--%>
-<%--                <input id="form_class_code" type="hidden" name="class_code" value="01">--%>
-<%--                <button type="submit">Add</button>--%>
-<%--            </form>--%>
-<%--        </td>--%>
-<%--    </tr>--%>
-<%--    <tr>--%>
-<%--        <td>8101033</td>--%>
-<%--        <td>01</td>--%>
-<%--        <td>Islamic Thought 1</td>--%>
-<%--        <td>2</td>--%>
-<%--        <td>0</td>--%>
-<%--        <td>60</td>--%>
-<%--        <td>Umumi</td>--%>
-<%--        <td>Tuesday</td>--%>
-<%--        <td>9:00-10:30</td>--%>
-<%--        <td>2021-06-18T14:00:00</td>--%>
-<%--        <td>2021-06-18T17:00:00</td>--%>
-<%--        <td></td>--%>
-<%--        <td>--%>
-<%--            <form action="" method="POST" >--%>
-<%--                <input id="form_action" type="hidden" name="action" value="add">--%>
-<%--                <input id="form_class_code" type="hidden" name="course_code" value="8101033">--%>
-<%--                <input id="form_class_code" type="hidden" name="class_code" value="01">--%>
-<%--                <button type="submit">Add</button>--%>
-<%--            </form>--%>
-<%--        </td>--%>
-<%--    </tr>--%>
 </table>
 </body>
 </html>

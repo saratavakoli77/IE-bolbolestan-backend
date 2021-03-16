@@ -5,6 +5,8 @@ import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
 import bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
 import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
 import bolbolestan.middlewares.Authentication;
+import bolbolestan.offering.OfferingEntity;
+import bolbolestan.offering.OfferingModel;
 import bolbolestan.student.StudentEntity;
 
 import javax.servlet.ServletException;
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/courses/")
 public class WeeklyScheduleController extends HttpServlet {
@@ -26,6 +29,7 @@ public class WeeklyScheduleController extends HttpServlet {
         if (authenticatedStudent != null) {
             this.setStudentData(request);
             this.setWeeklyScheduleOfferings(request);
+            this.setOfferingEntities(request);
             request.getRequestDispatcher("/WEB-INF/courses.jsp").forward(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/login/");
@@ -52,6 +56,11 @@ public class WeeklyScheduleController extends HttpServlet {
                 //
         }
 
+    }
+
+    private void setOfferingEntities(HttpServletRequest request) {
+        List<OfferingEntity> offeringEntities = new OfferingModel().getOfferings();
+        request.setAttribute("offeringEntities", offeringEntities);
     }
 
     private void removeFromWeeklySchedule(HttpServletRequest request) {
