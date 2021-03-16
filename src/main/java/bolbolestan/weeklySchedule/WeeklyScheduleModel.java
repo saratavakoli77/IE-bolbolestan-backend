@@ -236,15 +236,10 @@ public class WeeklyScheduleModel {
         }
     }
 
-    public void removeStudentToWeeklyScheduleOffering(String studentId, String offeringCode)
-            throws OfferingRecordNotFoundException {
-        OfferingRecordEntity offeringRecordEntity = new OfferingRecordModel().getOfferingRecord(studentId, offeringCode);
-
+    public void removeStudentFromWeeklyScheduleOffering(String offeringCode) {
         try {
-//            if (offeringRecordEntity.getStatus().equals(OfferingRecordEntity.NON_FINALIZED_STATUS)) {
             OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
             new OfferingModel().removeStudentFromOffering(offeringEntity);
-//            }
         } catch (OfferingNotFoundException | CapacityMismatchException e) {
             e.printStackTrace();
         }
@@ -259,7 +254,7 @@ public class WeeklyScheduleModel {
 
     private void finalizeOfferings(WeeklyScheduleEntity weeklyScheduleEntity)
             throws OfferingRecordNotFoundException, OfferingCodeNotInWeeklyScheduleException {
-        List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
+        List<String> offeringCodes = copyArrayList(weeklyScheduleEntity.getOfferingCodes());
         OfferingRecordModel offeringRecordModel = new OfferingRecordModel();
         String studentId = weeklyScheduleEntity.getStudentId();
         for (String offeringCode: offeringCodes) {
@@ -268,10 +263,9 @@ public class WeeklyScheduleModel {
                 addStudentToWeeklyScheduleOffering(studentId, offeringCode);
                 finalizeOfferingRecord(studentId, offeringCode);
             } else if (offeringRecordStatus.equals(OfferingRecordEntity.REMOVED_STATUS)) {
-                removeStudentToWeeklyScheduleOffering(studentId, offeringCode);
+                removeStudentFromWeeklyScheduleOffering(offeringCode);
                 removeNonFinalizedOffering(studentId, offeringCode);
             }
-
         }
     }
 
@@ -367,10 +361,11 @@ public class WeeklyScheduleModel {
             String offeringRecordStatus =
                     offeringRecordModel.getOfferingRecord(
                             weeklyScheduleEntity.getStudentId(),
-                            weeklyScheduleEntity.getStudentId()
+                            offeringCode
                     ).getStatus();
-            if (isShouldBeShown(offeringRecordStatus))
-            offeringEntities.add(offeringModel.getOffering(offeringCode));
+            if (isShouldBeShown(offeringRecordStatus)) {
+                offeringEntities.add(offeringModel.getOffering(offeringCode));
+            }
         }
         return offeringEntities;
     }
@@ -391,6 +386,10 @@ public class WeeklyScheduleModel {
         for (String offeringCode: removeOfferingCodes) {
             weeklyScheduleEntity.removeFromOfferingCodes(offeringCode);
         }
+    }
+
+    private List<String> copyArrayList(List<String> inputArray) {
+        return new ArrayList<>(inputArray);
     }
 
 }
