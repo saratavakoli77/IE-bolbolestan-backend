@@ -27,6 +27,7 @@ public class WeeklyScheduleModel {
             throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         new StudentModel().getStudent(studentId);
         new OfferingModel().getOffering(offeringCode);
+        OfferingRecordModel offeringRecordModel = new OfferingRecordModel();
         List<Exception> exceptionList = new ArrayList<>();
 
         WeeklyScheduleEntity weeklyScheduleEntity;
@@ -40,25 +41,27 @@ public class WeeklyScheduleModel {
             weeklyScheduleEntity.addToOfferingCodes(offeringCode);
 
             exceptionList = validateAddToWeeklySchedule(weeklyScheduleEntity);
+            // if exist => not completed_status === not exist || not completed_status
             if (
-                    exceptionList.isEmpty() &&
-                    !(new OfferingRecordModel().getOfferingRecord(studentId, offeringCode)
-                            .getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS))) {
+                    exceptionList.isEmpty() && (!offeringRecordModel.doesOfferingRecordExist(studentId, offeringCode) ||
+                    !(offeringRecordModel.getOfferingRecord(studentId, offeringCode)
+                            .getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS)))
+            ) {
                 new OfferingRecordModel().addNewOfferingRecord(
                         studentId, offeringCode, 0.0, OfferingRecordEntity.NON_FINALIZED_STATUS
                 );
-            } else  {
+            } else if (!exceptionList.isEmpty())  {
                 try {
                     weeklyScheduleEntity.removeFromOfferingCodes(offeringCode);
                 } catch (OfferingCodeNotInWeeklyScheduleException e) {
                     e.printStackTrace();
                 }
             }
-        } else if (new OfferingRecordModel().getOfferingRecord(studentId, offeringCode)
+        } else if (offeringRecordModel.getOfferingRecord(studentId, offeringCode)
                 .getStatus().equals(OfferingRecordEntity.REMOVED_STATUS)) {
             exceptionList = validateAddToWeeklySchedule(weeklyScheduleEntity);
             if (exceptionList.isEmpty()) {
-                new OfferingRecordModel().updateStatusOfferingRecord(
+                offeringRecordModel.updateStatusOfferingRecord(
                         studentId, offeringCode, OfferingRecordEntity.FINALIZED_STATUS);
             }
         }
@@ -88,13 +91,20 @@ public class WeeklyScheduleModel {
 
     public void removeFromWeeklySchedule(String studentId, String offeringCode) throws
             StudentNotFoundException,
-            OfferingCodeNotInWeeklyScheduleException, OfferingRecordNotFoundException {
+            OfferingCodeNotInWeeklyScheduleException,
+            OfferingRecordNotFoundException,
+            WeeklyScheduleDoesNotExistException {
         new StudentModel().getStudent(studentId);
         OfferingRecordModel offeringRecordModel = new OfferingRecordModel();
         OfferingRecordEntity offeringRecordEntity = offeringRecordModel.getOfferingRecord(studentId, offeringCode);
-        if (offeringRecordEntity.getStatus().equals(OfferingRecordEntity.NON_FINALIZED_STATUS)) {
+        String status = offeringRecordEntity.getStatus();
+        if (status.equals(OfferingRecordEntity.NON_FINALIZED_STATUS)) {
             removeNonFinalizedOffering(studentId, offeringCode);
-        } else {
+        } else if (status.equals(OfferingRecordEntity.REMOVED_STATUS)) {
+            updateOfferingRecordStatusToRemove(studentId, offeringCode);
+        } else if (status.equals(OfferingRecordEntity.COMPLETED_STATUS)) {
+            WeeklyScheduleStorage.getByStudentId(studentId).removeFromOfferingCodes(offeringCode);
+        } else if (status.equals(OfferingRecordEntity.FINALIZED_STATUS)) {
             updateOfferingRecordStatusToRemove(studentId, offeringCode);
         }
     }
@@ -116,7 +126,7 @@ public class WeeklyScheduleModel {
                 OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
                 unitsCount += offeringEntity.getUnits();
             } catch (OfferingNotFoundException e) {
-                System.out.println("Nooooooooooooo");
+                e.printStackTrace();
             }
         }
         if (unitsCount < CourseEntity.MINIMUM_UNITS_LIMIT) {
@@ -158,7 +168,11 @@ public class WeeklyScheduleModel {
 
     private Boolean isBothNonDeleted(String studentId, String offeringCode1, String offeringCode2) {
         try {
-            return isGoingToAdd(studentId, offeringCode1) && isGoingToAdd(studentId, offeringCode2);
+            OfferingRecordModel offeringRecordModel = new OfferingRecordModel();
+            String status1 = offeringRecordModel.getOfferingRecord(studentId, offeringCode1).getStatus();
+            String status2 = offeringRecordModel.getOfferingRecord(studentId, offeringCode2).getStatus();
+            return !status1.equals(OfferingRecordEntity.REMOVED_STATUS) &&
+                   !status2.equals(OfferingRecordEntity.REMOVED_STATUS);
         } catch (OfferingRecordNotFoundException e) {
             return true;
         }
@@ -186,7 +200,6 @@ public class WeeklyScheduleModel {
                     }
                 }
             } catch (OfferingNotFoundException e) {
-                System.out.println("Nooooooooooooo2");
                 e.printStackTrace();
                 System.out.println("offeringCode1 = " + offeringCode1);
                 System.out.println("offeringCode2 = " + offeringCode2);
@@ -224,10 +237,8 @@ public class WeeklyScheduleModel {
     private List<Exception> validateHasTakenBefore(WeeklyScheduleEntity weeklyScheduleEntity) throws OfferingRecordNotFoundException {
         List<Exception> exceptionList = new ArrayList<>();
         for (String offeringCode: weeklyScheduleEntity.getOfferingCodes()) {
-            if (isGoingToAdd(weeklyScheduleEntity.getStudentId(), offeringCode)) {
-                if (new OfferingRecordModel().isOfferingCompleted(weeklyScheduleEntity.getStudentId(), offeringCode)) {
-                    exceptionList.add(new CourseHasTakenBeforeException(offeringCode));
-                }
+            if (new OfferingRecordModel().isOfferingCompleted(weeklyScheduleEntity.getStudentId(), offeringCode)) {
+                exceptionList.add(new CourseHasTakenBeforeException(offeringCode));
             }
         }
         return exceptionList;
@@ -241,7 +252,7 @@ public class WeeklyScheduleModel {
             return;
         }
         for (String prerequisite: offeringEntity.getPrerequisites()) {
-            if (!(studentModel.hasPassedCourse(studentId, prerequisite))) {
+            if (!(studentModel.hasPassedCourse(studentId, prerequisite + "01"))) {
                 throw new PrerequisiteException(offeringCode);
             }
         }
@@ -371,18 +382,24 @@ public class WeeklyScheduleModel {
     }
 
     public HashMap<String, Object> getWeeklySchedulePlan(String studentId) throws
-            StudentNotFoundException, OfferingNotFoundException {
+            StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         HashMap<String, Object> data = initWeekDaysMap();
         WeeklyScheduleEntity weeklyScheduleEntity = getWeeklySchedule(studentId);
         List<String> weeklyScheduleOfferingCodes = weeklyScheduleEntity.getOfferingCodes();
         for (String offeringCode: weeklyScheduleOfferingCodes) {
             OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
-            for (DaysOfWeek day: offeringEntity.getClassTimeDays()) {
-                String classTimeRange = DateParser.getStringFromDates(
-                        offeringEntity.getClassTimeStart(),
-                        offeringEntity.getClassTimeEnd()
-                );
-                ((HashMap<String, String>) data.get(day.name())).put(classTimeRange, offeringEntity.getName());
+            String status = new OfferingRecordModel().getOfferingRecord(studentId, offeringCode).getStatus();
+            if (
+                    status.equals(OfferingRecordEntity.FINALIZED_STATUS) ||
+                    status.equals(OfferingRecordEntity.REMOVED_STATUS)
+            ) {
+                for (DaysOfWeek day: offeringEntity.getClassTimeDays()) {
+                    String classTimeRange = DateParser.getStringFromDates(
+                            offeringEntity.getClassTimeStart(),
+                            offeringEntity.getClassTimeEnd()
+                    );
+                    ((HashMap<String, String>) data.get(day.name())).put(classTimeRange, offeringEntity.getName());
+                }
             }
         }
         return data;
@@ -406,8 +423,7 @@ public class WeeklyScheduleModel {
     }
 
     private boolean isShouldBeShown(String offeringRecordStatus) {
-        return offeringRecordStatus.equals(OfferingRecordEntity.NON_FINALIZED_STATUS) ||
-                offeringRecordStatus.equals(OfferingRecordEntity.FINALIZED_STATUS);
+        return !offeringRecordStatus.equals(OfferingRecordEntity.REMOVED_STATUS);
     }
 
     public List<OfferingEntity> getWeeklyScheduleOfferingEntities(WeeklyScheduleEntity weeklyScheduleEntity)
@@ -432,12 +448,18 @@ public class WeeklyScheduleModel {
             throws OfferingRecordNotFoundException, OfferingCodeNotInWeeklyScheduleException {
         OfferingRecordModel offeringRecordModel = new OfferingRecordModel();
         List<String> removeOfferingCodes = new ArrayList<>();
+        String studentId = weeklyScheduleEntity.getStudentId();
         for (String offeringCode: weeklyScheduleEntity.getOfferingCodes()) {
             OfferingRecordEntity offeringRecordEntity =
-                    offeringRecordModel.getOfferingRecord(weeklyScheduleEntity.getStudentId(), offeringCode);
+                    offeringRecordModel.getOfferingRecord(studentId, offeringCode);
             if (offeringRecordEntity.getStatus().equals(OfferingRecordEntity.NON_FINALIZED_STATUS)) {
                 removeOfferingCodes.add(offeringCode);
-                offeringRecordModel.removeOfferingRecord(weeklyScheduleEntity.getStudentId(), offeringCode);
+                offeringRecordModel.removeOfferingRecord(studentId, offeringCode);
+            } else if (offeringRecordEntity.getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS)) {
+                removeOfferingCodes.add(offeringCode);
+            } else if (offeringRecordEntity.getStatus().equals(OfferingRecordEntity.REMOVED_STATUS)) {
+                offeringRecordModel.updateStatusOfferingRecord(
+                        studentId, offeringCode, OfferingRecordEntity.FINALIZED_STATUS);
             }
         }
 

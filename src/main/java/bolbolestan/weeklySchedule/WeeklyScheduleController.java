@@ -1,9 +1,6 @@
 package bolbolestan.weeklySchedule;
 
-import bolbolestan.bolbolestanExceptions.OfferingCodeNotInWeeklyScheduleException;
-import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
-import bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
-import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
+import bolbolestan.bolbolestanExceptions.*;
 import bolbolestan.middlewares.Authentication;
 import bolbolestan.middlewares.SearchHistory;
 import bolbolestan.offering.OfferingEntity;
@@ -73,7 +70,6 @@ public class WeeklyScheduleController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/courses/");
                 break;
             default:
-                //
         }
 
     }
@@ -118,7 +114,12 @@ public class WeeklyScheduleController extends HttpServlet {
         String courseCode = request.getParameter("course_code");
         try {
             model.removeFromWeeklySchedule(authenticatedStudent.getStudentId(), courseCode + classCode);
-        } catch (StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingRecordNotFoundException e) {
+        } catch (
+                StudentNotFoundException |
+                OfferingCodeNotInWeeklyScheduleException |
+                OfferingRecordNotFoundException |
+                WeeklyScheduleDoesNotExistException e
+        ) {
             e.printStackTrace();
         }
     }

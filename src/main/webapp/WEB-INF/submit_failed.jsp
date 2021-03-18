@@ -28,12 +28,14 @@
 </h1>
 <br>
 <h3>
-    <c:forEach var="error" items="${errorList}">
-        <tr>
-            <td><c:out value="${error}"/></td>
-        </tr>
-    </c:forEach>
-
+    <table>
+        <c:forEach var="error" items="${errorList}">
+            <tr>
+                <td><c:out value="${error}"/></td>
+            </tr>
+    <%--        <br>--%>
+        </c:forEach>
+    </table>
 </h3>
 </body>
 </html>

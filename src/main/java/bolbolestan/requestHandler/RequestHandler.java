@@ -1,9 +1,6 @@
 package bolbolestan.requestHandler;
 
-import bolbolestan.bolbolestanExceptions.OfferingCodeNotInWeeklyScheduleException;
-import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
-import bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
-import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
+import bolbolestan.bolbolestanExceptions.*;
 import bolbolestan.offering.OfferingEntity;
 import bolbolestan.offering.OfferingModel;
 import bolbolestan.offering.OfferingView;
@@ -49,7 +46,7 @@ public class RequestHandler {
         try {
             new WeeklyScheduleModel().removeFromWeeklySchedule(studentId, offeringCode);
             return makeSuccessResponse(null);
-        } catch (StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingRecordNotFoundException e) {
+        } catch (WeeklyScheduleDoesNotExistException | StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingRecordNotFoundException e) {
             return makeErrorResponse(e.getMessage());
         }
     }
@@ -106,7 +103,7 @@ public class RequestHandler {
 //        }
     }
 
-    public HashMap<String, Object> getStudentWeeklySchedule(String studentId) throws StudentNotFoundException, OfferingNotFoundException {
+    public HashMap<String, Object> getStudentWeeklySchedule(String studentId) throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         return new WeeklyScheduleView().getStudentWeeklySchedule(studentId);
     }
 

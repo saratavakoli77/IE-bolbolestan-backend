@@ -6,17 +6,6 @@ import java.util.List;
 
 public class OfferingRecordModel {
     public void addNewOfferingRecord(String studentId, String offeringCode, Double grade, String status) {
-        //todo: delete later
-        try {
-            getOfferingRecord(studentId, offeringCode);
-            System.out.println("in offering " + offeringCode + " vujud dare vase " + studentId);
-            assert false;
-        } catch (OfferingRecordNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        //todo: end
-
         OfferingRecordEntity offeringRecordEntity = new OfferingRecordEntity(studentId, offeringCode, grade, status);
         OfferingRecordStorage.add(offeringRecordEntity);
     }
@@ -40,6 +29,15 @@ public class OfferingRecordModel {
     public OfferingRecordEntity getOfferingRecord(String studentId, String offeringCode)
             throws OfferingRecordNotFoundException {
         return OfferingRecordStorage.getByCodeAndStudentId(studentId, offeringCode);
+    }
+
+    public Boolean doesOfferingRecordExist(String studentId, String offeringRecord) {
+        try {
+            getOfferingRecord(studentId, offeringRecord);
+            return true;
+        } catch (OfferingRecordNotFoundException e) {
+            return false;
+        }
     }
 
     public Boolean isOfferingCompleted(String studentId, String offeringCode) throws OfferingRecordNotFoundException {

@@ -18,7 +18,7 @@ public class WeeklyScheduleView {
     }
 
     public HashMap<String, Object> getStudentWeeklySchedule(String studentId) throws
-            OfferingNotFoundException, StudentNotFoundException {
+            OfferingNotFoundException, StudentNotFoundException, OfferingRecordNotFoundException {
         return model.getWeeklySchedulePlan(studentId);
     }
 
