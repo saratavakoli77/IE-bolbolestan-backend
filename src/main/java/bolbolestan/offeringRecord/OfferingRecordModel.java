@@ -6,6 +6,17 @@ import java.util.List;
 
 public class OfferingRecordModel {
     public void addNewOfferingRecord(String studentId, String offeringCode, Double grade, String status) {
+        //todo: delete later
+        try {
+            getOfferingRecord(studentId, offeringCode);
+            System.out.println("in offering " + offeringCode + " vujud dare vase " + studentId);
+            assert false;
+        } catch (OfferingRecordNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        //todo: end
+
         OfferingRecordEntity offeringRecordEntity = new OfferingRecordEntity(studentId, offeringCode, grade, status);
         OfferingRecordStorage.add(offeringRecordEntity);
     }
@@ -20,7 +31,7 @@ public class OfferingRecordModel {
         OfferingRecordEntity offeringRecordEntity =
                 OfferingRecordStorage.getByCodeAndStudentId(studentId, offeringCode);
         offeringRecordEntity.setStatus(status);
-    } // todo : nemidunim vaghean avaz mishe ya na
+    }
 
     public List<OfferingRecordEntity> getStudentOfferingRecords(String studentId) {
         return OfferingRecordStorage.getByStudentId(studentId);
@@ -29,5 +40,11 @@ public class OfferingRecordModel {
     public OfferingRecordEntity getOfferingRecord(String studentId, String offeringCode)
             throws OfferingRecordNotFoundException {
         return OfferingRecordStorage.getByCodeAndStudentId(studentId, offeringCode);
+    }
+
+    public Boolean isOfferingCompleted(String studentId, String offeringCode) throws OfferingRecordNotFoundException {
+        return OfferingRecordStorage.getByCodeAndStudentId(
+                studentId, offeringCode
+        ).getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS);
     }
 }

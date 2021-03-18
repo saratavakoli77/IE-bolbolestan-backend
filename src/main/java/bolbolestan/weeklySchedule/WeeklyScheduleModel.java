@@ -9,7 +9,6 @@ import bolbolestan.offeringRecord.OfferingRecordEntity;
 import bolbolestan.offeringRecord.OfferingRecordModel;
 import bolbolestan.student.StudentModel;
 import bolbolestan.tools.DateParser;
-import bolbolestan.tools.DateParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,9 +23,11 @@ public class WeeklyScheduleModel {
         return weeklyScheduleEntity;
     }
 
-    public List<Exception> addToWeeklySchedule(String studentId, String offeringCode) throws StudentNotFoundException, OfferingNotFoundException {
+    public List<Exception> addToWeeklySchedule(String studentId, String offeringCode)
+            throws StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
         new StudentModel().getStudent(studentId);
         new OfferingModel().getOffering(offeringCode);
+        List<Exception> exceptionList = new ArrayList<>();
 
         WeeklyScheduleEntity weeklyScheduleEntity;
         try {
@@ -34,18 +35,31 @@ public class WeeklyScheduleModel {
         } catch (WeeklyScheduleDoesNotExistException e) {
             weeklyScheduleEntity = addNewWeeklySchedule(studentId);
         }
-        weeklyScheduleEntity.addToOfferingCodes(offeringCode);
-        List<Exception> exceptionList = validateAddToWeeklySchedule(weeklyScheduleEntity, studentId, offeringCode);
-        if (exceptionList.isEmpty()) {
-            weeklyScheduleEntity.getOfferingCodes().size();
-            new OfferingRecordModel().addNewOfferingRecord(
-                    studentId, offeringCode, 0.0, OfferingRecordEntity.NON_FINALIZED_STATUS
-            );
-        } else {
-            try {
-                weeklyScheduleEntity.removeFromOfferingCodes(offeringCode);
-            } catch (OfferingCodeNotInWeeklyScheduleException e) {
-                e.printStackTrace();
+
+        if (!weeklyScheduleEntity.getOfferingCodes().contains(offeringCode)) {
+            weeklyScheduleEntity.addToOfferingCodes(offeringCode);
+
+            exceptionList = validateAddToWeeklySchedule(weeklyScheduleEntity);
+            if (
+                    exceptionList.isEmpty() &&
+                    !(new OfferingRecordModel().getOfferingRecord(studentId, offeringCode)
+                            .getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS))) {
+                new OfferingRecordModel().addNewOfferingRecord(
+                        studentId, offeringCode, 0.0, OfferingRecordEntity.NON_FINALIZED_STATUS
+                );
+            } else  {
+                try {
+                    weeklyScheduleEntity.removeFromOfferingCodes(offeringCode);
+                } catch (OfferingCodeNotInWeeklyScheduleException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (new OfferingRecordModel().getOfferingRecord(studentId, offeringCode)
+                .getStatus().equals(OfferingRecordEntity.REMOVED_STATUS)) {
+            exceptionList = validateAddToWeeklySchedule(weeklyScheduleEntity);
+            if (exceptionList.isEmpty()) {
+                new OfferingRecordModel().updateStatusOfferingRecord(
+                        studentId, offeringCode, OfferingRecordEntity.FINALIZED_STATUS);
             }
         }
         return exceptionList;
@@ -142,25 +156,40 @@ public class WeeklyScheduleModel {
         );
     }
 
+    private Boolean isBothNonDeleted(String studentId, String offeringCode1, String offeringCode2) {
+        try {
+            return isGoingToAdd(studentId, offeringCode1) && isGoingToAdd(studentId, offeringCode2);
+        } catch (OfferingRecordNotFoundException e) {
+            return true;
+        }
+    }
+
     private List<Exception> validateWeeklyScheduleCollision(WeeklyScheduleEntity weeklyScheduleEntity) {
         List<Exception> exceptionList = new ArrayList<>();
         List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
+        String offeringCode1 = "";
+        String offeringCode2 = "";
         for (int i = 0; i < offeringCodes.size(); i++) {
             try {
-                String offeringCode1 = offeringCodes.get(i);
+                offeringCode1 = offeringCodes.get(i);
                 OfferingEntity offeringEntity1 = new OfferingModel().getOffering(offeringCode1);
                 for (int j = i + 1; j < offeringCodes.size(); j++) {
-                    String offeringCode2 = offeringCodes.get(j);
+                    offeringCode2 = offeringCodes.get(j);
                     OfferingEntity offeringEntity2 = new OfferingModel().getOffering(offeringCode2);
-                    if (this.doesOfferingsSessionsCollied(offeringEntity1, offeringEntity2)) {
+                    Boolean isBothNonDeleted =
+                            isBothNonDeleted(weeklyScheduleEntity.getStudentId(), offeringCode1, offeringCode2);
+                    if (isBothNonDeleted && this.doesOfferingsSessionsCollied(offeringEntity1, offeringEntity2)) {
                         exceptionList.add(new ClassCollisionException(offeringCode1, offeringCode2));
                     }
-                    if (this.doesOfferingsExamsCollied(offeringEntity1, offeringEntity2)) {
+                    if (isBothNonDeleted && this.doesOfferingsExamsCollied(offeringEntity1, offeringEntity2)) {
                         exceptionList.add(new ExamTimeCollisionException(offeringCode1, offeringCode2));
                     }
                 }
             } catch (OfferingNotFoundException e) {
-                System.out.println("Nooooooooooooo");
+                System.out.println("Nooooooooooooo2");
+                e.printStackTrace();
+                System.out.println("offeringCode1 = " + offeringCode1);
+                System.out.println("offeringCode2 = " + offeringCode2);
             }
         }
 
@@ -172,33 +201,39 @@ public class WeeklyScheduleModel {
         List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
         for (String offeringCode: offeringCodes) {
             try {
-                OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
-                if (!(new OfferingModel().doseHaveCapacity(offeringEntity))) {
-                    exceptionList.add(new CapacityException(offeringCode));
+                if (isGoingToAdd(weeklyScheduleEntity.getStudentId(), offeringCode)) {
+                    OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
+                    if (!(new OfferingModel().doseHaveCapacity(offeringEntity))) {
+                        exceptionList.add(new CapacityException(offeringCode));
+                    }
                 }
-            } catch (OfferingNotFoundException e) {
+            } catch (OfferingNotFoundException | OfferingRecordNotFoundException e) {
                 e.printStackTrace();
             }
         }
         return exceptionList;
     }
 
-    private List<Exception> validateAddToWeeklySchedule(
-            WeeklyScheduleEntity weeklyScheduleEntity,
-            String studentId,
-            String offeringCode) throws OfferingNotFoundException {
+    private List<Exception> validateAddToWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity) {
         List<Exception> exceptionList = new ArrayList<>();
-        try {
-            this.validatePrerequisites(studentId, offeringCode);
-        } catch (PrerequisiteException e) {
-            exceptionList.add(e);
-        }
+
         exceptionList.addAll(this.validateWeeklyScheduleCollision(weeklyScheduleEntity));
-        exceptionList.addAll(this.validateWeeklyScheduleCapacity(weeklyScheduleEntity));
         return exceptionList;
     }
 
-    private void validatePrerequisites(String studentId, String offeringCode)
+    private List<Exception> validateHasTakenBefore(WeeklyScheduleEntity weeklyScheduleEntity) throws OfferingRecordNotFoundException {
+        List<Exception> exceptionList = new ArrayList<>();
+        for (String offeringCode: weeklyScheduleEntity.getOfferingCodes()) {
+            if (isGoingToAdd(weeklyScheduleEntity.getStudentId(), offeringCode)) {
+                if (new OfferingRecordModel().isOfferingCompleted(weeklyScheduleEntity.getStudentId(), offeringCode)) {
+                    exceptionList.add(new CourseHasTakenBeforeException(offeringCode));
+                }
+            }
+        }
+        return exceptionList;
+    }
+
+    private void validatePrerequisitesOfOffering(String studentId, String offeringCode)
             throws OfferingNotFoundException, PrerequisiteException {
         OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
         StudentModel studentModel = new StudentModel();
@@ -207,30 +242,52 @@ public class WeeklyScheduleModel {
         }
         for (String prerequisite: offeringEntity.getPrerequisites()) {
             if (!(studentModel.hasPassedCourse(studentId, prerequisite))) {
-                throw new PrerequisiteException();
+                throw new PrerequisiteException(offeringCode);
             }
         }
     }
 
-    private List<Exception> validateFinalizeWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity) {
+    private Boolean isGoingToAdd(String studentId, String offeringCode) throws OfferingRecordNotFoundException {
+        String offeringRecordStatus =
+                new OfferingRecordModel().getOfferingRecord(studentId, offeringCode).getStatus();
+        return offeringRecordStatus.equals(OfferingRecordEntity.NON_FINALIZED_STATUS);
+    }
+
+    private List<Exception> validatePrerequisites(WeeklyScheduleEntity weeklyScheduleEntity)
+            throws OfferingRecordNotFoundException, OfferingNotFoundException {
+        List<Exception> exceptionList = new ArrayList<>();
+        for (String offeringCode: weeklyScheduleEntity.getOfferingCodes()) {
+            if (isGoingToAdd(weeklyScheduleEntity.getStudentId(), offeringCode)) {
+                try {
+                    validatePrerequisitesOfOffering(weeklyScheduleEntity.getStudentId(), offeringCode);
+                } catch (PrerequisiteException e) {
+                    exceptionList.add(e);
+                }
+            }
+        }
+        return exceptionList;
+    }
+
+    private List<Exception> validateFinalizeWeeklySchedule(WeeklyScheduleEntity weeklyScheduleEntity)
+            throws OfferingRecordNotFoundException, OfferingNotFoundException {
         List<Exception> exceptionList = new ArrayList<>();
         try {
             this.validateUnitLimit(weeklyScheduleEntity);
         } catch (Exception e) {
             exceptionList.add(e);
         }
+
+        exceptionList.addAll(this.validatePrerequisites(weeklyScheduleEntity));
+        exceptionList.addAll(this.validateHasTakenBefore(weeklyScheduleEntity));
+        exceptionList.addAll(this.validateWeeklyScheduleCapacity(weeklyScheduleEntity));
         return exceptionList;
     }
 
-    public void addStudentToWeeklyScheduleOffering(String studentId, String offeringCode)
-            throws OfferingRecordNotFoundException {
-        OfferingRecordEntity offeringRecordEntity = new OfferingRecordModel().getOfferingRecord(studentId, offeringCode);
-
+    public void addStudentToWeeklyScheduleOffering(String offeringCode) {
         try {
-//            if (offeringRecordEntity.getStatus().equals(OfferingRecordEntity.NON_FINALIZED_STATUS)) {
             OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
             new OfferingModel().addStudentToOffering(offeringEntity);
-//            }
+
         } catch (OfferingNotFoundException | CapacityMismatchException e) {
             e.printStackTrace();
         }
@@ -260,7 +317,7 @@ public class WeeklyScheduleModel {
         for (String offeringCode: offeringCodes) {
             String offeringRecordStatus = offeringRecordModel.getOfferingRecord(studentId, offeringCode).getStatus();
             if (offeringRecordStatus.equals(OfferingRecordEntity.NON_FINALIZED_STATUS)) {
-                addStudentToWeeklyScheduleOffering(studentId, offeringCode);
+                addStudentToWeeklyScheduleOffering(offeringCode);
                 finalizeOfferingRecord(studentId, offeringCode);
             } else if (offeringRecordStatus.equals(OfferingRecordEntity.REMOVED_STATUS)) {
                 removeStudentFromWeeklyScheduleOffering(offeringCode);
@@ -270,7 +327,10 @@ public class WeeklyScheduleModel {
     }
 
     public List<Exception> finalizeWeeklySchedule(String studentId) throws
-            StudentNotFoundException, OfferingRecordNotFoundException, OfferingCodeNotInWeeklyScheduleException {
+            StudentNotFoundException,
+            OfferingRecordNotFoundException,
+            OfferingCodeNotInWeeklyScheduleException,
+            OfferingNotFoundException {
         new StudentModel().getStudent(studentId);
         WeeklyScheduleEntity weeklyScheduleEntity;
         try {

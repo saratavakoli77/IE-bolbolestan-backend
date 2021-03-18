@@ -108,7 +108,7 @@ public class WeeklyScheduleController extends HttpServlet {
             exceptions = model.addToWeeklySchedule(
                     authenticatedStudent.getStudentId(), courseCode + classCode
             );
-        } catch (StudentNotFoundException | OfferingNotFoundException e) {
+        } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -137,9 +137,8 @@ public class WeeklyScheduleController extends HttpServlet {
         try {
             List<Exception> exceptionList = model.finalizeWeeklySchedule(authenticatedStudent.getStudentId());
             request.setAttribute("errorList", GetExceptionMessages.getExceptionMessages(exceptionList));
-            request.setAttribute("name", "sara");
             return exceptionList.isEmpty();
-        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException e) {
+        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingNotFoundException e) {
             e.printStackTrace();
         }
         return false;

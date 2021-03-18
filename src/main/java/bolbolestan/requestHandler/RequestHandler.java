@@ -30,7 +30,7 @@ public class RequestHandler {
                         GetExceptionMessages.getExceptionMessages(exceptionList)
                 );
             }
-        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException e) {
+        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingNotFoundException e) {
             return makeErrorResponse(e.getMessage());
         }
     }
@@ -58,7 +58,7 @@ public class RequestHandler {
         try {
             new WeeklyScheduleModel().addToWeeklySchedule(studentId, offeringCode);
             return makeSuccessResponse(null);
-        } catch (StudentNotFoundException | OfferingNotFoundException e) {
+        } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
             return makeErrorResponse(e.getMessage());
         }
     }

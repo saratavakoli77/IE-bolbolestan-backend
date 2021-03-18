@@ -41,7 +41,7 @@
     </tr>
     <c:forEach var="offering" items="${studentProfile[\"courses\"]}">
         <tr>
-            <td><c:out value="${offering.offeringCode}"/></td>
+            <td><c:out value="${offering.code}"/></td>
             <td><c:out value="${offering.grade}"/></td>
         </tr>
     </c:forEach>
