@@ -178,7 +178,6 @@ public class WeeklyScheduleModelTest {
 
         Assert.assertTrue(exceptionList.isEmpty());
         Assert.assertNotNull(weeklyScheduleEntity);
-//        Assert.assertEquals(weeklyScheduleEntity.getStatus(), WeeklyScheduleEntity.FINALIZED_STATUS);
         Assert.assertEquals(weeklyScheduleEntity.getStudentId(), "810196000");
         List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
         Assert.assertTrue(offeringCodes.contains("810100101"));
