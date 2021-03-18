@@ -1,9 +1,6 @@
 package bolbolestan.weeklySchedule;
 
-import bolbolestan.bolbolestanExceptions.OfferingCodeNotInWeeklyScheduleException;
-import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
-import bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
-import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
+import bolbolestan.bolbolestanExceptions.*;
 import bolbolestan.middlewares.Authentication;
 import bolbolestan.middlewares.SearchHistory;
 import bolbolestan.offering.OfferingEntity;
@@ -73,7 +70,6 @@ public class WeeklyScheduleController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + "/courses/");
                 break;
             default:
-                //
         }
 
     }
@@ -108,7 +104,7 @@ public class WeeklyScheduleController extends HttpServlet {
             exceptions = model.addToWeeklySchedule(
                     authenticatedStudent.getStudentId(), courseCode + classCode
             );
-        } catch (StudentNotFoundException | OfferingNotFoundException e) {
+        } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -118,7 +114,12 @@ public class WeeklyScheduleController extends HttpServlet {
         String courseCode = request.getParameter("course_code");
         try {
             model.removeFromWeeklySchedule(authenticatedStudent.getStudentId(), courseCode + classCode);
-        } catch (StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingRecordNotFoundException e) {
+        } catch (
+                StudentNotFoundException |
+                OfferingCodeNotInWeeklyScheduleException |
+                OfferingRecordNotFoundException |
+                WeeklyScheduleDoesNotExistException e
+        ) {
             e.printStackTrace();
         }
     }
@@ -137,9 +138,8 @@ public class WeeklyScheduleController extends HttpServlet {
         try {
             List<Exception> exceptionList = model.finalizeWeeklySchedule(authenticatedStudent.getStudentId());
             request.setAttribute("errorList", GetExceptionMessages.getExceptionMessages(exceptionList));
-            request.setAttribute("name", "sara");
             return exceptionList.isEmpty();
-        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException e) {
+        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingNotFoundException e) {
             e.printStackTrace();
         }
         return false;

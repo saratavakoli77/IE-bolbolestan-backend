@@ -1,21 +1,19 @@
 <%--
   Created by IntelliJ IDEA.
   User: ghazal
-  Date: 15/03/2021
-  Time: 14:24
+  Date: 18/03/2021
+  Time: 18:11
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page isELIgnored="false" %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Courses</title>
+    <title>404 Error</title>
 </head>
 <body>
-    <h1>hellooooo</h1>
+<a href="${pageContext.request.contextPath}/">Home</a>
+<h1>404<br>Page Not Found</h1>
 </body>
 </html>

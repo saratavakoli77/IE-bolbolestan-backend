@@ -1,11 +1,8 @@
 package bolbolestan.mainControllers;
 
-import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
-import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
 import bolbolestan.offering.OfferingStorage;
 import bolbolestan.offeringRecord.OfferingRecordStorage;
 import bolbolestan.student.StudentStorage;
-import bolbolestan.weeklySchedule.WeeklyScheduleModel;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

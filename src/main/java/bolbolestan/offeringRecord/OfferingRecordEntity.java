@@ -12,6 +12,7 @@ public class OfferingRecordEntity {
     private String studentId;
     private String status;
     private Double grade;
+    private String code;
 
     public OfferingRecordEntity() {}
 
@@ -20,6 +21,7 @@ public class OfferingRecordEntity {
         this.offeringCode = offeringCode;
         this.grade = grade;
         this.status = status;
+        this.code = offeringCode.substring(0, offeringCode.length() - 2);
     }
 
     public void setOfferingCode(String offeringCode) {
@@ -52,5 +54,13 @@ public class OfferingRecordEntity {
 
     public Double getGrade() {
         return grade;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCode() {
+        return code;
     }
 }

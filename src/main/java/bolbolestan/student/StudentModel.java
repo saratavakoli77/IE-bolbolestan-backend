@@ -29,9 +29,11 @@ public class StudentModel {
         double studentGPA = 0.0;
         double unitsSum = 0.0;
         for (OfferingRecordEntity offeringRecordEntity: offeringRecordEntityList) {
-            OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringRecordEntity.getOfferingCode() + "01");
-            studentGPA += offeringRecordEntity.getGrade() * offeringEntity.getUnits();
-            unitsSum += offeringEntity.getUnits();
+            if (offeringRecordEntity.getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS)) {
+                OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringRecordEntity.getOfferingCode());
+                studentGPA += offeringRecordEntity.getGrade() * offeringEntity.getUnits();
+                unitsSum += offeringEntity.getUnits();
+            }
         }
         unitsGpa.put("gpa", studentGPA / unitsSum);
         unitsGpa.put("tpu", unitsSum);
@@ -65,6 +67,6 @@ public class StudentModel {
 
     private Boolean isCoursePassed(OfferingRecordEntity offeringRecordEntity) {
         return offeringRecordEntity.getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS) &&
-                offeringRecordEntity.getGrade() >= offeringRecordEntity.PASSED_GRADE;
+                offeringRecordEntity.getGrade() >= OfferingRecordEntity.PASSED_GRADE;
     }
 }

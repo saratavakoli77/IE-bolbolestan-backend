@@ -30,8 +30,8 @@ public class OfferingRecordRefiner {
     }
 
     private void refineOfferingCode(Map<String, Object> offeringRecordMap) {
-        offeringRecordMap.put("offeringCode", offeringRecordMap.get("code"));
-        offeringRecordMap.remove("code");
+        offeringRecordMap.put("offeringCode", offeringRecordMap.get("code") + "01");
+//        offeringRecordMap.remove("code");
 
     }
 

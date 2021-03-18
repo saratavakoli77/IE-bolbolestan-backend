@@ -20,7 +20,7 @@ public class OfferingRecordModel {
         OfferingRecordEntity offeringRecordEntity =
                 OfferingRecordStorage.getByCodeAndStudentId(studentId, offeringCode);
         offeringRecordEntity.setStatus(status);
-    } // todo : nemidunim vaghean avaz mishe ya na
+    }
 
     public List<OfferingRecordEntity> getStudentOfferingRecords(String studentId) {
         return OfferingRecordStorage.getByStudentId(studentId);
@@ -29,5 +29,20 @@ public class OfferingRecordModel {
     public OfferingRecordEntity getOfferingRecord(String studentId, String offeringCode)
             throws OfferingRecordNotFoundException {
         return OfferingRecordStorage.getByCodeAndStudentId(studentId, offeringCode);
+    }
+
+    public Boolean doesOfferingRecordExist(String studentId, String offeringRecord) {
+        try {
+            getOfferingRecord(studentId, offeringRecord);
+            return true;
+        } catch (OfferingRecordNotFoundException e) {
+            return false;
+        }
+    }
+
+    public Boolean isOfferingCompleted(String studentId, String offeringCode) throws OfferingRecordNotFoundException {
+        return OfferingRecordStorage.getByCodeAndStudentId(
+                studentId, offeringCode
+        ).getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS);
     }
 }

@@ -115,12 +115,12 @@ public class WeeklyScheduleModelTest {
     }
 
     @Test(expected = StudentNotFoundException.class)
-    public void finalizeStudentNotExistTest() throws StudentNotFoundException, OfferingRecordNotFoundException, OfferingCodeNotInWeeklyScheduleException {
+    public void finalizeStudentNotExistTest() throws StudentNotFoundException, OfferingRecordNotFoundException, OfferingCodeNotInWeeklyScheduleException, OfferingNotFoundException {
         new WeeklyScheduleModel().finalizeWeeklySchedule("8101911111");
     }
 
     @Test(expected = StudentNotFoundException.class)
-    public void addToScheduleStudentNotExistTest() throws StudentNotFoundException, OfferingRecordNotFoundException, OfferingCodeNotInWeeklyScheduleException {
+    public void addToScheduleStudentNotExistTest() throws StudentNotFoundException, OfferingRecordNotFoundException, OfferingCodeNotInWeeklyScheduleException, OfferingNotFoundException {
         new WeeklyScheduleModel().finalizeWeeklySchedule("8101911111");
     }
 
@@ -155,7 +155,7 @@ public class WeeklyScheduleModelTest {
 
 
     @Test
-    public void finalizeWeeklyScheduleNoInitialized() throws StudentNotFoundException, OfferingRecordNotFoundException, OfferingCodeNotInWeeklyScheduleException {
+    public void finalizeWeeklyScheduleNoInitialized() throws StudentNotFoundException, OfferingRecordNotFoundException, OfferingCodeNotInWeeklyScheduleException, OfferingNotFoundException {
         WeeklyScheduleModel weeklyScheduleModel = new WeeklyScheduleModel();
         List<Exception> exceptionList = weeklyScheduleModel.finalizeWeeklySchedule("810196000");
         Assert.assertEquals(
@@ -178,7 +178,6 @@ public class WeeklyScheduleModelTest {
 
         Assert.assertTrue(exceptionList.isEmpty());
         Assert.assertNotNull(weeklyScheduleEntity);
-//        Assert.assertEquals(weeklyScheduleEntity.getStatus(), WeeklyScheduleEntity.FINALIZED_STATUS);
         Assert.assertEquals(weeklyScheduleEntity.getStudentId(), "810196000");
         List<String> offeringCodes = weeklyScheduleEntity.getOfferingCodes();
         Assert.assertTrue(offeringCodes.contains("810100101"));
