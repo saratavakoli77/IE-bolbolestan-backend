@@ -9,4 +9,9 @@
         <servlet-class>bolbolestan.mainControllers.InitializerServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
+
+    <error-page>
+        <location>/WEB-INF/404.jsp</location>
+    </error-page>
+
 </web-app>
