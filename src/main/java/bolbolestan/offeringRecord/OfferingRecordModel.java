@@ -1,6 +1,10 @@
 package bolbolestan.offeringRecord;
 
+import bolbolestan.bolbolestanExceptions.CapacityMismatchException;
+import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
 import bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
+import bolbolestan.offering.OfferingEntity;
+import bolbolestan.offering.OfferingModel;
 
 import java.util.List;
 
@@ -44,5 +48,18 @@ public class OfferingRecordModel {
         return OfferingRecordStorage.getByCodeAndStudentId(
                 studentId, offeringCode
         ).getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS);
+    }
+
+    public void finalizeWaitList() throws OfferingNotFoundException, CapacityMismatchException {
+        for (OfferingRecordEntity offeringRecordEntity: OfferingRecordStorage.getAllOfferings()) {
+            OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringRecordEntity.getOfferingCode());
+            if (
+                    offeringRecordEntity.getStatus().equals(OfferingRecordEntity.FINALIZED_WAIT) &&
+                    offeringEntity.getRegistered() < offeringEntity.getCapacity()
+            ) {
+                offeringRecordEntity.setStatus(OfferingRecordEntity.FINALIZED_STATUS);
+                new OfferingModel().addStudentToOffering(offeringEntity);
+            }
+        }
     }
 }
