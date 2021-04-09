@@ -70,7 +70,11 @@ public class OfferingEntity extends CourseEntity {
     }
 
     public void setClassCode(String classCode) {
-        this.classCode = classCode;
+        if (classCode.length() == 1) {
+            this.classCode = "0" + classCode;
+        } else {
+            this.classCode = classCode;
+        }
     }
 
     public String getClassCode() {

@@ -5,6 +5,11 @@ public class StudentEntity {
     private String name;
     private String secondName;
     private String birthDate;
+    private String field;
+    private String faculty;
+    private String level;
+    private String status;
+    private String img;
 
     public StudentEntity() {}
 
@@ -53,5 +58,45 @@ public class StudentEntity {
 
     public String getBirthDate() {
         return birthDate;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
+    }
+
+    public String getFaculty() {
+        return faculty;
+    }
+
+    public void setFaculty(String faculty) {
+        this.faculty = faculty;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }
