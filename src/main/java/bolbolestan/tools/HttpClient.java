@@ -5,7 +5,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class HttpClient {
-    String baseUrl = "http://138.197.181.131:5000/api/";
+//    String baseUrl = "http://138.197.181.131:5000/api/";
+    String baseUrl = "http://138.197.181.131:5100/api/";
 
     public String get(String path) throws Exception {
         String url = this.baseUrl + path;

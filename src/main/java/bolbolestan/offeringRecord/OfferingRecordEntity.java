@@ -3,6 +3,9 @@ package bolbolestan.offeringRecord;
 public class OfferingRecordEntity {
     public static String FINALIZED_STATUS = "finalized";
     public static String NON_FINALIZED_STATUS = "non-finalized";
+    public static String NON_FINALIZED_WAIT = "non-finalized-wait";
+    public static String FINALIZED_WAIT = "finalized-wait";
+    public static String REMOVED_WAIT = "removed-wait";
     public static String COMPLETED_STATUS = "completed";
     public static String REMOVED_STATUS = "removed";
 
@@ -13,6 +16,7 @@ public class OfferingRecordEntity {
     private String status;
     private Double grade;
     private String code;
+    private String term;
 
     public OfferingRecordEntity() {}
 
@@ -62,5 +66,13 @@ public class OfferingRecordEntity {
 
     public String getCode() {
         return code;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
+    public String getTerm() {
+        return term;
     }
 }

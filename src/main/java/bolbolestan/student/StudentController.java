@@ -42,6 +42,9 @@ public class StudentController extends HttpServlet {
         data.put("tpu", String.format("%.0f", gpaTpu.get("tpu")));
         data.put("courses", model.getStudentPassedCourses(studentId));
         request.setAttribute("studentProfile", data);
+        System.out.println("hereeeeeeeeeeeeeeeee");
+        System.out.println(data);
+        System.out.println(((StudentEntity) data.get("student")).getName());
     }
 
 }

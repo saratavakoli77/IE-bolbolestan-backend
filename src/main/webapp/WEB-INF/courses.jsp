@@ -122,7 +122,16 @@
                 <input id="form_action" type="hidden" name="action" value="add">
                 <input id="form_class_code" type="hidden" name="course_code" value=${offering.code}>
                 <input id="form_class_code" type="hidden" name="class_code" value=${offering.classCode}>
-                <button type="submit">Add</button>
+                <%
+                    String buttonName;
+                    if (offeringEntity.getRegistered() >= offeringEntity.getCapacity()) {
+                        buttonName = "Wait";
+                    } else {
+                        buttonName = "Add";
+                    }
+                %>
+
+                <button type="submit"><%= buttonName%></button>
             </form>
         </td>
     </tr>
