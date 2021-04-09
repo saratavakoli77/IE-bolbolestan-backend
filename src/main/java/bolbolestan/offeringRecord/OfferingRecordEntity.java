@@ -3,6 +3,7 @@ package bolbolestan.offeringRecord;
 public class OfferingRecordEntity {
     public static String FINALIZED_STATUS = "finalized";
     public static String NON_FINALIZED_STATUS = "non-finalized";
+    public static String IN_WAIT_LIST = "in-wait-list";
     public static String COMPLETED_STATUS = "completed";
     public static String REMOVED_STATUS = "removed";
 
