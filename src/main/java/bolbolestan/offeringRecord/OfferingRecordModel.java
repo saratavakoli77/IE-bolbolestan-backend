@@ -53,10 +53,10 @@ public class OfferingRecordModel {
     public void finalizeWaitList() throws OfferingNotFoundException, CapacityMismatchException {
         for (OfferingRecordEntity offeringRecordEntity: OfferingRecordStorage.getAllOfferings()) {
             OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringRecordEntity.getOfferingCode());
-            if (
-                    offeringRecordEntity.getStatus().equals(OfferingRecordEntity.FINALIZED_WAIT) &&
-                    offeringEntity.getRegistered() < offeringEntity.getCapacity()
-            ) {
+            if (offeringRecordEntity.getStatus().equals(OfferingRecordEntity.FINALIZED_WAIT)) {
+                if (offeringEntity.getRegistered() >= offeringEntity.getCapacity()) {
+                    offeringEntity.setCapacity(offeringEntity.getCapacity() + 1);
+                }
                 offeringRecordEntity.setStatus(OfferingRecordEntity.FINALIZED_STATUS);
                 new OfferingModel().addStudentToOffering(offeringEntity);
             }
