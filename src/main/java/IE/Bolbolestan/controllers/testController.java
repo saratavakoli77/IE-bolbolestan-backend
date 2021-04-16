@@ -3,8 +3,6 @@ package IE.Bolbolestan.controllers;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/test")
 public class testController {
