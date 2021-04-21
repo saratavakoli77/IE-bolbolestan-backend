@@ -6,7 +6,6 @@ import IE.Bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
 import IE.Bolbolestan.offering.OfferingEntity;
 import IE.Bolbolestan.offering.OfferingModel;
 
-
 import java.util.List;
 
 public class OfferingRecordModel {

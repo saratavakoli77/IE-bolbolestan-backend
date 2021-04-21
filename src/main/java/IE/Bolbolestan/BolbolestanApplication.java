@@ -1,6 +1,5 @@
 package IE.Bolbolestan;
 
-import IE.Bolbolestan.offering.OfferingEntity;
 import IE.Bolbolestan.offering.OfferingStorage;
 import IE.Bolbolestan.offeringRecord.OfferingRecordStorage;
 import IE.Bolbolestan.student.StudentStorage;
@@ -8,7 +7,6 @@ import IE.Bolbolestan.waitList.CheckListJob;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;

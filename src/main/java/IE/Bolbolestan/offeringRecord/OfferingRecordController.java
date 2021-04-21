@@ -7,13 +7,11 @@ import IE.Bolbolestan.offering.OfferingEntity;
 import IE.Bolbolestan.offering.OfferingModel;
 import IE.Bolbolestan.student.StudentEntity;
 import IE.Bolbolestan.tools.GetExceptionMessages;
-import IE.Bolbolestan.weeklySchedule.WeeklyScheduleEntity;
 import IE.Bolbolestan.weeklySchedule.WeeklyScheduleModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
