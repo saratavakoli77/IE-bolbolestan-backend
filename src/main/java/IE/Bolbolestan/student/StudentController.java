@@ -14,7 +14,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("")
 public class StudentController {
     @GetMapping("")
     public HashMap<String, Object> getProfile(final HttpServletResponse response) throws IOException {
@@ -25,6 +25,7 @@ public class StudentController {
             } catch (StudentNotFoundException | OfferingNotFoundException e) {
                 response.sendError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
                 e.printStackTrace();
+                return null;
             }
         }
         response.sendError(HttpStatus.UNAUTHORIZED.value());

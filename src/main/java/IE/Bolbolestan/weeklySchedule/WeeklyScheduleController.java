@@ -2,126 +2,70 @@ package IE.Bolbolestan.weeklySchedule;
 
 import IE.Bolbolestan.bolbolestanExceptions.*;
 import IE.Bolbolestan.middlewares.Authentication;
-import IE.Bolbolestan.middlewares.SearchHistory;
-import IE.Bolbolestan.offering.OfferingEntity;
-import IE.Bolbolestan.offering.OfferingModel;
 import IE.Bolbolestan.student.StudentEntity;
 import IE.Bolbolestan.tools.GetExceptionMessages;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
-@WebServlet("/courses/")
+@RestController
+@RequestMapping("/weekly_schedule")
 public class WeeklyScheduleController extends HttpServlet {
     WeeklyScheduleModel model = new WeeklyScheduleModel();
     StudentEntity authenticatedStudent;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        authenticatedStudent = Authentication.getAuthenticated();
-        request.setAttribute("searchValue", SearchHistory.getLastSearch());
-
-        if (authenticatedStudent != null) {
-            this.setStudentData(request);
-            this.setWeeklyScheduleOfferings(request);
-            this.setOfferingEntities(request);
-            request.getRequestDispatcher("/WEB-INF/courses.jsp").forward(request, response);
+    @GetMapping("")
+    public HashMap<String, Object> getWeeklySchedule(
+            final HttpServletResponse response
+    ) throws IOException {
+        this.authenticatedStudent = Authentication.getAuthenticated();
+        if (this.authenticatedStudent != null) {
+            HashMap<String, Object> data = new HashMap<>();
+            this.setStudentData(data);
+            this.setWeeklyScheduleOfferings(data);
+            return data;
         } else {
-            response.sendRedirect(request.getContextPath() + "/login/");
+            response.sendError(HttpStatus.UNAUTHORIZED.value());
         }
+        return null;
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        switch (request.getParameter("action")) {
-            case "submit":
-                Boolean noError = submitWeeklySchedule(request);
-                if (noError) {
-                    response.sendRedirect(request.getContextPath() + "/plan/");
-                } else {
-                    RequestDispatcher rd = request.getRequestDispatcher("/submit_failed/");
-                    rd.forward(request, response);
-                }
-                break;
-            case "reset":
-                resetWeeklySchedule();
-                response.sendRedirect(request.getContextPath() + "/courses/");
-                break;
-            case "remove":
-                removeFromWeeklySchedule(request);
-                response.sendRedirect(request.getContextPath() + "/courses/");
-                break;
-            case "add":
-                addToWeeklySchedule(request);
-                response.sendRedirect(request.getContextPath() + "/courses/");
-                break;
-            case "search":
-                getMatchedOfferings(request);
-                response.sendRedirect(request.getContextPath() + "/courses/");
-                break;
-            case "clear":
-                clearSearchHistory(request);
-                response.sendRedirect(request.getContextPath() + "/courses/");
-                break;
-            default:
-        }
-
-    }
-
-    private void getMatchedOfferings(HttpServletRequest request) {
-        String searchValue = request.getParameter("search");
-        SearchHistory.setLastSearch(searchValue);
-        setOfferingEntities(request);
-    }
-
-    private void clearSearchHistory(HttpServletRequest request) {
-        SearchHistory.setLastSearch("");
-        setOfferingEntities(request);
-    }
-
-    private void setOfferingEntities(HttpServletRequest request) {
-        List<OfferingEntity> offeringEntities;
-        OfferingModel offeringModel = new OfferingModel();
-        if (SearchHistory.getLastSearch().equals("")) {
-            offeringEntities = offeringModel.getOfferings();
+    @PostMapping("/submit")
+    public HashMap<String, Object> postWeeklySchedule(final HttpServletResponse response) throws IOException {
+        this.authenticatedStudent = Authentication.getAuthenticated();
+        if (this.authenticatedStudent != null) {
+            HashMap<String, Object> data = new HashMap<>();
+            Boolean noError = submitWeeklySchedule(data);
+            if (noError) {
+                response.setStatus(HttpStatus.OK.value());
+            } else {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+                return data;
+            }
         } else {
-            offeringEntities = offeringModel.getSearchResult(SearchHistory.getLastSearch());
+            response.sendError(HttpStatus.UNAUTHORIZED.value());
         }
-        request.setAttribute("offeringEntities", offeringEntities);
+        return null;
     }
 
-    private void addToWeeklySchedule(HttpServletRequest request) {
-        String classCode = request.getParameter("class_code");
-        String courseCode = request.getParameter("course_code");
-        List<Exception> exceptions;
-        try {
-            exceptions = model.addToWeeklySchedule(
-                    authenticatedStudent.getStudentId(), courseCode + classCode
-            );
-        } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
-    private void removeFromWeeklySchedule(HttpServletRequest request) {
-        String classCode = request.getParameter("class_code");
-        String courseCode = request.getParameter("course_code");
-        try {
-            model.removeFromWeeklySchedule(authenticatedStudent.getStudentId(), courseCode + classCode);
-        } catch (
-                StudentNotFoundException |
-                        OfferingCodeNotInWeeklyScheduleException |
-                OfferingRecordNotFoundException |
-                        WeeklyScheduleDoesNotExistException e
-        ) {
-            e.printStackTrace();
+    @DeleteMapping("")
+    public HashMap<String, Object> deleteWeeklySchedule(
+            final HttpServletResponse response
+    ) throws IOException {
+        this.authenticatedStudent = Authentication.getAuthenticated();
+        if (this.authenticatedStudent != null) {
+            resetWeeklySchedule();
+            response.setStatus(HttpStatus.OK.value());
+        } else {
+            response.sendError(HttpStatus.UNAUTHORIZED.value());
         }
+        return null;
     }
 
     private void resetWeeklySchedule() {
@@ -134,10 +78,10 @@ public class WeeklyScheduleController extends HttpServlet {
 
     }
 
-    private Boolean submitWeeklySchedule(HttpServletRequest request) {
+    private Boolean submitWeeklySchedule(HashMap<String, Object> request) {
         try {
             List<Exception> exceptionList = model.finalizeWeeklySchedule(authenticatedStudent.getStudentId());
-            request.setAttribute("errorList", GetExceptionMessages.getExceptionMessages(exceptionList));
+            request.put("errorList", GetExceptionMessages.getExceptionMessages(exceptionList));
             return exceptionList.isEmpty();
         } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingNotFoundException e) {
             e.printStackTrace();
@@ -145,11 +89,11 @@ public class WeeklyScheduleController extends HttpServlet {
         return false;
     }
 
-    private void setWeeklyScheduleOfferings(HttpServletRequest request) {
+    private void setWeeklyScheduleOfferings(HashMap<String, Object> request) {
         try {
             WeeklyScheduleEntity weeklyScheduleEntity = model.getWeeklySchedule(authenticatedStudent.getStudentId());
 
-            request.setAttribute(
+            request.put(
                     "weeklyScheduleOfferings",
                     model.getWeeklyScheduleOfferingEntities(weeklyScheduleEntity)
             );
@@ -158,11 +102,11 @@ public class WeeklyScheduleController extends HttpServlet {
         }
     }
 
-    private void setStudentData(HttpServletRequest request) {
-        request.setAttribute("studentId", authenticatedStudent.getStudentId());
+    private void setStudentData(HashMap<String, Object> request) {
+        request.put("studentId", authenticatedStudent.getStudentId());
 
         try {
-            request.setAttribute("units", model.calculateUnitsSum(authenticatedStudent.getStudentId()));
+            request.put("units", model.calculateUnitsSum(authenticatedStudent.getStudentId()));
         } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
             e.printStackTrace();
         }
