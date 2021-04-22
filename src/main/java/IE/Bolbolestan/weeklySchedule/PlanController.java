@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @RestController
@@ -22,10 +23,12 @@ public class PlanController {
         StudentEntity authenticatedStudent = Authentication.getAuthenticated();
         if (authenticatedStudent != null) {
             try {
-                HashMap<String, Object> plan ;
+                HashMap<String, Object> data = new HashMap<>();
+                ArrayList<Object> plan;
                 plan = new WeeklyScheduleModel().getWeeklySchedulePlan(Authentication.getAuthenticated().getStudentId());
+                data.put("data", plan);
                 response.setStatus(HttpStatus.OK.value());
-                return plan;
+                return data;
             } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
                 response.sendError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
                 e.printStackTrace();

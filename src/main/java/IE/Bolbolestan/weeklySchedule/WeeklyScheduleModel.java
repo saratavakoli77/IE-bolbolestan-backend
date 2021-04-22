@@ -444,25 +444,29 @@ public class WeeklyScheduleModel {
         return data;
     }
 
-    public HashMap<String, Object> getWeeklySchedulePlan(String studentId) throws
+    public ArrayList<Object> getWeeklySchedulePlan(String studentId) throws
             StudentNotFoundException, OfferingNotFoundException, OfferingRecordNotFoundException {
-        HashMap<String, Object> data = initWeekDaysMap();
+        ArrayList<Object> data = new ArrayList<>();
         WeeklyScheduleEntity weeklyScheduleEntity = getWeeklySchedule(studentId);
         List<String> weeklyScheduleOfferingCodes = weeklyScheduleEntity.getOfferingCodes();
         for (String offeringCode: weeklyScheduleOfferingCodes) {
+            HashMap<String, Object> dataLine = new HashMap<>();
             OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
             String status = new OfferingRecordModel().getOfferingRecord(studentId, offeringCode).getStatus();
             if (
                     status.equals(OfferingRecordEntity.FINALIZED_STATUS) ||
                             status.equals(OfferingRecordEntity.REMOVED_STATUS)
             ) {
-                for (DaysOfWeek day: offeringEntity.getClassTimeDays()) {
-                    String classTimeRange = DateParser.getStringFromDates(
+
+                String classTimeRange = DateParser.getStringFromDates(
                             offeringEntity.getClassTimeStart(),
                             offeringEntity.getClassTimeEnd()
                     );
-                    ((HashMap<String, String>) data.get(day.name())).put(classTimeRange, offeringEntity.getName());
-                }
+                dataLine.put("name", offeringEntity.getName());
+                dataLine.put("classTime", classTimeRange);
+                dataLine.put("weekDays", offeringEntity.getClassTimeDays());
+
+                data.add(dataLine);
             }
         }
         return data;
