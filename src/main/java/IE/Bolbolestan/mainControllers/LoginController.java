@@ -17,7 +17,7 @@ public class LoginController {
     public void postLogin(@RequestParam String studentId, final HttpServletResponse response) throws IOException {
         try {
             Authentication.authenticateStudent(studentId);
-            response.sendError(HttpStatus.OK.value());
+            response.setStatus(HttpStatus.OK.value());
         } catch (StudentNotFoundException e) {
             response.sendError(HttpStatus.NOT_FOUND.value(), e.getMessage());
         }

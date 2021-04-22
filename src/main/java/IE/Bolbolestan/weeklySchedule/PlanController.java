@@ -24,6 +24,7 @@ public class PlanController {
             try {
                 HashMap<String, Object> plan ;
                 plan = new WeeklyScheduleModel().getWeeklySchedulePlan(Authentication.getAuthenticated().getStudentId());
+                response.setStatus(HttpStatus.OK.value());
                 return plan;
             } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
                 response.sendError(HttpStatus.BAD_REQUEST.value(), e.getMessage());

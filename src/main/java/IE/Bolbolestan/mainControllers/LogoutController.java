@@ -18,6 +18,6 @@ public class LogoutController {
     @GetMapping("")
     public void getLogout(final HttpServletResponse response) throws IOException {
         Authentication.logoutStudent();
-        response.sendError(HttpStatus.OK.value());
+        response.setStatus(HttpStatus.OK.value());
     }
 }

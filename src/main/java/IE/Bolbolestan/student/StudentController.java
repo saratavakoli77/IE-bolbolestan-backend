@@ -21,6 +21,7 @@ public class StudentController {
         StudentEntity authenticatedStudent = Authentication.getAuthenticated();
         if (authenticatedStudent != null) {
             try {
+                response.setStatus(HttpStatus.OK.value());
                 return this.getStudentProfile(authenticatedStudent.getStudentId());
             } catch (StudentNotFoundException | OfferingNotFoundException e) {
                 response.sendError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
