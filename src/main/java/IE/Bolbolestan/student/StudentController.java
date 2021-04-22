@@ -14,7 +14,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/profile")
 public class StudentController {
     @GetMapping("")
     public HashMap<String, Object> getProfile(final HttpServletResponse response) throws IOException {
