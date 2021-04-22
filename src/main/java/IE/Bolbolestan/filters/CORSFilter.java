@@ -16,8 +16,6 @@ public class CORSFilter implements Filter {
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
-        System.out.println("CORSFilter called");
-
         HttpServletResponse response = (HttpServletResponse) resp;
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
