@@ -41,7 +41,7 @@ public class StudentController {
         data.put("student", model.getStudent(studentId));
         data.put("gpa", String.format("%.2f", gpaTpu.get("gpa")));
         data.put("tpu", String.format("%.0f", gpaTpu.get("tpu")));
-        data.put("courses", model.getStudentPassedCourses(studentId));
+        data.put("courses", model.getFormattedPassedCourses(studentId));
         return data;
     }
 }

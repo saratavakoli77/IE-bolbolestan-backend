@@ -53,6 +53,40 @@ public class StudentModel {
         return studentPassedCourses;
     }
 
+    private String getOfferingState(Double grade, String status) {
+        if (!status.equals(OfferingRecordEntity.COMPLETED_STATUS)) {
+            return "نامشخص";
+        }
+        if (grade < 10) {
+            return "مردود";
+        }
+        return "قبول";
+    }
+
+    public HashMap<String, Object> getFormattedPassedCourses(String studentId) throws OfferingNotFoundException {
+        List<OfferingRecordEntity> passedCourses = getStudentPassedCourses(studentId);
+        HashMap<String, Object> data = new HashMap<>();
+        OfferingModel offeringModel = new OfferingModel();
+
+        for (OfferingRecordEntity offeringRecordEntity: passedCourses) {
+            HashMap<String, Object> offeringData = new HashMap<>();
+            OfferingEntity offeringEntity = offeringModel.getOffering(offeringRecordEntity.getOfferingCode());
+            offeringData.put("name", offeringEntity.getName());
+            offeringData.put("code", offeringEntity.getOfferingCode());
+            offeringData.put("unit", offeringEntity.getUnits());
+            offeringData.put("grade", offeringRecordEntity.getGrade());
+            offeringData.put(
+                    "state", getOfferingState(offeringRecordEntity.getGrade(), offeringRecordEntity.getStatus()));
+            if (!data.containsKey(offeringRecordEntity.getTerm())) {
+                data.put(offeringRecordEntity.getTerm(), new ArrayList<Object>());
+            } else {
+                ((ArrayList<Object>) data.get(offeringRecordEntity.getTerm())).add(offeringData);
+            }
+        }
+
+        return data;
+    }
+
     public Boolean hasPassedCourse(String studentId, String offeringCode) {
         List<OfferingRecordEntity> offeringRecordEntityList =
                 new OfferingRecordModel().getStudentOfferingRecords(studentId);
