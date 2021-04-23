@@ -3,6 +3,7 @@ package IE.Bolbolestan.offering;
 
 import IE.Bolbolestan.course.CourseEntity;
 import IE.Bolbolestan.course.DaysOfWeek;
+import IE.Bolbolestan.tools.DateParser;
 
 import java.util.Date;
 import java.util.List;
@@ -89,4 +90,12 @@ public class OfferingEntity extends CourseEntity {
     public Integer getRegistered() {
         return registered;
     }
+
+    public String getFormattedClassDate() {
+        return DateParser.getStringFromDates(
+                this.getClassTimeStart(),
+                this.getClassTimeEnd()
+        );
+    }
+
 }
