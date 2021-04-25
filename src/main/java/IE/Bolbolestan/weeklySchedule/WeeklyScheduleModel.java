@@ -494,20 +494,23 @@ public class WeeklyScheduleModel {
                 !offeringRecordStatus.equals(OfferingRecordEntity.REMOVED_WAIT);
     }
 
-    public List<OfferingEntity> getWeeklyScheduleOfferingEntities(WeeklyScheduleEntity weeklyScheduleEntity)
+    public List<Object> getWeeklyScheduleOfferingEntities(WeeklyScheduleEntity weeklyScheduleEntity)
             throws OfferingNotFoundException, OfferingRecordNotFoundException {
         OfferingModel offeringModel = new OfferingModel();
         OfferingRecordModel offeringRecordModel = new OfferingRecordModel();
-        List<OfferingEntity> offeringEntities = new ArrayList<>();
+        List<Object> offeringEntities = new ArrayList<>();
         for (String offeringCode : weeklyScheduleEntity.getOfferingCodes()) {
+            HashMap<String, Object> dataLine = new HashMap<>();
             String offeringRecordStatus =
                     offeringRecordModel.getOfferingRecord(
                             weeklyScheduleEntity.getStudentId(),
                             offeringCode
                     ).getStatus();
             if (isShouldBeShown(offeringRecordStatus)) {
-                offeringEntities.add(offeringModel.getOffering(offeringCode));
+                dataLine.put("offeringData", offeringModel.getOffering(offeringCode));
+                dataLine.put("offeringStatus", offeringRecordStatus);
             }
+            offeringEntities.add(dataLine);
         }
         return offeringEntities;
     }
