@@ -88,11 +88,10 @@ public class StudentModel {
             offeringData.put("grade", offeringRecordEntity.getGrade());
             offeringData.put(
                     "state", getOfferingState(offeringRecordEntity.getGrade(), offeringRecordEntity.getStatus()));
-            if (!data.containsKey(offeringRecordEntity.getTerm())) {
+            if (!data.containsKey(offeringRecordEntity.getTerm().toString())) {
                 data.put(offeringRecordEntity.getTerm().toString(), new ArrayList<Object>());
-            } else {
-                ((ArrayList<Object>) data.get(offeringRecordEntity.getTerm())).add(offeringData);
             }
+            ((ArrayList<Object>) data.get(offeringRecordEntity.getTerm().toString())).add(offeringData);
         }
 
         return data;
