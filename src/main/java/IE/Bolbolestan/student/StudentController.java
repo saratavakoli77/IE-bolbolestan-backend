@@ -23,16 +23,10 @@ public class StudentController {
             try {
                 response.setStatus(HttpStatus.OK.value());
                 return this.getStudentProfile(authenticatedStudent.getStudentId());
-            } catch (StudentNotFoundException e) {
+            } catch (StudentNotFoundException | OfferingNotFoundException e) {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
                 HashMap<String, Object> data = new HashMap<>();
-                data.put("message", "دانشجو با شماره دانشجویی داده شده یافت نشد.");
-                e.printStackTrace();
-                return data;
-            } catch (OfferingNotFoundException e) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                HashMap<String, Object> data = new HashMap<>();
-                data.put("message", "درس با کد داده شده یافت نشد.");
+                data.put("message", e.getMessage());
                 e.printStackTrace();
                 return data;
             }

@@ -2,6 +2,6 @@ package IE.Bolbolestan.bolbolestanExceptions;
 
 public class MinimumUnitsException extends Exception {
     public MinimumUnitsException() {
-        super("Number of units can not be under 12.");
+        super("مجموع تعداد واحدها نمیتواند کمتر از 12 باشد.");
     }
 }

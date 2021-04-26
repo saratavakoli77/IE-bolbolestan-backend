@@ -33,22 +33,10 @@ public class PlanController {
                 data.put("term", term);
                 response.setStatus(HttpStatus.OK.value());
                 return data;
-            } catch (StudentNotFoundException e) {
+            } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
                 HashMap<String, Object> data = new HashMap<>();
-                data.put("message", "دانشجو با شماره دانشجویی داده شده یافت نشد.");
-                e.printStackTrace();
-                return data;
-            } catch (OfferingNotFoundException e) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                HashMap<String, Object> data = new HashMap<>();
-                data.put("message", "درس با کد داده شده یافت نشد.");
-                e.printStackTrace();
-                return data;
-            } catch (OfferingRecordNotFoundException e) {
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                HashMap<String, Object> data = new HashMap<>();
-                data.put("message", "رکورد درس با کد داده شده یافت نشد.");
+                data.put("message", e.getMessage());
                 e.printStackTrace();
                 return data;
             }

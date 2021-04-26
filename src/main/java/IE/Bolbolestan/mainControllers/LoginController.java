@@ -25,7 +25,7 @@ public class LoginController {
         } catch (StudentNotFoundException e) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             HashMap<String, Object> data = new HashMap<>();
-            data.put("message", "دانشجو با شماره دانشجویی داده شده یافت نشد.");
+            data.put("message", e.getMessage());
             return data;
         }
     }
