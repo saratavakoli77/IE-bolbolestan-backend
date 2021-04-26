@@ -1,7 +1,6 @@
 package IE.Bolbolestan.bolbolestanExceptions;
 
 public class OfferingNotFoundException extends Exception {
-    public OfferingNotFoundException() {
-        super("Offering not found.");
+    public OfferingNotFoundException() { super("درس با کد داده شده یافت نشد.");
     }
 }
