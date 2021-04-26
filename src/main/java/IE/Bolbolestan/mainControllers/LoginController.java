@@ -16,13 +16,17 @@ import java.util.HashMap;
 @RequestMapping("/login")
 public class LoginController {
     @PostMapping("")
-    public void postLogin(@RequestBody HashMap<String, Object> request, final HttpServletResponse response) throws IOException {
+    public HashMap<String, Object> postLogin(@RequestBody HashMap<String, Object> request, final HttpServletResponse response) throws IOException {
         try {
             String studentId = (String) request.get("studentId");
             Authentication.authenticateStudent(studentId);
             response.setStatus(HttpStatus.OK.value());
+            return null;
         } catch (StudentNotFoundException e) {
-            response.sendError(HttpStatus.NOT_FOUND.value(), e.getMessage());
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            HashMap<String, Object> data = new HashMap<>();
+            data.put("message", "دانشجو با شماره دانشجویی داده شده یافت نشد.");
+            return data;
         }
     }
 }
