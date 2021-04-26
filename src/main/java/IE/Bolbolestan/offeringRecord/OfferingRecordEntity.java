@@ -16,7 +16,7 @@ public class OfferingRecordEntity {
     private String status;
     private Double grade;
     private String code;
-    private String term;
+    private Integer term;
 
     public OfferingRecordEntity() {}
 
@@ -68,11 +68,11 @@ public class OfferingRecordEntity {
         return code;
     }
 
-    public void setTerm(String term) {
+    public void setTerm(Integer term) {
         this.term = term;
     }
 
-    public String getTerm() {
+    public Integer getTerm() {
         return term;
     }
 }

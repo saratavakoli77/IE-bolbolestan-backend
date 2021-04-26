@@ -465,6 +465,7 @@ public class WeeklyScheduleModel {
                 dataLine.put("name", offeringEntity.getName());
                 dataLine.put("classTime", classTimeRange);
                 dataLine.put("weekDays", offeringEntity.getClassTimeDays());
+                dataLine.put("type", offeringEntity.getType());
 
                 data.add(dataLine);
             }
@@ -494,6 +495,26 @@ public class WeeklyScheduleModel {
                 !offeringRecordStatus.equals(OfferingRecordEntity.REMOVED_WAIT);
     }
 
+    private String getFormattedOfferingStatus(String status) {
+        if (
+                status.equals(OfferingRecordEntity.FINALIZED_WAIT) ||
+                status.equals(OfferingRecordEntity.NON_FINALIZED_WAIT)
+        ) {
+            return "waiting";
+        } else if (
+                status.equals(OfferingRecordEntity.FINALIZED_STATUS) ||
+                status.equals(OfferingRecordEntity.COMPLETED_STATUS)
+        ) {
+            return "finalized";
+        } else if (
+                status.equals(OfferingRecordEntity.NON_FINALIZED_STATUS)
+        ) {
+            return "non-finalized";
+        } else {
+            return "other";
+        }
+    }
+
     public List<Object> getWeeklyScheduleOfferingEntities(WeeklyScheduleEntity weeklyScheduleEntity)
             throws OfferingNotFoundException, OfferingRecordNotFoundException {
         OfferingModel offeringModel = new OfferingModel();
@@ -508,7 +529,7 @@ public class WeeklyScheduleModel {
                     ).getStatus();
             if (isShouldBeShown(offeringRecordStatus)) {
                 dataLine.put("offeringData", offeringModel.getOffering(offeringCode));
-                dataLine.put("offeringStatus", offeringRecordStatus);
+                dataLine.put("offeringStatus", this.getFormattedOfferingStatus(offeringRecordStatus));
             }
             offeringEntities.add(dataLine);
         }

@@ -63,6 +63,17 @@ public class StudentModel {
         return "قبول";
     }
 
+    public int getStudentCurrentTerm(String studentId) {
+        List<OfferingRecordEntity> passedCourses = getStudentPassedCourses(studentId);
+        int maxPassedTerm = 1;
+        for (OfferingRecordEntity offeringRecordEntity: passedCourses) {
+            if (offeringRecordEntity.getTerm() > maxPassedTerm) {
+                maxPassedTerm = offeringRecordEntity.getTerm();
+            }
+        }
+        return maxPassedTerm;
+    }
+
     public HashMap<String, Object> getFormattedPassedCourses(String studentId) throws OfferingNotFoundException {
         List<OfferingRecordEntity> passedCourses = getStudentPassedCourses(studentId);
         HashMap<String, Object> data = new HashMap<>();
@@ -78,7 +89,7 @@ public class StudentModel {
             offeringData.put(
                     "state", getOfferingState(offeringRecordEntity.getGrade(), offeringRecordEntity.getStatus()));
             if (!data.containsKey(offeringRecordEntity.getTerm())) {
-                data.put(offeringRecordEntity.getTerm(), new ArrayList<Object>());
+                data.put(offeringRecordEntity.getTerm().toString(), new ArrayList<Object>());
             } else {
                 ((ArrayList<Object>) data.get(offeringRecordEntity.getTerm())).add(offeringData);
             }

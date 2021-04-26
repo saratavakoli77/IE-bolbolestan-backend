@@ -3,6 +3,7 @@ package IE.Bolbolestan.weeklySchedule;
 import IE.Bolbolestan.bolbolestanExceptions.*;
 import IE.Bolbolestan.middlewares.Authentication;
 import IE.Bolbolestan.student.StudentEntity;
+import IE.Bolbolestan.student.StudentModel;
 import IE.Bolbolestan.tools.GetExceptionMessages;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -107,6 +108,7 @@ public class WeeklyScheduleController extends HttpServlet {
 
         try {
             request.put("units", model.calculateUnitsSum(authenticatedStudent.getStudentId()));
+            request.put("term", new StudentModel().getStudentCurrentTerm(authenticatedStudent.getStudentId()));
         } catch (StudentNotFoundException | OfferingNotFoundException | OfferingRecordNotFoundException e) {
             e.printStackTrace();
         }

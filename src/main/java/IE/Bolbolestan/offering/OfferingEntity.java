@@ -1,10 +1,12 @@
 package IE.Bolbolestan.offering;
 
 
+import IE.Bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
 import IE.Bolbolestan.course.CourseEntity;
 import IE.Bolbolestan.course.DaysOfWeek;
 import IE.Bolbolestan.tools.DateParser;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -97,5 +99,18 @@ public class OfferingEntity extends CourseEntity {
                 this.getClassTimeEnd()
         );
     }
+
+    public List<String> getPrerequisiteNames() {
+        List<String> prerequisiteNames = new ArrayList<>();
+        for (String code: this.getPrerequisites()) {
+            try {
+                prerequisiteNames.add(OfferingStorage.getByCode(code + this.classCode).getName());
+            } catch (OfferingNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return prerequisiteNames;
+    }
+
 
 }
