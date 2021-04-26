@@ -65,13 +65,13 @@ public class StudentModel {
 
     public int getStudentCurrentTerm(String studentId) {
         List<OfferingRecordEntity> passedCourses = getStudentPassedCourses(studentId);
-        int maxPassedTerm = 1;
+        int maxPassedTerm = 0;
         for (OfferingRecordEntity offeringRecordEntity: passedCourses) {
             if (offeringRecordEntity.getTerm() > maxPassedTerm) {
                 maxPassedTerm = offeringRecordEntity.getTerm();
             }
         }
-        return maxPassedTerm;
+        return maxPassedTerm + 1;
     }
 
     public HashMap<String, Object> getFormattedPassedCourses(String studentId) throws OfferingNotFoundException {
