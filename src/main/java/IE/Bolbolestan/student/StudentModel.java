@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class StudentModel {
+    StudentRepository studentRepository = StudentRepository.getInstance();
     public StudentEntity getStudent(String studentId) throws StudentNotFoundException {
         return StudentStorage.getById(studentId);
     }

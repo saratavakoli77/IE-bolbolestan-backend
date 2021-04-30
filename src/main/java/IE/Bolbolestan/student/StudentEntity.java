@@ -13,6 +13,27 @@ public class StudentEntity {
 
     public StudentEntity() {}
 
+    public StudentEntity(
+            String studentId,
+            String name,
+            String secondName,
+            String birthDate,
+            String field,
+            String faculty,
+            String level,
+            String status,
+            String img) {
+        this.id = studentId;
+        this.name = name;
+        this.secondName = secondName;
+        this.birthDate = birthDate;
+        this.field = field;
+        this.faculty = faculty;
+        this.level = level;
+        this.status = status;
+        this.img = img;
+    }
+
     public StudentEntity(String studentId, String name, String secondName, String birthDate) {
         this.id = studentId;
         this.name = name;
