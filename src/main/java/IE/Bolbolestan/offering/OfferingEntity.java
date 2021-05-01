@@ -7,12 +7,13 @@ import IE.Bolbolestan.course.DaysOfWeek;
 import IE.Bolbolestan.tools.DateParser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class OfferingEntity extends CourseEntity {
     private String instructor;
-    private List<DaysOfWeek> classTimeDays;
+    private String stringClassTimeDays;
     private Date classTimeStart;
     private Date classTimeEnd;
     private String classCode;
@@ -23,14 +24,14 @@ public class OfferingEntity extends CourseEntity {
     public OfferingEntity(
             CourseEntity courseEntity,
             String instructor,
-            List<DaysOfWeek> classTimeDays,
+            String stringClassTimeDays,
             Date classTimeStart,
             Date classTimeEnd,
             Integer registered,
             String classCode) {
         super(courseEntity);
         this.instructor = instructor;
-        this.classTimeDays = classTimeDays;
+        this.stringClassTimeDays = stringClassTimeDays;
         this.classTimeStart = classTimeStart;
         this.classTimeEnd = classTimeEnd;
         this.classCode = classCode;
@@ -50,12 +51,30 @@ public class OfferingEntity extends CourseEntity {
     }
 
     public List<DaysOfWeek> getClassTimeDays() {
-        return classTimeDays;
+        List<String> classDays = Arrays.asList(this.stringClassTimeDays.split(", "));
+        List<DaysOfWeek> classDaysEnum = new ArrayList<>();
+        for (String classDay: classDays) {
+            classDaysEnum.add(Enum.valueOf(DaysOfWeek.class, classDay));
+        }
+        return classDaysEnum;
     }
 
     public void setClassTimeDays(List<DaysOfWeek> classTimeDays) {
-        this.classTimeDays = classTimeDays;
+        String classTimeString = "";
+        for (DaysOfWeek daysOfWeek: classTimeDays) {
+            classTimeString += daysOfWeek.toString();
+            classTimeString += ", ";
+        }
+        StringBuilder stringBuilder = new StringBuilder(classTimeString);
+        stringBuilder.deleteCharAt(classTimeString.length() - 1);
+        stringBuilder.deleteCharAt(classTimeString.length() - 2);
+        classTimeString = stringBuilder.toString();
+        this.setStringClassTimeDays(classTimeString);
     }
+
+    public void setStringClassTimeDays(String stringClassTimeDays) { this.stringClassTimeDays = stringClassTimeDays;}
+
+    public String getStringClassTimeDays() { return this.stringClassTimeDays; }
 
     public void setClassTimeStart(Date classTimeStart) {
         this.classTimeStart = classTimeStart;

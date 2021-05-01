@@ -1,7 +1,8 @@
-package IE.Bolbolestan.student;
+package IE.Bolbolestan.offering;
 
 import IE.Bolbolestan.dbConnection.ConnectionPool;
-import IE.Bolbolestan.dbConnection.Repository;
+import IE.Bolbolestan.student.StudentEntity;
+import IE.Bolbolestan.student.StudentRepository;
 import IE.Bolbolestan.tools.HttpClient;
 import IE.Bolbolestan.tools.refiners.StudentRefiner;
 
@@ -10,30 +11,37 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class StudentRepository extends Repository<StudentEntity, String> {
-    private static final String TABLE_NAME = "Student";
-    private static StudentRepository instance;
+public class OfferingRepository {
+    private static final String TABLE_NAME = "offering";
+    private static OfferingRepository instance;
 
-    public static StudentRepository getInstance() {
+    public static OfferingRepository getInstance() {
         if (instance == null) {
             try {
-                instance = new StudentRepository();
+                instance = new OfferingRepository();
             } catch (SQLException e) {
                 e.printStackTrace();
-                System.out.println("error in StudentRepository.create query.");
+                System.out.println("error in OfferingRepository.create query.");
             }
         }
         return instance;
     }
 
-    private StudentRepository() throws SQLException {
+    private OfferingRepository() throws SQLException {
+//        private String instructor;
+//        private String stringClassTimeDays;
+//        private Date classTimeStart;
+//        private Date classTimeEnd;
+//        private String classCode;
+//        private Integer registered = 0;
         Connection con = ConnectionPool.getConnection();
         PreparedStatement createTableStatement = con.prepareStatement(
                 String.format(
                         "CREATE TABLE IF NOT EXISTS %s(" +
-                                "id CHAR(50),\n" +
+                                "instructor CHAR(50),\n" +
                                 "name CHAR(225),\n" +
                                 "secondName CHAR(225),\n" +
                                 "birthDate CHAR(225),\n" +
