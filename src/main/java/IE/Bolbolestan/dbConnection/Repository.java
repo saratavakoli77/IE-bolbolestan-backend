@@ -22,7 +22,7 @@ public abstract class Repository<T, I> {
 
     abstract protected ArrayList<T> convertResultSetToDomainModelList(ResultSet rs) throws SQLException;
 
-    public T findById(I id) throws SQLException {
+    public T getById(I id) throws SQLException {
         Connection con = ConnectionPool.getConnection();
         PreparedStatement st = con.prepareStatement(getFindByIdStatement());
         fillFindByIdValues(st, id);
@@ -62,7 +62,7 @@ public abstract class Repository<T, I> {
         }
     }
 
-    public List<T> findAll() throws SQLException {
+    public List<T> getAll() throws SQLException {
         Connection con = ConnectionPool.getConnection();
         PreparedStatement st = con.prepareStatement(getFindAllStatement());
         try {
