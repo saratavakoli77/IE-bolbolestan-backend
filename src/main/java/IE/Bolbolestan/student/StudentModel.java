@@ -8,6 +8,7 @@ import IE.Bolbolestan.offering.OfferingModel;
 import IE.Bolbolestan.offeringRecord.OfferingRecordEntity;
 import IE.Bolbolestan.offeringRecord.OfferingRecordModel;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +17,11 @@ import java.util.Map;
 public class StudentModel {
     StudentRepository studentRepository = StudentRepository.getInstance();
     public StudentEntity getStudent(String studentId) throws StudentNotFoundException {
-        return StudentStorage.getById(studentId);
-    }
-
-    public void addNewStudent(StudentEntity studentEntity) {
-        //todo: validate data
-        StudentStorage.add(studentEntity);
+        try {
+            return studentRepository.getById(studentId);
+        } catch (SQLException throwables) {
+            throw new StudentNotFoundException();
+        }
     }
 
     public Map<String, Double> getGpaTpu(String studentId) throws OfferingNotFoundException {

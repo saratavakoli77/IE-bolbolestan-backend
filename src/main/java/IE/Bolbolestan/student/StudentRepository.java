@@ -29,7 +29,8 @@ public class StudentRepository extends Repository<StudentEntity, String> {
         Connection con = ConnectionPool.getConnection();
         PreparedStatement createTableStatement = con.prepareStatement(
                 String.format(
-                        "CREATE TABLE IF NOT EXISTS %s(id CHAR(50),\n" +
+                        "CREATE TABLE IF NOT EXISTS %s(" +
+                                "id CHAR(50),\n" +
                                 "name CHAR(225),\n" +
                                 "secondName CHAR(225),\n" +
                                 "birthDate CHAR(225),\n" +
@@ -59,7 +60,17 @@ public class StudentRepository extends Repository<StudentEntity, String> {
 
     @Override
     protected String getInsertStatement() {
-        return String.format("INSERT INTO %s(id, name, habitat) VALUES(?,?,?)", TABLE_NAME);
+        return String.format("INSERT INTO %s(" +
+                "id, " +
+                "name, " +
+                "secondName, " +
+                "birthDate, " +
+                "field, " +
+                "faculty, " +
+                "level, " +
+                "status, " +
+                "img, " +
+                ") VALUES(?,?,?,?,?,?,?,?,?)", TABLE_NAME);
     }
 
     @Override
