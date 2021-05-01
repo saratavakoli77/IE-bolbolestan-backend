@@ -3,10 +3,11 @@ package IE.Bolbolestan.offeringRecord;
 
 import IE.Bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
 import IE.Bolbolestan.student.StudentEntity;
-import IE.Bolbolestan.student.StudentStorage;
+import IE.Bolbolestan.student.StudentRepository;
 import IE.Bolbolestan.tools.HttpClient;
 import IE.Bolbolestan.tools.refiners.OfferingRecordRefiner;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,10 +54,10 @@ public class OfferingRecordStorage {
         return offeringRecordEntities;
     }
 
-    public static void getDataFromApi() {
+    public static void getDataFromApi() throws SQLException {
         HttpClient http = new HttpClient();
         String fetchUrl;
-        for (StudentEntity studentEntity: StudentStorage.getAllStudents()) {
+        for (StudentEntity studentEntity: StudentRepository.getInstance().getAll()) {
             fetchUrl = "grades/" + studentEntity.getStudentId();
             try {
                 String response = http.get(fetchUrl);
