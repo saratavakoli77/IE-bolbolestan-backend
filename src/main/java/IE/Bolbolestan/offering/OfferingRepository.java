@@ -1,20 +1,14 @@
 package IE.Bolbolestan.offering;
 
+import IE.Bolbolestan.course.CourseRepository;
 import IE.Bolbolestan.dbConnection.ConnectionPool;
-import IE.Bolbolestan.student.StudentEntity;
-import IE.Bolbolestan.student.StudentRepository;
-import IE.Bolbolestan.tools.HttpClient;
-import IE.Bolbolestan.tools.refiners.StudentRefiner;
+import IE.Bolbolestan.dbConnection.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-public class OfferingRepository {
+public class OfferingRepository extends Repository<OfferingEntity, List<String>> {
     private static final String TABLE_NAME = "offering";
     private static OfferingRepository instance;
 
@@ -31,26 +25,19 @@ public class OfferingRepository {
     }
 
     private OfferingRepository() throws SQLException {
-//        private String instructor;
-//        private String stringClassTimeDays;
-//        private Date classTimeStart;
-//        private Date classTimeEnd;
-//        private String classCode;
-//        private Integer registered = 0;
         Connection con = ConnectionPool.getConnection();
         PreparedStatement createTableStatement = con.prepareStatement(
                 String.format(
                         "CREATE TABLE IF NOT EXISTS %s(" +
+                                "course_code CHAR(50),\n" +
                                 "instructor CHAR(50),\n" +
-                                "name CHAR(225),\n" +
-                                "secondName CHAR(225),\n" +
-                                "birthDate CHAR(225),\n" +
-                                "field CHAR(225),\n" +
-                                "faculty CHAR(225),\n" +
-                                "level CHAR(225),\n" +
-                                "status CHAR(225),\n" +
-                                "img CHAR(225),\n" +
-                                "PRIMARY KEY(id));",
+                                "string_class_time_days CHAR(225),\n" +
+                                "class_time_start DATETIME,\n" +
+                                "class_time_end DATETIME,\n" +
+                                "class_code CHAR(10),\n" +
+                                "registered INT,\n" +
+                                "PRIMARY KEY(course_code, class_code), \n" +
+                                "FOREIGN KEY(course_code) REFERENCES course(code));",
                         TABLE_NAME)
         );
 
@@ -61,40 +48,37 @@ public class OfferingRepository {
 
     @Override
     protected String getFindByIdStatement() {
-        return String.format("SELECT* FROM %s student WHERE student.id = ?;", TABLE_NAME);
+        return String.format("SELECT* FROM %s o WHERE o.course_code = ? and o.class_code = ?;", TABLE_NAME);
     }
 
     @Override
-    protected void fillFindByIdValues(PreparedStatement st, String id) throws SQLException {
-        st.setString(1, id);
+    protected void fillFindByIdValues(PreparedStatement st, List<String> ids) throws SQLException {
+        st.setString(1, ids.get(0));
+        st.setString(2, ids.get(1));
     }
 
     @Override
     protected String getInsertStatement() {
         return String.format("INSERT INTO %s(" +
-                "id, " +
-                "name, " +
-                "secondName, " +
-                "birthDate, " +
-                "field, " +
-                "faculty, " +
-                "level, " +
-                "status, " +
-                "img, " +
-                ") VALUES(?,?,?,?,?,?,?,?,?)", TABLE_NAME);
+                "course_code, " +
+                "instructor, " +
+                "string_class_time_days, " +
+                "class_time_start, " +
+                "class_time_end, " +
+                "class_code, " +
+                "registered, " +
+                ") VALUES(?,?,?,?,?,?,?)", TABLE_NAME);
     }
 
     @Override
-    protected void fillInsertValues(PreparedStatement st, StudentEntity data) throws SQLException {
-        st.setString(1, data.getId());
-        st.setString(2, data.getName());
-        st.setString(3, data.getSecondName());
-        st.setString(4, data.getBirthDate());
-        st.setString(5, data.getField());
-        st.setString(6, data.getFaculty());
-        st.setString(7, data.getLevel());
-        st.setString(8, data.getStatus());
-        st.setString(9, data.getImg());
+    protected void fillInsertValues(PreparedStatement st, OfferingEntity data) throws SQLException {
+        st.setString(1, data.getCode());
+        st.setString(2, data.getInstructor());
+        st.setString(3, data.getStringClassTimeDays());
+        st.setTimestamp(4, new Timestamp(data.getClassTimeStart().getTime()));
+        st.setTimestamp(5, new Timestamp(data.getClassTimeEnd().getTime()));
+        st.setString(6, data.getClassCode());
+        st.setInt(7, data.getRegistered());
     }
 
     @Override
@@ -103,44 +87,42 @@ public class OfferingRepository {
     }
 
     @Override
-    protected StudentEntity convertResultSetToDomainModel(ResultSet rs) throws SQLException {
-        return new StudentEntity(
-                rs.getString(1),
+    protected OfferingEntity convertResultSetToDomainModel(ResultSet rs) throws SQLException {
+        return new OfferingEntity(
+                CourseRepository.getInstance().getById(rs.getString(1)),
                 rs.getString(2),
                 rs.getString(3),
-                rs.getString(4),
-                rs.getString(5),
+                rs.getTimestamp(4),
+                rs.getTimestamp(5),
                 rs.getString(6),
-                rs.getString(7),
-                rs.getString(8),
-                rs.getString(9)
+                rs.getInt(7)
         );
     }
 
     @Override
-    protected ArrayList<StudentEntity> convertResultSetToDomainModelList(ResultSet rs) throws SQLException {
-        ArrayList<StudentEntity> studentEntities = new ArrayList<>();
+    protected ArrayList<OfferingEntity> convertResultSetToDomainModelList(ResultSet rs) throws SQLException {
+        ArrayList<OfferingEntity> offeringEntities = new ArrayList<>();
         while (rs.next()) {
-            studentEntities.add(this.convertResultSetToDomainModel(rs));
+            offeringEntities.add(this.convertResultSetToDomainModel(rs));
         }
-        return studentEntities;
+        return offeringEntities;
     }
 
-    public static void getDataFromApi() {
-        HttpClient http = new HttpClient();
-        String fetchProjectsUrl = "students";
-
-        try {
-            String response = http.get(fetchProjectsUrl);
-            List<StudentEntity> students = new StudentRefiner(response).getRefinedEntities();
-            StudentRepository studentRepository = StudentRepository.getInstance();
-            for (StudentEntity studentEntity: students) {
-                studentRepository.insert(studentEntity);
-            }
-            System.out.println("Fetched " + students.size() + " students");
-        } catch (Exception e) {
-            System.out.println("error");
-            e.fillInStackTrace();
-        }
-    }
+//    public static void getDataFromApi() {
+//        HttpClient http = new HttpClient();
+//        String fetchProjectsUrl = "students";
+//
+//        try {
+//            String response = http.get(fetchProjectsUrl);
+//            List<StudentEntity> students = new StudentRefiner(response).getRefinedEntities();
+//            StudentRepository studentRepository = StudentRepository.getInstance();
+//            for (StudentEntity studentEntity: students) {
+//                studentRepository.insert(studentEntity);
+//            }
+//            System.out.println("Fetched " + students.size() + " students");
+//        } catch (Exception e) {
+//            System.out.println("error");
+//            e.fillInStackTrace();
+//        }
+//    }
 }
