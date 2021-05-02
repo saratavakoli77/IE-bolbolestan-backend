@@ -6,6 +6,7 @@ public class PrerequisiteEntity {
     private String prerequisiteCourseCode;
 
     public PrerequisiteEntity(Integer id, String mainCourseCode, String prerequisiteCourseCode) {
+        this.id = id;
         this.mainCourseCode = mainCourseCode;
         this.prerequisiteCourseCode = prerequisiteCourseCode;
     }
