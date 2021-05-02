@@ -11,6 +11,7 @@ public class OfferingRecordEntity {
 
     public static int PASSED_GRADE = 10;
 
+    private Integer id;
     private String offeringCode;
     private String studentId;
     private String status;
@@ -20,12 +21,37 @@ public class OfferingRecordEntity {
 
     public OfferingRecordEntity() {}
 
+    public OfferingRecordEntity(
+            Integer id,
+            String studentId,
+            String offeringCode,
+            Double grade,
+            String status,
+            Integer term
+    ) {
+        this.id = id;
+        this.studentId = studentId;
+        this.offeringCode = offeringCode;
+        this.grade = grade;
+        this.status = status;
+        this.code = offeringCode.substring(0, offeringCode.length() - 2);
+        this.term = term;
+    }
+
     public OfferingRecordEntity(String studentId, String offeringCode, Double grade, String status) {
         this.studentId = studentId;
         this.offeringCode = offeringCode;
         this.grade = grade;
         this.status = status;
         this.code = offeringCode.substring(0, offeringCode.length() - 2);
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public void setOfferingCode(String offeringCode) {

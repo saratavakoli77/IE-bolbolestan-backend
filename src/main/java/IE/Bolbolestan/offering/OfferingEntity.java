@@ -27,8 +27,8 @@ public class OfferingEntity extends CourseEntity {
             String stringClassTimeDays,
             Date classTimeStart,
             Date classTimeEnd,
-            Integer registered,
-            String classCode) {
+            String classCode,
+            Integer registered) {
         super(courseEntity);
         this.instructor = instructor;
         this.stringClassTimeDays = stringClassTimeDays;
