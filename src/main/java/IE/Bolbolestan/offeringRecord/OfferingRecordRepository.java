@@ -1,10 +1,11 @@
 package IE.Bolbolestan.offeringRecord;
 
-import IE.Bolbolestan.course.CourseRepository;
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
-import IE.Bolbolestan.offering.OfferingEntity;
-import IE.Bolbolestan.offering.OfferingRepository;
+import IE.Bolbolestan.student.StudentEntity;
+import IE.Bolbolestan.student.StudentRepository;
+import IE.Bolbolestan.tools.HttpClient;
+import IE.Bolbolestan.tools.refiners.OfferingRecordRefiner;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -59,14 +60,6 @@ public class OfferingRecordRepository extends Repository<OfferingRecordEntity, I
         st.setInt(1, id);
     }
 
-//    "class_code CHAR(10),\n" +
-//            "course_code CHAR(50),\n" +
-//            "student_id CHAR(50),\n" +
-//            "status CHAR(50), \n" +
-//            "grade DOUBLE, \n" +
-//            "term INT, \n" +
-//            "PRIMARY KEY(id), \n" +
-
     @Override
     protected String getInsertStatement() {
         return String.format("INSERT INTO %s(" +
@@ -115,4 +108,117 @@ public class OfferingRecordRepository extends Repository<OfferingRecordEntity, I
         }
         return offeringRecordEntities;
     }
+
+    public static void getDataFromApi() throws SQLException {
+        HttpClient http = new HttpClient();
+        String fetchUrl;
+        for (StudentEntity studentEntity: StudentRepository.getInstance().getAll()) {
+            fetchUrl = "grades/" + studentEntity.getStudentId();
+            try {
+                String response = http.get(fetchUrl);
+                List<OfferingRecordEntity> offeringRecords =
+                        new OfferingRecordRefiner(response).getRefinedEntities(studentEntity.getStudentId());
+                OfferingRecordRepository offeringRecordRepository = OfferingRecordRepository.getInstance();
+                for (OfferingRecordEntity offeringRecordEntity: offeringRecords) {
+                    offeringRecordRepository.insert(offeringRecordEntity);
+                }
+                System.out.println("Fetched " + offeringRecords.size() + " records");
+            } catch (Exception e) {
+                System.out.println("error");
+                e.fillInStackTrace();
+            }
+        }
+    }
+
+    public OfferingRecordEntity getByCodeAndStudentId(String studentId, String offeringCode) throws SQLException {
+        String classCode = offeringCode.substring(offeringCode.length() - 2);
+        String courseCode = offeringCode.substring(0, offeringCode.length() - 2);
+
+        String queryStmt = String.format(
+                "SELECT * FROM %s offeringRecord WHERE offeringRecord.student_id = ? and offeringRecord.class_code = ? and offeringRecord.course_code = ?;",
+                TABLE_NAME
+        );
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(queryStmt);
+        st.setString(1, studentId);
+        st.setString(2, classCode);
+        st.setString(3, courseCode);
+        try {
+            ResultSet resultSet = st.executeQuery();
+            if (!resultSet.next()) {
+                st.close();
+                con.close();
+                return null;
+            }
+            OfferingRecordEntity offeringRecordEntity = convertResultSetToDomainModel(resultSet);
+            st.close();
+            con.close();
+            return offeringRecordEntity;
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in offering_record.getByCodeAndStudentId query.");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public List<OfferingRecordEntity> getByStudentId(String studentId) throws SQLException {
+        String queryStmt = String.format(
+                "SELECT * FROM %s offeringRecord WHERE offeringRecord.student_id = ?;",
+                TABLE_NAME
+        );
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(queryStmt);
+        st.setString(1, studentId);
+        try {
+            ResultSet resultSet = st.executeQuery();
+            if (!resultSet.next()) {
+                st.close();
+                con.close();
+                return null;
+            }
+            ArrayList<OfferingRecordEntity> offeringRecordEntities = convertResultSetToDomainModelList(resultSet);
+            st.close();
+            con.close();
+            return offeringRecordEntities;
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in offering_record.getByCodeAndStudentId query.");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public void deleteEntity(OfferingRecordEntity offeringRecordEntity) throws SQLException {
+        Integer id = offeringRecordEntity.getId();
+        String queryStmt = String.format(
+                "DELETE FROM %s offeringRecord WHERE offeringRecord.id = ?;",
+                TABLE_NAME
+        );
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(queryStmt);
+        st.setInt(1, id);
+        try {
+            ResultSet resultSet = st.executeQuery();
+            if (!resultSet.next()) {
+                st.close();
+                con.close();
+            }
+            st.close();
+            con.close();
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in offering_record.getByCodeAndStudentId query.");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+
 }
