@@ -12,6 +12,11 @@ public class WeeklyScheduleOfferingEntity {
         this.studentId = studentId;
     }
 
+    public WeeklyScheduleOfferingEntity(String offeringCode, String studentId) {
+        this.offeringCode = offeringCode;
+        this.studentId = studentId;
+    }
+
     public Integer getId() {
         return id;
     }
