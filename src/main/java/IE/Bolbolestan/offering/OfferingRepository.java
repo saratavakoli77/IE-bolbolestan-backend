@@ -3,6 +3,8 @@ package IE.Bolbolestan.offering;
 import IE.Bolbolestan.course.CourseRepository;
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
+import IE.Bolbolestan.tools.HttpClient;
+import IE.Bolbolestan.tools.refiners.OfferingRefiner;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -108,21 +110,21 @@ public class OfferingRepository extends Repository<OfferingEntity, List<String>>
         return offeringEntities;
     }
 
-//    public static void getDataFromApi() {
-//        HttpClient http = new HttpClient();
-//        String fetchProjectsUrl = "students";
-//
-//        try {
-//            String response = http.get(fetchProjectsUrl);
-//            List<StudentEntity> students = new StudentRefiner(response).getRefinedEntities();
-//            StudentRepository studentRepository = StudentRepository.getInstance();
-//            for (StudentEntity studentEntity: students) {
-//                studentRepository.insert(studentEntity);
-//            }
-//            System.out.println("Fetched " + students.size() + " students");
-//        } catch (Exception e) {
-//            System.out.println("error");
-//            e.fillInStackTrace();
-//        }
-//    }
+    public static void getDataFromApi() {
+        HttpClient http = new HttpClient();
+        String fetchProjectsUrl = "courses";
+
+        try {
+            String response = http.get(fetchProjectsUrl);
+            List<OfferingEntity> offerings = new OfferingRefiner(response).getRefinedEntities();
+            OfferingRepository offeringRepository = OfferingRepository.getInstance();
+            for (OfferingEntity offeringEntity: offerings) {
+                offeringRepository.insert(offeringEntity);
+            }
+            System.out.println("Fetched " + offerings.size() + " courses");
+        } catch (Exception e) {
+            System.out.println("error");
+            e.fillInStackTrace();
+        }
+    }
 }

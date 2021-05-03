@@ -6,6 +6,7 @@ import IE.Bolbolestan.course.CourseEntity;
 import IE.Bolbolestan.course.DaysOfWeek;
 import IE.Bolbolestan.tools.DateParser;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -123,8 +124,8 @@ public class OfferingEntity extends CourseEntity {
         List<String> prerequisiteNames = new ArrayList<>();
         for (String code: this.getPrerequisites()) {
             try {
-                prerequisiteNames.add(OfferingStorage.getByCode(code + this.classCode).getName());
-            } catch (OfferingNotFoundException e) {
+                prerequisiteNames.add(OfferingRepository.getInstance().getById(Arrays.asList(code, this.classCode)).getName());
+            } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
