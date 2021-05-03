@@ -108,4 +108,17 @@ public class CourseRepository extends Repository<CourseEntity, String> {
         }
         return courseEntities;
     }
+
+    public void setCoursePrerequisites(CourseEntity courseEntity) {
+        PrerequisiteRepository prerequisiteRepository = PrerequisiteRepository.getInstance();
+        for (String prerequisiteCode: courseEntity.getPrerequisites()) {
+            try {
+                prerequisiteRepository.insert(
+                        new PrerequisiteEntity(courseEntity.getCode(), prerequisiteCode)
+                );
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+    }
 }
