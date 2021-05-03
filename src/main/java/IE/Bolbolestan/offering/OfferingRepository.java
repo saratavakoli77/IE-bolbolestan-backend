@@ -1,5 +1,6 @@
 package IE.Bolbolestan.offering;
 
+import IE.Bolbolestan.course.CourseEntity;
 import IE.Bolbolestan.course.CourseRepository;
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
@@ -8,6 +9,7 @@ import IE.Bolbolestan.tools.refiners.OfferingRefiner;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class OfferingRepository extends Repository<OfferingEntity, List<String>> {
@@ -113,12 +115,15 @@ public class OfferingRepository extends Repository<OfferingEntity, List<String>>
     public static void getDataFromApi() {
         HttpClient http = new HttpClient();
         String fetchProjectsUrl = "courses";
-
         try {
             String response = http.get(fetchProjectsUrl);
             List<OfferingEntity> offerings = new OfferingRefiner(response).getRefinedEntities();
             OfferingRepository offeringRepository = OfferingRepository.getInstance();
+            CourseRepository courseRepository = CourseRepository.getInstance();
             for (OfferingEntity offeringEntity: offerings) {
+                //todo: bebinim dorste ya na
+                courseRepository.insert(offeringEntity);
+                courseRepository.setCoursePrerequisites(offeringEntity);
                 offeringRepository.insert(offeringEntity);
             }
             System.out.println("Fetched " + offerings.size() + " courses");
