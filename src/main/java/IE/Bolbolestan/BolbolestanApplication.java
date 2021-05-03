@@ -1,7 +1,7 @@
 package IE.Bolbolestan;
 
-import IE.Bolbolestan.offering.OfferingStorage;
-import IE.Bolbolestan.offeringRecord.OfferingRecordStorage;
+import IE.Bolbolestan.offering.OfferingRepository;
+import IE.Bolbolestan.offeringRecord.OfferingRecordRepository;
 import IE.Bolbolestan.student.StudentRepository;
 import IE.Bolbolestan.waitList.CheckListJob;
 import org.springframework.boot.SpringApplication;
@@ -23,10 +23,10 @@ public class BolbolestanApplication {
 	}
 
 	public static void fillStorages() {
-		OfferingStorage.getDataFromApi();
 		try {
+			OfferingRepository.getDataFromApi();
 			StudentRepository.getDataFromApi();
-			OfferingRecordStorage.getDataFromApi();
+			OfferingRecordRepository.getDataFromApi();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
 		}
