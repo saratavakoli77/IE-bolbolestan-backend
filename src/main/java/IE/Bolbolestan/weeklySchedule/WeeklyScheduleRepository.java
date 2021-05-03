@@ -1,7 +1,9 @@
 package IE.Bolbolestan.weeklySchedule;
 
+import IE.Bolbolestan.bolbolestanExceptions.WeeklyScheduleDoesNotExistException;
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
+import IE.Bolbolestan.offeringRecord.OfferingRecordEntity;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -85,6 +87,35 @@ public class WeeklyScheduleRepository extends Repository<WeeklyScheduleEntity, S
             weeklyScheduleEntities.add(this.convertResultSetToDomainModel(rs));
         }
         return weeklyScheduleEntities;
+    }
+
+    public WeeklyScheduleEntity getByStudentId(String studentId) throws SQLException {
+        String queryStmt = String.format(
+                "SELECT * FROM %s ws WHERE ws.student_id = ?;",
+                TABLE_NAME
+        );
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(queryStmt);
+        st.setString(1, studentId);
+        try {
+            ResultSet resultSet = st.executeQuery();
+            if (!resultSet.next()) {
+                st.close();
+                con.close();
+                return null;
+            }
+            WeeklyScheduleEntity weeklyScheduleEntity = convertResultSetToDomainModel(resultSet);
+            st.close();
+            con.close();
+            return weeklyScheduleEntity;
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in weekly_schedule.getByStudentId query.");
+            e.printStackTrace();
+            throw e;
+        }
     }
 
 }

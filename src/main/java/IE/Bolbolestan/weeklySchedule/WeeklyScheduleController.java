@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class WeeklyScheduleController extends HttpServlet {
         try {
             WeeklyScheduleEntity weeklyScheduleEntity = model.getWeeklySchedule(authenticatedStudent.getStudentId());
             model.resetWeeklySchedule(weeklyScheduleEntity);
-        } catch (OfferingRecordNotFoundException | StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException e) {
+        } catch (OfferingRecordNotFoundException | StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException | SQLException e) {
             e.printStackTrace();
         }
 
@@ -84,7 +85,7 @@ public class WeeklyScheduleController extends HttpServlet {
             List<Exception> exceptionList = model.finalizeWeeklySchedule(authenticatedStudent.getStudentId());
             request.put("errorList", GetExceptionMessages.getExceptionMessages(exceptionList));
             return exceptionList.isEmpty();
-        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingNotFoundException e) {
+        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingNotFoundException | SQLException e) {
             e.printStackTrace();
         }
         return false;
