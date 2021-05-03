@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -123,10 +124,7 @@ public class OfferingRecordController extends HttpServlet {
         try {
             model.removeFromWeeklySchedule(authenticatedStudent.getStudentId(), courseCode + classCode);
         } catch (
-                StudentNotFoundException |
-                        OfferingCodeNotInWeeklyScheduleException |
-                OfferingRecordNotFoundException |
-                        WeeklyScheduleDoesNotExistException e
+                StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingRecordNotFoundException | WeeklyScheduleDoesNotExistException | SQLException e
         ) {
             e.printStackTrace();
         }
