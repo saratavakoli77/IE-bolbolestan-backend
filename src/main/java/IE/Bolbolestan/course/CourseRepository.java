@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 
 public class CourseRepository extends Repository<CourseEntity, String> {
-    private static final String TABLE_NAME = "Course";
+    private static final String TABLE_NAME = "course";
     private static CourseRepository instance;
 
     public static CourseRepository getInstance() {
@@ -47,7 +47,7 @@ public class CourseRepository extends Repository<CourseEntity, String> {
 
     @Override
     protected String getFindByIdStatement() {
-        return String.format("SELECT* FROM %s student WHERE student.id = ?;", TABLE_NAME);
+        return String.format("SELECT* FROM %s c WHERE c.code = ?;", TABLE_NAME);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class CourseRepository extends Repository<CourseEntity, String> {
                 "examTimeStart, " +
                 "examTimeEnd, " +
                 "capacity, " +
-                "type, " +
+                "type" +
                 ") VALUES(?,?,?,?,?,?,?)", TABLE_NAME);
     }
 

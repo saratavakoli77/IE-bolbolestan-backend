@@ -68,7 +68,7 @@ public class OfferingRecordRepository extends Repository<OfferingRecordEntity, I
                 "student_id, " +
                 "status, " +
                 "grade, " +
-                "term, " +
+                "term" +
                 ") VALUES(?,?,?,?,?,?)", TABLE_NAME);
     }
 

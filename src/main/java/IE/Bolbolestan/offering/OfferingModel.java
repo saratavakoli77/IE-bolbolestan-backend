@@ -10,8 +10,8 @@ import java.util.List;
 public class OfferingModel {
     public OfferingEntity getOffering(String code) throws OfferingNotFoundException {
         List<String> offeringTableKeys = new ArrayList<>();
-        offeringTableKeys.add(code.substring(code.length() - 2));
         offeringTableKeys.add(code.substring(0, code.length() - 2));
+        offeringTableKeys.add(code.substring(code.length() - 2));
         try {
             return OfferingRepository.getInstance().getById(offeringTableKeys);
         } catch (SQLException throwables) {

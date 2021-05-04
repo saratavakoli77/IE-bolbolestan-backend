@@ -70,7 +70,7 @@ public class OfferingRepository extends Repository<OfferingEntity, List<String>>
                 "class_time_start, " +
                 "class_time_end, " +
                 "class_code, " +
-                "registered, " +
+                "registered" +
                 ") VALUES(?,?,?,?,?,?,?)", TABLE_NAME);
     }
 
@@ -118,13 +118,16 @@ public class OfferingRepository extends Repository<OfferingEntity, List<String>>
         try {
             String response = http.get(fetchProjectsUrl);
             List<OfferingEntity> offerings = new OfferingRefiner(response).getRefinedEntities();
-            OfferingRepository offeringRepository = OfferingRepository.getInstance();
             CourseRepository courseRepository = CourseRepository.getInstance();
+            OfferingRepository offeringRepository = OfferingRepository.getInstance();
             for (OfferingEntity offeringEntity: offerings) {
                 //todo: bebinim dorste ya na
                 courseRepository.insert(offeringEntity);
-                courseRepository.setCoursePrerequisites(offeringEntity);
                 offeringRepository.insert(offeringEntity);
+            }
+
+            for (OfferingEntity offeringEntity: offerings) {
+                courseRepository.setCoursePrerequisites(offeringEntity);
             }
             System.out.println("Fetched " + offerings.size() + " courses");
         } catch (Exception e) {

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentRepository extends Repository<StudentEntity, String> {
-    private static final String TABLE_NAME = "Student";
+    private static final String TABLE_NAME = "student";
     private static StudentRepository instance;
 
     public static StudentRepository getInstance() {
@@ -72,7 +72,7 @@ public class StudentRepository extends Repository<StudentEntity, String> {
                 "faculty, " +
                 "level, " +
                 "status, " +
-                "img, " +
+                "img" +
                 ") VALUES(?,?,?,?,?,?,?,?,?)", TABLE_NAME);
     }
 
@@ -132,7 +132,7 @@ public class StudentRepository extends Repository<StudentEntity, String> {
             System.out.println("Fetched " + students.size() + " students");
         } catch (Exception e) {
             System.out.println("error");
-            e.fillInStackTrace();
+            e.printStackTrace();
         }
     }
 }
