@@ -47,7 +47,7 @@ public class WeeklyScheduleOfferingRepository extends Repository<WeeklyScheduleO
 
     @Override
     protected String getFindByIdStatement() {
-        return String.format("SELECT * FROM %s wo WHERE wo.id = ? and ;", TABLE_NAME);
+        return String.format("SELECT * FROM %s wo WHERE wo.id = ?;", TABLE_NAME);
     }
 
     @Override
@@ -60,15 +60,15 @@ public class WeeklyScheduleOfferingRepository extends Repository<WeeklyScheduleO
         return String.format("INSERT INTO %s(" +
                 "class_code, " +
                 "course_code, " +
-                "student_id, " +
+                "student_id " +
                 ") VALUES(?,?,?)", TABLE_NAME);
     }
 
     @Override
     protected void fillInsertValues(PreparedStatement st, WeeklyScheduleOfferingEntity data) throws SQLException {
         String offeringCode = data.getOfferingCode();
-        st.setString(1, offeringCode.substring(0, offeringCode.length() - 2));
-        st.setString(2, offeringCode.substring(offeringCode.length() - 2));
+        st.setString(2, offeringCode.substring(0, offeringCode.length() - 2));
+        st.setString(1, offeringCode.substring(offeringCode.length() - 2));
         st.setString(3, data.getStudentId());
     }
 
@@ -95,6 +95,20 @@ public class WeeklyScheduleOfferingRepository extends Repository<WeeklyScheduleO
         return weeklyScheduleOfferingEntities;
     }
 
+    @Override
+    protected String getFindObjectStatement() {
+        return String.format("" +
+                "SELECT * FROM %s wo WHERE wo.course_code = ? and wo.class_code = ? and wo.student_id = ?;", TABLE_NAME);
+    }
+
+    @Override
+    protected void fillFindObject(PreparedStatement st, WeeklyScheduleOfferingEntity data) throws SQLException {
+        String offeringCode = data.getOfferingCode();
+        st.setString(1, offeringCode.substring(0, offeringCode.length() - 2));
+        st.setString(2, offeringCode.substring(offeringCode.length() - 2));
+        st.setString(3, data.getStudentId());
+    }
+
     public ArrayList<String> getWeeklyScheduleOfferingCodes(String studentId) throws SQLException {
         String queryStmt = String.format(
                 "SELECT wo.course_code, wo.class_code FROM %s wo WHERE wo.student_id = ?;",
@@ -106,10 +120,10 @@ public class WeeklyScheduleOfferingRepository extends Repository<WeeklyScheduleO
         st.setString(1, studentId);
         try {
             ResultSet resultSet = st.executeQuery();
-            if (!resultSet.next()) {
+            if (!resultSet.isBeforeFirst()) {
                 st.close();
                 con.close();
-                return null;
+                return new ArrayList<>();
             }
 
             ArrayList<String> offeringCodes = new ArrayList<>();

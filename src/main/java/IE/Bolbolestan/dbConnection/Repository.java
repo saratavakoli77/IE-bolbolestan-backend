@@ -22,6 +22,34 @@ public abstract class Repository<T, I> {
 
     abstract protected ArrayList<T> convertResultSetToDomainModelList(ResultSet rs) throws SQLException;
 
+    abstract protected String getFindObjectStatement();
+
+    abstract protected void fillFindObject(PreparedStatement st, T data) throws SQLException;
+
+    public Boolean isObjectExist(T obj) throws SQLException {
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(getFindObjectStatement());
+        fillFindObject(st, obj);
+        try {
+            ResultSet resultSet = st.executeQuery();
+            if (!resultSet.next()) {
+                st.close();
+                con.close();
+                return false;
+            }
+            T result = convertResultSetToDomainModel(resultSet);
+            st.close();
+            con.close();
+            return result != null;
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in Repository.find query.");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
     public T getById(I id) throws SQLException {
         Connection con = ConnectionPool.getConnection();
         PreparedStatement st = con.prepareStatement(getFindByIdStatement());
@@ -47,6 +75,10 @@ public abstract class Repository<T, I> {
     }
 
     public void insert(T obj) throws SQLException {
+        if (this.isObjectExist(obj)) {
+            System.out.println("obj existed!");
+            return;
+        }
         Connection con = ConnectionPool.getConnection();
         PreparedStatement st = con.prepareStatement(getInsertStatement());
         fillInsertValues(st, obj);

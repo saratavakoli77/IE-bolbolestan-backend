@@ -29,6 +29,7 @@ public class BolbolestanApplication {
 			OfferingRecordRepository.getDataFromApi();
 		} catch (SQLException throwables) {
 			throwables.printStackTrace();
+
 		}
 	}
 

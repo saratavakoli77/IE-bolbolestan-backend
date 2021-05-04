@@ -38,6 +38,9 @@ public class WeeklyScheduleModel {
         WeeklyScheduleEntity weeklyScheduleEntity;
         try {
             weeklyScheduleEntity = WeeklyScheduleRepository.getInstance().getByStudentId(studentId);
+            if (weeklyScheduleEntity == null) {
+                weeklyScheduleEntity = addNewWeeklySchedule(studentId);
+            }
         } catch (SQLException e) {
             weeklyScheduleEntity = addNewWeeklySchedule(studentId);
         }

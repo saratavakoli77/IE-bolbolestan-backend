@@ -1,9 +1,7 @@
 package IE.Bolbolestan.weeklySchedule;
 
-import IE.Bolbolestan.bolbolestanExceptions.WeeklyScheduleDoesNotExistException;
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
-import IE.Bolbolestan.offeringRecord.OfferingRecordEntity;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -43,7 +41,7 @@ public class WeeklyScheduleRepository extends Repository<WeeklyScheduleEntity, S
 
     @Override
     protected String getFindByIdStatement() {
-        return String.format("SELECT* FROM %s w WHERE w.id = ?;", TABLE_NAME);
+        return String.format("SELECT* FROM %s w WHERE w.student_id = ?;", TABLE_NAME);
     }
 
     @Override
@@ -55,7 +53,7 @@ public class WeeklyScheduleRepository extends Repository<WeeklyScheduleEntity, S
     protected String getInsertStatement() {
         return String.format("INSERT INTO %s(" +
                 "student_id, " +
-                "status, " +
+                "status " +
                 ") VALUES(?,?)", TABLE_NAME);
     }
 
@@ -87,6 +85,16 @@ public class WeeklyScheduleRepository extends Repository<WeeklyScheduleEntity, S
             weeklyScheduleEntities.add(this.convertResultSetToDomainModel(rs));
         }
         return weeklyScheduleEntities;
+    }
+
+    @Override
+    protected String getFindObjectStatement() {
+        return String.format("SELECT * FROM %s w WHERE w.student_id = ?;", TABLE_NAME);
+    }
+
+    @Override
+    protected void fillFindObject(PreparedStatement st, WeeklyScheduleEntity data) throws SQLException {
+        st.setString(1, data.getStudentId());
     }
 
     public WeeklyScheduleEntity getByStudentId(String studentId) throws SQLException {

@@ -2,6 +2,7 @@ package IE.Bolbolestan.course;
 
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
+import IE.Bolbolestan.student.StudentEntity;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -107,6 +108,16 @@ public class CourseRepository extends Repository<CourseEntity, String> {
             courseEntities.add(this.convertResultSetToDomainModel(rs));
         }
         return courseEntities;
+    }
+
+    @Override
+    protected String getFindObjectStatement() {
+        return String.format("SELECT * FROM %s c WHERE c.code = ?;", TABLE_NAME);
+    }
+
+    @Override
+    protected void fillFindObject(PreparedStatement st, CourseEntity data) throws SQLException {
+        st.setString(1, data.getCode());
     }
 
     public void setCoursePrerequisites(CourseEntity courseEntity) {
