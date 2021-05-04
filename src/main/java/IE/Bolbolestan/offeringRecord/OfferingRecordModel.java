@@ -5,6 +5,7 @@ import IE.Bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
 import IE.Bolbolestan.bolbolestanExceptions.OfferingRecordNotFoundException;
 import IE.Bolbolestan.offering.OfferingEntity;
 import IE.Bolbolestan.offering.OfferingModel;
+import IE.Bolbolestan.weeklySchedule.WeeklyScheduleOfferingRepository;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -22,6 +23,9 @@ public class OfferingRecordModel {
     public void removeOfferingRecord(String studentId, String offeringCode) throws OfferingRecordNotFoundException, SQLException {
         OfferingRecordEntity offeringRecordEntity = OfferingRecordRepository.getInstance().getByCodeAndStudentId(studentId, offeringCode);
         OfferingRecordRepository.getInstance().deleteEntity(offeringRecordEntity);
+//        WeeklyScheduleOfferingRepository.getInstance().deleteEntity(
+//                WeeklyScheduleOfferingRepository.getInstance().get
+//        )
     }
 
     public void updateStatusOfferingRecord(String studentId, String offeringCode, String status)
@@ -30,6 +34,7 @@ public class OfferingRecordModel {
         try {
             offeringRecordEntity = OfferingRecordRepository.getInstance().getByCodeAndStudentId(studentId, offeringCode);
             offeringRecordEntity.setStatus(status);
+            OfferingRecordRepository.getInstance().updateObjectStatus(offeringRecordEntity);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -47,11 +52,15 @@ public class OfferingRecordModel {
     public OfferingRecordEntity getOfferingRecord(String studentId, String offeringCode)
             throws OfferingRecordNotFoundException {
         try {
-            return OfferingRecordRepository.getInstance().getByCodeAndStudentId(studentId, offeringCode);
+            OfferingRecordEntity offeringRecordEntity = OfferingRecordRepository.getInstance().getByCodeAndStudentId(studentId, offeringCode);
+            if (offeringRecordEntity == null) {
+                throw new OfferingRecordNotFoundException();
+            }
+            return offeringRecordEntity;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return null;
+        throw new OfferingRecordNotFoundException();
     }
 
     public Boolean doesOfferingRecordExist(String studentId, String offeringRecord) {
@@ -77,6 +86,7 @@ public class OfferingRecordModel {
                     offeringEntity.setCapacity(offeringEntity.getCapacity() + 1);
                 }
                 offeringRecordEntity.setStatus(OfferingRecordEntity.FINALIZED_STATUS);
+                OfferingRecordRepository.getInstance().updateObjectStatus(offeringRecordEntity);
                 new OfferingModel().addStudentToOffering(offeringEntity);
             }
         }

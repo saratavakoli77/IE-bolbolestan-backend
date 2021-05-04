@@ -118,6 +118,16 @@ public class StudentRepository extends Repository<StudentEntity, String> {
         return studentEntities;
     }
 
+    @Override
+    protected String getFindObjectStatement() {
+        return String.format("SELECT * FROM %s student WHERE student.id = ?;", TABLE_NAME);
+    }
+
+    @Override
+    protected void fillFindObject(PreparedStatement st, StudentEntity data) throws SQLException {
+        st.setString(1, data.getStudentId());
+    }
+
     public static void getDataFromApi() {
         HttpClient http = new HttpClient();
         String fetchProjectsUrl = "students";

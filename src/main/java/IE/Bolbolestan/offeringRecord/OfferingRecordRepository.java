@@ -3,6 +3,7 @@ package IE.Bolbolestan.offeringRecord;
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
 import IE.Bolbolestan.student.StudentEntity;
+import IE.Bolbolestan.student.StudentModel;
 import IE.Bolbolestan.student.StudentRepository;
 import IE.Bolbolestan.tools.HttpClient;
 import IE.Bolbolestan.tools.refiners.OfferingRecordRefiner;
@@ -80,7 +81,11 @@ public class OfferingRecordRepository extends Repository<OfferingRecordEntity, I
         st.setString(3, data.getStudentId());
         st.setString(4, data.getStatus());
         st.setDouble(5, data.getGrade());
-        st.setInt(6, data.getTerm());
+        if (data.getTerm() != null) {
+            st.setInt(6, data.getTerm());
+        } else {
+            st.setInt(6, new StudentModel().getStudentCurrentTerm(data.getStudentId()));
+        }
     }
 
     @Override
@@ -107,6 +112,52 @@ public class OfferingRecordRepository extends Repository<OfferingRecordEntity, I
             offeringRecordEntities.add(this.convertResultSetToDomainModel(rs));
         }
         return offeringRecordEntities;
+    }
+
+//    @Override
+//    protected String getFindObjectStatement() {
+//        return String.format("SELECT* FROM %s o WHERE o.course_code = ? and o.class_code = ?;", TABLE_NAME);
+//    }
+//
+//    @Override
+//    protected void fillFindObject(PreparedStatement st, OfferingEntity data) throws SQLException {
+//        st.setString(1, data.getCode());
+//        st.setString(2, data.getClassCode());
+//    }
+
+
+//    "class_code, " +
+//            "course_code, " +
+//            "student_id, " +
+//            "status, " +
+//            "grade, " +
+//            "term" +
+
+    @Override
+    protected String getFindObjectStatement() {
+        return String.format(
+                "SELECT * FROM %s o WHERE " +
+                        "o.class_code = ? and " +
+                        "o.course_code = ? and " +
+                        "o.student_id = ? and " +
+                        "o.status = ? and " +
+                        "o.grade = ? and " +
+                        "o.term = ?;", TABLE_NAME);
+    }
+
+    @Override
+    protected void fillFindObject(PreparedStatement st, OfferingRecordEntity data) throws SQLException {
+        String offeringCode = data.getOfferingCode();
+        st.setString(1, offeringCode.substring(offeringCode.length() - 2));
+        st.setString(2, offeringCode.substring(0, offeringCode.length() - 2));
+        st.setString(3, data.getStudentId());
+        st.setString(4, data.getStatus());
+        st.setDouble(5, data.getGrade());
+        if (data.getTerm() != null) {
+            st.setInt(6, data.getTerm());
+        } else {
+            st.setInt(6, new StudentModel().getStudentCurrentTerm(data.getStudentId()));
+        }
     }
 
     public static void getDataFromApi() throws SQLException {
@@ -146,6 +197,7 @@ public class OfferingRecordRepository extends Repository<OfferingRecordEntity, I
         st.setString(3, courseCode);
         try {
             ResultSet resultSet = st.executeQuery();
+            //todo: isbeforfirst() ?
             if (!resultSet.next()) {
                 st.close();
                 con.close();
@@ -204,11 +256,7 @@ public class OfferingRecordRepository extends Repository<OfferingRecordEntity, I
         PreparedStatement st = con.prepareStatement(queryStmt);
         st.setInt(1, id);
         try {
-            ResultSet resultSet = st.executeQuery();
-            if (!resultSet.next()) {
-                st.close();
-                con.close();
-            }
+            st.executeUpdate();
             st.close();
             con.close();
         } catch (Exception e) {
@@ -221,4 +269,27 @@ public class OfferingRecordRepository extends Repository<OfferingRecordEntity, I
     }
 
 
+    public void updateObjectStatus(OfferingRecordEntity offeringRecordEntity) throws SQLException {
+        Integer id = offeringRecordEntity.getId();
+        String queryStmt = String.format(
+                "UPDATE %s ofr SET ofr.status = ? WHERE ofr.id = ?;",
+                TABLE_NAME
+        );
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(queryStmt);
+        st.setString(1, offeringRecordEntity.getStatus());
+        st.setInt(2, id);
+        try {
+            st.executeUpdate();
+            st.close();
+            con.close();
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in offering_record.getByCodeAndStudentId query.");
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

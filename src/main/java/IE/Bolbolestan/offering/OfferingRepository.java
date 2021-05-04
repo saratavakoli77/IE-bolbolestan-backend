@@ -112,6 +112,17 @@ public class OfferingRepository extends Repository<OfferingEntity, List<String>>
         return offeringEntities;
     }
 
+    @Override
+    protected String getFindObjectStatement() {
+        return String.format("SELECT* FROM %s o WHERE o.course_code = ? and o.class_code = ?;", TABLE_NAME);
+    }
+
+    @Override
+    protected void fillFindObject(PreparedStatement st, OfferingEntity data) throws SQLException {
+        st.setString(1, data.getCode());
+        st.setString(2, data.getClassCode());
+    }
+
     public static void getDataFromApi() {
         HttpClient http = new HttpClient();
         String fetchProjectsUrl = "courses";
