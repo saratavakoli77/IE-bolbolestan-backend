@@ -1,6 +1,5 @@
 package IE.Bolbolestan.offering;
 
-import IE.Bolbolestan.course.CourseEntity;
 import IE.Bolbolestan.course.CourseRepository;
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
@@ -9,7 +8,6 @@ import IE.Bolbolestan.tools.refiners.OfferingRefiner;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class OfferingRepository extends Repository<OfferingEntity, List<String>> {
@@ -144,6 +142,30 @@ public class OfferingRepository extends Repository<OfferingEntity, List<String>>
         } catch (Exception e) {
             System.out.println("error");
             e.fillInStackTrace();
+        }
+    }
+
+    public void updateObjectRegistered(OfferingEntity offeringEntity) throws SQLException {
+        String queryStmt = String.format(
+                "UPDATE %s o SET o.registered = ? WHERE o.course_code = ? and o.class_code = ?;",
+                TABLE_NAME
+        );
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(queryStmt);
+        st.setInt(1, offeringEntity.getRegistered());
+        st.setString(2, offeringEntity.getCode());
+        st.setString(3, offeringEntity.getClassCode());
+        try {
+            st.executeUpdate();
+            st.close();
+            con.close();
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in course.updateObjectCapacity query.");
+            e.printStackTrace();
+            throw e;
         }
     }
 }

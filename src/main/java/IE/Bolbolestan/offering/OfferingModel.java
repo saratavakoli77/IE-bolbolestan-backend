@@ -32,15 +32,19 @@ public class OfferingModel {
         return offeringEntity.getRegistered() < offeringEntity.getCapacity();
     }
 
-    public void addStudentToOffering(OfferingEntity offeringEntity) throws CapacityMismatchException {
+    public void addStudentToOffering(OfferingEntity offeringEntity)
+            throws CapacityMismatchException, SQLException {
         offeringEntity.setRegistered(offeringEntity.getRegistered() + 1);
+        OfferingRepository.getInstance().updateObjectRegistered(offeringEntity);
         if (offeringEntity.getCapacity() < offeringEntity.getRegistered()) {
             throw new CapacityMismatchException(offeringEntity.getOfferingCode());
         }
     }
 
-    public void removeStudentFromOffering(OfferingEntity offeringEntity) throws CapacityMismatchException {
+    public void removeStudentFromOffering(OfferingEntity offeringEntity)
+            throws CapacityMismatchException, SQLException {
         offeringEntity.setRegistered(offeringEntity.getRegistered() - 1);
+        OfferingRepository.getInstance().updateObjectRegistered(offeringEntity);
         if (offeringEntity.getRegistered() < 0) {
             throw new CapacityMismatchException(offeringEntity.getOfferingCode());
         }

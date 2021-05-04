@@ -2,6 +2,7 @@ package IE.Bolbolestan.course;
 
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
+import IE.Bolbolestan.offering.OfferingEntity;
 import IE.Bolbolestan.student.StudentEntity;
 
 import java.sql.*;
@@ -130,6 +131,29 @@ public class CourseRepository extends Repository<CourseEntity, String> {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
+        }
+    }
+
+    public void updateObjectCapacity(OfferingEntity offeringEntity) throws SQLException {
+        String queryStmt = String.format(
+                "UPDATE %s o SET o.capacity = ? WHERE o.code = ?;",
+                TABLE_NAME
+        );
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(queryStmt);
+        st.setInt(1, offeringEntity.getCapacity());
+        st.setString(2, offeringEntity.getCode());
+        try {
+            st.executeUpdate();
+            st.close();
+            con.close();
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in course.updateObjectCapacity query.");
+            e.printStackTrace();
+            throw e;
         }
     }
 }

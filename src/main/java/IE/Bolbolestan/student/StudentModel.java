@@ -112,7 +112,7 @@ public class StudentModel {
     }
 
     private Boolean isCoursePassed(OfferingRecordEntity offeringRecordEntity) {
-        return offeringRecordEntity.getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS) &&
-                offeringRecordEntity.getGrade() >= OfferingRecordEntity.PASSED_GRADE;
+        return offeringRecordEntity.getStatus().equals(OfferingRecordEntity.COMPLETED_STATUS);
+//                && offeringRecordEntity.getGrade() >= OfferingRecordEntity.PASSED_GRADE;
     }
 }
