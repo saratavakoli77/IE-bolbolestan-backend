@@ -35,7 +35,7 @@ public class PrerequisiteRepository extends Repository<PrerequisiteEntity, Integ
                                 "prerequisite_course_code CHAR(50),\n" +
                                 "FOREIGN KEY(main_course_code) REFERENCES course(code),\n" +
                                 "FOREIGN KEY(prerequisite_course_code) REFERENCES course(code),\n" +
-                                "PRIMARY KEY(main_course_code, prerequisite_course_code));",
+                                "PRIMARY KEY(id));",
                         TABLE_NAME)
         );
 
@@ -58,7 +58,7 @@ public class PrerequisiteRepository extends Repository<PrerequisiteEntity, Integ
     protected String getInsertStatement() {
         return String.format("INSERT INTO %s(" +
                 "main_course_code, " +
-                "prerequisite_course_code, " +
+                "prerequisite_course_code" +
                 ") VALUES(?,?)", TABLE_NAME);
     }
 
@@ -92,8 +92,13 @@ public class PrerequisiteRepository extends Repository<PrerequisiteEntity, Integ
     }
 
     public ArrayList<String> getCoursePrerequisite(String courseCode) throws SQLException {
+//        String queryStmt = String.format(
+//                "SELECT p.prerequisite_course_code FROM %s p WHERE p.main_course_code = ?;",
+//                TABLE_NAME
+//        );
+
         String queryStmt = String.format(
-                "SELECT p.prerequisite_course_code FROM %s p WHERE p.main_course_code = ?;",
+                "SELECT * FROM %s p WHERE p.main_course_code = ?;",
                 TABLE_NAME
         );
 
@@ -109,8 +114,13 @@ public class PrerequisiteRepository extends Repository<PrerequisiteEntity, Integ
             }
 
             ArrayList<String> prerequisiteCodes = new ArrayList<>();
-            while (resultSet.next()) {
-                prerequisiteCodes.add(resultSet.getString(1));
+//            prerequisiteCodes.add(resultSet.getString(1));
+//            while (resultSet.next()) {
+//                prerequisiteCodes.add(resultSet.getString(1));
+//            }
+            ArrayList<PrerequisiteEntity> prerequisiteEntities = this.convertResultSetToDomainModelList(resultSet);
+            for (PrerequisiteEntity prerequisiteEntity: prerequisiteEntities) {
+                prerequisiteCodes.add(prerequisiteEntity.getPrerequisiteCourseCode());
             }
             st.close();
             con.close();
