@@ -47,11 +47,11 @@ public class WeeklyScheduleModel {
 
         if (!weeklyScheduleEntity.getOfferingCodes().contains(offeringCode)) {
             weeklyScheduleEntity.addToOfferingCodes(offeringCode);
-            try {
-                WeeklyScheduleOfferingRepository.getInstance().insert(new WeeklyScheduleOfferingEntity(offeringCode, studentId));
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
+//            try {
+//                WeeklyScheduleOfferingRepository.getInstance().insert(new WeeklyScheduleOfferingEntity(offeringCode, studentId));
+//            } catch (SQLException throwables) {
+//                throwables.printStackTrace();
+//            }
 
             exceptionList = validateAddToWeeklySchedule(weeklyScheduleEntity);
             // if exist => not completed_status === not exist || not completed_status
@@ -369,7 +369,7 @@ public class WeeklyScheduleModel {
             OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
             new OfferingModel().addStudentToOffering(offeringEntity);
 
-        } catch (OfferingNotFoundException | CapacityMismatchException e) {
+        } catch (OfferingNotFoundException | CapacityMismatchException | SQLException e) {
             e.printStackTrace();
         }
     }
@@ -378,7 +378,7 @@ public class WeeklyScheduleModel {
         try {
             OfferingEntity offeringEntity = new OfferingModel().getOffering(offeringCode);
             new OfferingModel().removeStudentFromOffering(offeringEntity);
-        } catch (OfferingNotFoundException | CapacityMismatchException e) {
+        } catch (OfferingNotFoundException | CapacityMismatchException | SQLException e) {
             e.printStackTrace();
         }
     }

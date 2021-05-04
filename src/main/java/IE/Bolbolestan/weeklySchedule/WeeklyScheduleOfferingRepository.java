@@ -2,6 +2,7 @@ package IE.Bolbolestan.weeklySchedule;
 
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
+import IE.Bolbolestan.offeringRecord.OfferingRecordEntity;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -137,6 +138,64 @@ public class WeeklyScheduleOfferingRepository extends Repository<WeeklyScheduleO
             st.close();
             con.close();
             System.out.println("error in weekly_schedule_offering.getCourse query.");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+
+    public WeeklyScheduleOfferingEntity getByCodeAndStudentId(String studentId, String offeringCode) throws SQLException {
+        String classCode = offeringCode.substring(offeringCode.length() - 2);
+        String courseCode = offeringCode.substring(0, offeringCode.length() - 2);
+
+        String queryStmt = String.format(
+                "SELECT * FROM %s wo WHERE wo.student_id = ? and wo.class_code = ? and wo.course_code = ?;",
+                TABLE_NAME
+        );
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(queryStmt);
+        st.setString(1, studentId);
+        st.setString(2, classCode);
+        st.setString(3, courseCode);
+        try {
+            ResultSet resultSet = st.executeQuery();
+            if (!resultSet.next()) {
+                st.close();
+                con.close();
+                return null;
+            }
+            WeeklyScheduleOfferingEntity weeklyScheduleOfferingEntity = convertResultSetToDomainModel(resultSet);
+            st.close();
+            con.close();
+            return weeklyScheduleOfferingEntity;
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in weekly_schedule_offering.getByCodeAndStudentId query.");
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    public void deleteEntity(WeeklyScheduleOfferingEntity weeklyScheduleOfferingEntity) throws SQLException {
+        Integer id = weeklyScheduleOfferingEntity.getId();
+        String queryStmt = String.format(
+                "DELETE FROM %s wo WHERE wo.id = ?;",
+                TABLE_NAME
+        );
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(queryStmt);
+        st.setInt(1, id);
+        try {
+            st.executeUpdate();
+            st.close();
+            con.close();
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in weekly_schedule_offering.getByCodeAndStudentId query.");
             e.printStackTrace();
             throw e;
         }
