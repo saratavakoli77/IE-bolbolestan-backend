@@ -1,7 +1,5 @@
 package IE.Bolbolestan.mainControllers;
 
-
-import IE.Bolbolestan.middlewares.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +13,6 @@ import java.io.IOException;
 public class LogoutController {
     @PostMapping("")
     public void postLogout(final HttpServletResponse response) throws IOException {
-//        Authentication.logoutStudent();
         response.setStatus(HttpStatus.OK.value());
     }
 }
