@@ -76,7 +76,6 @@ public abstract class Repository<T, I> {
 
     public void insert(T obj) throws SQLException {
         if (this.isObjectExist(obj)) {
-            System.out.println("obj existed!");
             return;
         }
         Connection con = ConnectionPool.getConnection();
