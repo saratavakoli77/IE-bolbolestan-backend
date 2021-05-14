@@ -19,17 +19,16 @@ import java.util.List;
 @RequestMapping("/weekly_schedule")
 public class WeeklyScheduleController extends HttpServlet {
     WeeklyScheduleModel model = new WeeklyScheduleModel();
-    StudentEntity authenticatedStudent;
 
     @GetMapping("")
     public HashMap<String, Object> getWeeklySchedule(
-            final HttpServletResponse response
+            final HttpServletResponse response, @RequestAttribute String studentId
     ) throws IOException {
-        this.authenticatedStudent = Authentication.getAuthenticated();
-        if (this.authenticatedStudent != null) {
+        StudentEntity authenticatedStudent = Authentication.getAuthenticated(studentId);
+        if (authenticatedStudent != null) {
             HashMap<String, Object> data = new HashMap<>();
-            this.setStudentData(data);
-            this.setWeeklyScheduleOfferings(data);
+            this.setStudentData(data, authenticatedStudent);
+            this.setWeeklyScheduleOfferings(data, authenticatedStudent);
             return data;
         } else {
             response.sendError(HttpStatus.UNAUTHORIZED.value());
@@ -38,11 +37,12 @@ public class WeeklyScheduleController extends HttpServlet {
     }
 
     @PostMapping("/submit")
-    public HashMap<String, Object> postWeeklySchedule(final HttpServletResponse response) throws IOException {
-        this.authenticatedStudent = Authentication.getAuthenticated();
-        if (this.authenticatedStudent != null) {
+    public HashMap<String, Object> postWeeklySchedule(
+            final HttpServletResponse response, @RequestAttribute String studentId) throws IOException {
+        StudentEntity authenticatedStudent = Authentication.getAuthenticated(studentId);
+        if (authenticatedStudent != null) {
             HashMap<String, Object> data = new HashMap<>();
-            Boolean noError = submitWeeklySchedule(data);
+            Boolean noError = submitWeeklySchedule(data, authenticatedStudent);
             if (noError) {
                 response.setStatus(HttpStatus.OK.value());
             } else {
@@ -58,11 +58,11 @@ public class WeeklyScheduleController extends HttpServlet {
 
     @DeleteMapping("")
     public HashMap<String, Object> deleteWeeklySchedule(
-            final HttpServletResponse response
+            final HttpServletResponse response, @RequestAttribute String studentId
     ) throws IOException {
-        this.authenticatedStudent = Authentication.getAuthenticated();
-        if (this.authenticatedStudent != null) {
-            resetWeeklySchedule();
+        StudentEntity authenticatedStudent = Authentication.getAuthenticated(studentId);
+        if (authenticatedStudent != null) {
+            resetWeeklySchedule(authenticatedStudent);
             response.setStatus(HttpStatus.OK.value());
         } else {
             response.sendError(HttpStatus.UNAUTHORIZED.value());
@@ -70,28 +70,40 @@ public class WeeklyScheduleController extends HttpServlet {
         return null;
     }
 
-    private void resetWeeklySchedule() {
+    private void resetWeeklySchedule(StudentEntity authenticatedStudent) {
         try {
             WeeklyScheduleEntity weeklyScheduleEntity = model.getWeeklySchedule(authenticatedStudent.getStudentId());
             model.resetWeeklySchedule(weeklyScheduleEntity);
-        } catch (OfferingRecordNotFoundException | StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException | SQLException e) {
+        } catch (
+                OfferingRecordNotFoundException |
+                StudentNotFoundException |
+                OfferingCodeNotInWeeklyScheduleException |
+                SQLException e
+        ) {
             e.printStackTrace();
         }
 
     }
 
-    private Boolean submitWeeklySchedule(HashMap<String, Object> request) {
+    private Boolean submitWeeklySchedule(HashMap<String, Object> request, StudentEntity authenticatedStudent) {
         try {
             List<Exception> exceptionList = model.finalizeWeeklySchedule(authenticatedStudent.getStudentId());
             request.put("errorList", GetExceptionMessages.getExceptionMessages(exceptionList));
             return exceptionList.isEmpty();
-        } catch (StudentNotFoundException | OfferingRecordNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingNotFoundException | SQLException e) {
+        } catch (
+                StudentNotFoundException |
+                OfferingRecordNotFoundException |
+                OfferingCodeNotInWeeklyScheduleException |
+                OfferingNotFoundException |
+                SQLException e
+        ) {
             e.printStackTrace();
         }
         return false;
     }
 
-    private void setWeeklyScheduleOfferings(HashMap<String, Object> request) {
+    private void setWeeklyScheduleOfferings(
+            HashMap<String, Object> request, StudentEntity authenticatedStudent) {
         try {
             WeeklyScheduleEntity weeklyScheduleEntity = model.getWeeklySchedule(authenticatedStudent.getStudentId());
 
@@ -104,7 +116,7 @@ public class WeeklyScheduleController extends HttpServlet {
         }
     }
 
-    private void setStudentData(HashMap<String, Object> request) {
+    private void setStudentData(HashMap<String, Object> request, StudentEntity authenticatedStudent) {
         request.put("studentId", authenticatedStudent.getStudentId());
 
         try {

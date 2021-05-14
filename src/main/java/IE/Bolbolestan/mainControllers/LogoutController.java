@@ -15,7 +15,7 @@ import java.io.IOException;
 public class LogoutController {
     @PostMapping("")
     public void postLogout(final HttpServletResponse response) throws IOException {
-        Authentication.logoutStudent();
+//        Authentication.logoutStudent();
         response.setStatus(HttpStatus.OK.value());
     }
 }

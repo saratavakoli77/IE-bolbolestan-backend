@@ -3,6 +3,7 @@ package IE.Bolbolestan.student;
 import IE.Bolbolestan.dbConnection.ConnectionPool;
 import IE.Bolbolestan.dbConnection.Repository;
 import IE.Bolbolestan.tools.HttpClient;
+import IE.Bolbolestan.tools.Password;
 import IE.Bolbolestan.tools.refiners.StudentRefiner;
 
 import java.sql.Connection;
@@ -42,6 +43,8 @@ public class StudentRepository extends Repository<StudentEntity, String> {
                                 "level CHAR(225),\n" +
                                 "status CHAR(225),\n" +
                                 "img CHAR(225),\n" +
+                                "email CHAR(100) NOT NULL UNIQUE,\n" +
+                                "password CHAR(100),\n" +
                                 "PRIMARY KEY(id));",
                         TABLE_NAME)
         );
@@ -72,8 +75,10 @@ public class StudentRepository extends Repository<StudentEntity, String> {
                 "faculty, " +
                 "level, " +
                 "status, " +
-                "img" +
-                ") VALUES(?,?,?,?,?,?,?,?,?)", TABLE_NAME);
+                "img, " +
+                "email, " +
+                "password " +
+                ") VALUES(?,?,?,?,?,?,?,?,?,?,?)", TABLE_NAME);
     }
 
     @Override
@@ -87,6 +92,8 @@ public class StudentRepository extends Repository<StudentEntity, String> {
         st.setString(7, data.getLevel());
         st.setString(8, data.getStatus());
         st.setString(9, data.getImg());
+        st.setString(10, data.getEmail());
+        st.setString(11, Password.hash(data.getPassword()));
     }
 
     @Override
@@ -105,7 +112,9 @@ public class StudentRepository extends Repository<StudentEntity, String> {
                 rs.getString(6),
                 rs.getString(7),
                 rs.getString(8),
-                rs.getString(9)
+                rs.getString(9),
+                rs.getString(10),
+                rs.getString(11)
         );
     }
 
@@ -123,9 +132,37 @@ public class StudentRepository extends Repository<StudentEntity, String> {
         return String.format("SELECT * FROM %s student WHERE student.id = ?;", TABLE_NAME);
     }
 
+    protected String getFindByEmailStatement() {
+        return String.format("SELECT * FROM %s student WHERE student.email = ?;", TABLE_NAME);
+    }
+
     @Override
     protected void fillFindObject(PreparedStatement st, StudentEntity data) throws SQLException {
         st.setString(1, data.getStudentId());
+    }
+
+    public StudentEntity findStudentByEmail(String email) throws SQLException {
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(getFindByEmailStatement());
+        fillFindByIdValues(st, email);
+        try {
+            ResultSet resultSet = st.executeQuery();
+            if (!resultSet.next()) {
+                st.close();
+                con.close();
+                return null;
+            }
+            StudentEntity result = this.convertResultSetToDomainModel(resultSet);
+            st.close();
+            con.close();
+            return result;
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in Student.findByEmail query.");
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     public static void getDataFromApi() {

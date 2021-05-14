@@ -197,7 +197,6 @@ public class OfferingRecordRepository extends Repository<OfferingRecordEntity, I
         st.setString(3, courseCode);
         try {
             ResultSet resultSet = st.executeQuery();
-            //todo: isbeforfirst() ?
             if (!resultSet.next()) {
                 st.close();
                 con.close();

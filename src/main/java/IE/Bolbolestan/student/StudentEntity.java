@@ -10,6 +10,8 @@ public class StudentEntity {
     private String level;
     private String status;
     private String img;
+    private String email;
+    private String password;
 
     public StudentEntity() {}
 
@@ -22,7 +24,9 @@ public class StudentEntity {
             String faculty,
             String level,
             String status,
-            String img) {
+            String img,
+            String email,
+            String password) {
         this.id = studentId;
         this.name = name;
         this.secondName = secondName;
@@ -32,6 +36,8 @@ public class StudentEntity {
         this.level = level;
         this.status = status;
         this.img = img;
+        this.email = email;
+        this.password = password;
     }
 
     public StudentEntity(String studentId, String name, String secondName, String birthDate) {
@@ -119,5 +125,21 @@ public class StudentEntity {
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }
