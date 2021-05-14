@@ -24,8 +24,7 @@ public class LoginController {
         try {
             String email = (String) request.get("email");
             String password = (String) request.get("password");
-//            Authentication.authenticate(email, password);
-            data.put("bearer", Authentication.authenticate(email, password));
+            data.put("jwt", Authentication.authenticate(email, password));
             response.setStatus(HttpStatus.OK.value());
         } catch (EmailOrPasswordIncorrectException e) {
             response.setStatus(HttpStatus.NOT_FOUND.value());

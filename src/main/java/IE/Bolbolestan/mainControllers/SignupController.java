@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/signup")
 public class SignupController {
     @PostMapping("")
     public HashMap<String, Object> postLogin(

@@ -229,7 +229,7 @@ public class OfferingRecordRepository extends Repository<OfferingRecordEntity, I
             if (!resultSet.isBeforeFirst()) {
                 st.close();
                 con.close();
-                return null;
+                return new ArrayList<>();
             }
             ArrayList<OfferingRecordEntity> offeringRecordEntities = convertResultSetToDomainModelList(resultSet);
             st.close();

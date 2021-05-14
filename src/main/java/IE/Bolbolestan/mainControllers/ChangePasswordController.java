@@ -24,7 +24,7 @@ public class ChangePasswordController {
             final HttpServletResponse response
     ) throws IOException {
         try {
-            String newPassword = (String) request.get("new_password");
+            String newPassword = (String) request.get("newPassword");
             Claims claims = Authentication.decodeJWT(token);
             String studentId = claims.getId();
             Authentication.changePassword(studentId, newPassword);

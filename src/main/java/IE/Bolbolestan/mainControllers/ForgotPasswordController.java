@@ -18,12 +18,13 @@ import java.util.HashMap;
 public class ForgotPasswordController {
     @PostMapping("")
     public HashMap<String, Object> postChangePassword(
+            @RequestHeader("origin") String origin,
             @RequestBody HashMap<String, Object> request,
             final HttpServletResponse response
     ) throws IOException {
         try {
             String email = (String) request.get("email");
-            Authentication.forgotPassword(email);
+            Authentication.forgotPassword(email, origin);
             response.setStatus(HttpStatus.OK.value());
             return null;
         } catch (JwtException | StudentNotFoundException e) {

@@ -46,9 +46,9 @@ public class HttpClient {
         con.setRequestProperty("Accept", "application/json");
         con.setDoOutput(true);
 
-        int responseCode = con.getResponseCode();
+//        int responseCode = con.getResponseCode();
         System.out.println("\nSending 'POST' request to URL : " + url);
-        System.out.println("Response Code : " + responseCode);
+//        System.out.println("Response Code : " + responseCode);
 
 
         String jsonInputString = "{\"url\": \"" + changePasswordUrl +"\", \"email\": \"" + email + "\"}";
@@ -57,5 +57,8 @@ public class HttpClient {
             byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
         }
+        int responseCode = con.getResponseCode();
+        System.out.println("Response Code : " + responseCode);
+
     }
 }

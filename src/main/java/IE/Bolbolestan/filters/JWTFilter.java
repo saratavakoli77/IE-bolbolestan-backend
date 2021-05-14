@@ -3,6 +3,8 @@ package IE.Bolbolestan.filters;
 import IE.Bolbolestan.middlewares.Authentication;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class JWTFilter implements Filter {
     public void destroy() {
     }
@@ -20,7 +23,8 @@ public class JWTFilter implements Filter {
     private Boolean authenticationNotRequiredUrl(HttpServletRequest req) {
         return req.getRequestURI().equals("/signup")
                 || req.getRequestURI().equals("/login")
-                || req.getRequestURI().equals("/forgot-password");
+                || req.getRequestURI().equals("/forgot-password")
+                || req.getRequestURI().equals("/change-password");
     }
 
     private void setClaims(ServletRequest request,
@@ -48,8 +52,8 @@ public class JWTFilter implements Filter {
             ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
-
         if (authenticationNotRequiredUrl(req)) {
+
             chain.doFilter(request, response);
             return;
         }
