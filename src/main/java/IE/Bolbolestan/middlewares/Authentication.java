@@ -88,17 +88,18 @@ public class Authentication {
         StudentRepository.getInstance().updateObjectPassword(studentEntity);
     }
 
-    public static void forgotPassword(String email) throws SQLException, StudentNotFoundException {
+    public static void forgotPassword(String email, String origin) throws SQLException, StudentNotFoundException {
         StudentEntity studentEntity = StudentRepository.getInstance().findStudentByEmail(email);
         if (studentEntity == null) {
             throw new StudentNotFoundException();
         }
         HttpClient http = new HttpClient();
         String sendEmailUrl = "send_mail";
-        String changePasswordUrl = Authentication.createJWT(studentEntity.getStudentId(), Config.URL_EXP_TIME);
+        String changePasswordUrl = origin + "/" + "change-password?token=";
+        String pathUrl = Authentication.createJWT(studentEntity.getStudentId(), Config.URL_EXP_TIME);
 
         try {
-            http.sendEmail(sendEmailUrl, changePasswordUrl, email);
+            http.sendEmail(sendEmailUrl, changePasswordUrl + pathUrl, email);
         } catch (Exception e) {
             e.printStackTrace();
         }

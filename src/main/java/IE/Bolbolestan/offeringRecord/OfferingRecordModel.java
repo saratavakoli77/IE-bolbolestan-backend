@@ -11,6 +11,7 @@ import IE.Bolbolestan.weeklySchedule.WeeklyScheduleOfferingEntity;
 import IE.Bolbolestan.weeklySchedule.WeeklyScheduleOfferingRepository;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OfferingRecordModel {
@@ -53,7 +54,7 @@ public class OfferingRecordModel {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public OfferingRecordEntity getOfferingRecord(String studentId, String offeringCode)
