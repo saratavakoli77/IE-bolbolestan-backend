@@ -130,7 +130,6 @@ public class OfferingRepository extends Repository<OfferingEntity, List<String>>
             CourseRepository courseRepository = CourseRepository.getInstance();
             OfferingRepository offeringRepository = OfferingRepository.getInstance();
             for (OfferingEntity offeringEntity: offerings) {
-                //todo: bebinim dorste ya na
                 courseRepository.insert(offeringEntity);
                 offeringRepository.insert(offeringEntity);
             }
