@@ -182,4 +182,27 @@ public class StudentRepository extends Repository<StudentEntity, String> {
             e.printStackTrace();
         }
     }
+
+    public void updateObjectPassword(StudentEntity studentEntity) throws SQLException {
+        String queryStmt = String.format(
+                "UPDATE %s st SET st.password = ? WHERE st.id = ?;",
+                TABLE_NAME
+        );
+
+        Connection con = ConnectionPool.getConnection();
+        PreparedStatement st = con.prepareStatement(queryStmt);
+        st.setString(1, Password.hash(studentEntity.getPassword()));
+        st.setString(2, studentEntity.getStudentId());
+        try {
+            st.executeUpdate();
+            st.close();
+            con.close();
+        } catch (Exception e) {
+            st.close();
+            con.close();
+            System.out.println("error in student.updateObjectPassword query.");
+            e.printStackTrace();
+            throw e;
+        }
+    }
 }

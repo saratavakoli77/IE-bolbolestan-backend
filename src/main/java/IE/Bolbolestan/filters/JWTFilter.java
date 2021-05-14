@@ -2,6 +2,8 @@ package IE.Bolbolestan.filters;
 
 import IE.Bolbolestan.middlewares.Authentication;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -15,16 +17,10 @@ public class JWTFilter implements Filter {
     public void destroy() {
     }
 
-
-    private void invalidTokenException(ServletResponse response)
-            throws IOException {
-        HttpServletResponse res = (HttpServletResponse)response;
-        res.setStatus(401);
-    }
-
     private Boolean authenticationNotRequiredUrl(HttpServletRequest req) {
         return req.getRequestURI().equals("/signup")
-                || req.getRequestURI().equals("/login");
+                || req.getRequestURI().equals("/login")
+                || req.getRequestURI().equals("/forgot-password");
     }
 
     private void setClaims(ServletRequest request,
@@ -40,9 +36,10 @@ public class JWTFilter implements Filter {
             Claims claims = Authentication.decodeJWT(token);
             req.setAttribute("studentId", claims.getId());
             chain.doFilter(request, response);
-        } catch (Exception e) {
+        } catch (JwtException e) {
+            res.setStatus(HttpStatus.UNAUTHORIZED.value());
+        } catch (ServletException e) {
             e.printStackTrace();
-            invalidTokenException(res);
         }
     }
 
@@ -60,7 +57,8 @@ public class JWTFilter implements Filter {
         String token = req.getHeader("authorization");
 
         if (isEmpty(token)) {
-            invalidTokenException(response);
+            HttpServletResponse res = (HttpServletResponse)response;
+            res.setStatus(HttpStatus.UNAUTHORIZED.value());
             return;
         }
 
