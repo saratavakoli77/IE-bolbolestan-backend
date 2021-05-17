@@ -1,7 +1,9 @@
 package IE.Bolbolestan.filters;
 
+import IE.Bolbolestan.bolbolestanExceptions.TokenExpiredException;
 import IE.Bolbolestan.middlewares.Authentication;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -40,6 +42,10 @@ public class JWTFilter implements Filter {
             Claims claims = Authentication.decodeJWT(token);
             req.setAttribute("studentId", claims.getId());
             chain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            res.setStatus(HttpStatus.UNAUTHORIZED.value());
+            res.getWriter().write(
+                    "{\"status\":\"expired\",\"message\":\"" + new TokenExpiredException().getMessage() + "\"}");
         } catch (JwtException e) {
             res.setStatus(HttpStatus.UNAUTHORIZED.value());
         } catch (ServletException e) {
@@ -52,7 +58,7 @@ public class JWTFilter implements Filter {
             ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
-        if (authenticationNotRequiredUrl(req)) {
+        if (authenticationNotRequiredUrl(req) || req.getMethod().equals("OPTIONS")) {
 
             chain.doFilter(request, response);
             return;
