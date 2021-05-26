@@ -5,9 +5,6 @@ COPY src /build/src/
 
 RUN mvn -f /build/pom.xml clean package
 
-RUN ls /build/target
-RUN pwd
-
 FROM openjdk:11-jre-slim
 
 COPY --from=builder /build/target/Bolbolestan-0.0.1-SNAPSHOT.jar /app/bolbolestan.jar
