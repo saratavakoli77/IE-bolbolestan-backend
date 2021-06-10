@@ -12,7 +12,16 @@ public class WeeklyScheduleEntity {
 
     private String studentId;
     private String status;
-    private final List<String> offeringCodes = new ArrayList<>();
+    private List<String> offeringCodes = new ArrayList<>();
+
+    public WeeklyScheduleEntity() {}
+
+    public WeeklyScheduleEntity(String studentId, String status, List<String> offeringCodes) {
+        this.studentId = studentId;
+        this.status = status;
+        this.offeringCodes = offeringCodes;
+
+    }
 
     public void setStudentId(String studentId) {
         this.studentId = studentId;

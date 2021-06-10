@@ -1,7 +1,8 @@
 package IE.Bolbolestan.mainControllers;
 
-import IE.Bolbolestan.bolbolestanExceptions.EmailOrPasswordIncorrectException;
+import IE.Bolbolestan.bolbolestanExceptions.StudentNotFoundException;
 import IE.Bolbolestan.middlewares.Authentication;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,26 +14,27 @@ import java.util.HashMap;
 
 
 @RestController
-@RequestMapping("/login")
-public class LoginController {
+@RequestMapping("/forgot-password")
+public class ForgotPasswordController {
     @PostMapping("")
-    public HashMap<String, Object> postLogin(
+    public HashMap<String, Object> postChangePassword(
+            @RequestHeader("origin") String origin,
             @RequestBody HashMap<String, Object> request,
             final HttpServletResponse response
     ) throws IOException {
-        HashMap<String, Object> data = new HashMap<>();
         try {
             String email = (String) request.get("email");
-            String password = (String) request.get("password");
-            data.put("jwt", Authentication.authenticate(email, password));
+            Authentication.forgotPassword(email, origin);
             response.setStatus(HttpStatus.OK.value());
-        } catch (EmailOrPasswordIncorrectException e) {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-            data.put("message", e.getMessage());
+            return null;
+        } catch (JwtException | StudentNotFoundException e) {
+            HashMap<String, Object> data = new HashMap<>();
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return data;
         } catch (SQLException e) {
+            HashMap<String, Object> data = new HashMap<>();
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            data.put("message", "something went wrong!");
+            return data;
         }
-        return data;
     }
 }

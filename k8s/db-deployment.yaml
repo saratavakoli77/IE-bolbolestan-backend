@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment                    # Type of the kubernetes resource
+metadata:
+  name: db-deployment
+spec:
+  selector:
+    matchLabels:                    # This deployment applies to the Pods matching the specified labels
+      app: db
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 2
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - image: quay.io/aminrf/mysql:5.7.16
+          name: db
+          env:
+            - name: "MYSQL_ROOT_PASSWORD"
+              value: "Bolbol-1234"
+            - name: "MYSQL_DATABASE"
+              value: "Bolbolestan"
+#              valueFrom:                # Read environment variables from kubernetes secrets
+#                secretKeyRef:
+#                  name: mysql-root-pass
+#                  key: password
+#            - name: MYSQL_DATABASE
+#              valueFrom:
+#                secretKeyRef:
+#                  name: mysql-db-url
+#                  key: database
+#            - name: MYSQL_USER
+#              valueFrom:
+#                secretKeyRef:
+#                  name: mysql-user-pass
+#                  key: username
+#            - name: MYSQL_PASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  name: mysql-user-pass
+#                  key: password
+          ports:
+            - containerPort: 3306
+              name: db
+          resources:
+            limits:
+              memory: "300Mi"
+              cpu: "200m"
+            requests:
+              memory: "300Mi"
+              cpu: "200m"
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+              subPath: backend-mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim

@@ -17,8 +17,9 @@ import java.util.Map;
 @RequestMapping("/profile")
 public class StudentController {
     @GetMapping("")
-    public HashMap<String, Object> getProfile(final HttpServletResponse response) throws IOException {
-        StudentEntity authenticatedStudent = Authentication.getAuthenticated();
+    public HashMap<String, Object> getProfile(
+            final HttpServletResponse response, @RequestAttribute String studentId) throws IOException {
+        StudentEntity authenticatedStudent = Authentication.getAuthenticated(studentId);
         if (authenticatedStudent != null) {
             try {
                 response.setStatus(HttpStatus.OK.value());

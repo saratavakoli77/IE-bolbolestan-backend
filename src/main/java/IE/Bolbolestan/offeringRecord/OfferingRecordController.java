@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,9 +27,10 @@ public class OfferingRecordController extends HttpServlet {
     @GetMapping("")
     public HashMap<String, Object> getCourses(
             @RequestParam(required = false) String search,
-            final HttpServletResponse response
+            final HttpServletResponse response,
+            @RequestAttribute String studentId
     ) throws IOException {
-        this.authenticatedStudent = Authentication.getAuthenticated();
+        this.authenticatedStudent = Authentication.getAuthenticated(studentId);
         if (this.authenticatedStudent != null) {
             HashMap<String, Object> data = new HashMap<>();
             if (search != null) {
@@ -49,9 +51,10 @@ public class OfferingRecordController extends HttpServlet {
     public HashMap<String, Object> postCourses(
             @PathVariable String courseCode,
             @PathVariable String classCode,
-            final HttpServletResponse response
+            final HttpServletResponse response,
+            @RequestAttribute String studentId
     ) throws IOException {
-        this.authenticatedStudent = Authentication.getAuthenticated();
+        this.authenticatedStudent = Authentication.getAuthenticated(studentId);
         if (this.authenticatedStudent != null) {
 
             HashMap<String, Object> data = new HashMap<>();
@@ -72,9 +75,10 @@ public class OfferingRecordController extends HttpServlet {
     public HashMap<String, Object> deleteCourses(
             @PathVariable String courseCode,
             @PathVariable String classCode,
-            final HttpServletResponse response
+            final HttpServletResponse response,
+            @RequestAttribute String studentId
     ) throws IOException {
-        this.authenticatedStudent = Authentication.getAuthenticated();
+        this.authenticatedStudent = Authentication.getAuthenticated(studentId);
         if (this.authenticatedStudent != null) {
             removeFromWeeklySchedule(courseCode, classCode);
             response.setStatus(HttpStatus.OK.value());
@@ -123,10 +127,7 @@ public class OfferingRecordController extends HttpServlet {
         try {
             model.removeFromWeeklySchedule(authenticatedStudent.getStudentId(), courseCode + classCode);
         } catch (
-                StudentNotFoundException |
-                        OfferingCodeNotInWeeklyScheduleException |
-                OfferingRecordNotFoundException |
-                        WeeklyScheduleDoesNotExistException e
+                StudentNotFoundException | OfferingCodeNotInWeeklyScheduleException | OfferingRecordNotFoundException | WeeklyScheduleDoesNotExistException | SQLException e
         ) {
             e.printStackTrace();
         }
