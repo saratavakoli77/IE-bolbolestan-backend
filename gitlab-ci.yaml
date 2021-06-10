@@ -1,0 +1,26 @@
+image: quay.io/aminrf/docker-kubectl:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - deploy
+
+build:
+  image: docker
+  stage: build
+  befor_script:
+    - docker login us $REGISTRY_USERNAME -p $REGISTRY_PASSWORD quay.io
+  script:
+    - docker build ./ -t quay.io/ghminaei/ie_backend:$CI_BUILD_RF
+    - docker push quay.io/ghminaei/ie_backend:$CI_BUILD_RF
+    - docker rmi quay.io/ghminaei/ie_backend:$CI_BUILD_RF || true
+  after_script:
+    - docker logout quay.io
+
+deploy:
+  stage: deploy
+  when: manual
+  script:
+  - echo "hi"
