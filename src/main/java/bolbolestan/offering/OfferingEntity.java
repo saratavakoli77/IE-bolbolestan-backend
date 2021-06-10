@@ -7,38 +7,34 @@ import java.util.Date;
 import java.util.List;
 
 public class OfferingEntity extends CourseEntity {
-    private String code;
     private String instructor;
     private List<DaysOfWeek> classTimeDays;
     private Date classTimeStart;
     private Date classTimeEnd;
+    private String classCode;
     private Integer registered = 0;
 
     public OfferingEntity() {}
 
     public OfferingEntity(
             CourseEntity courseEntity,
-            String code,
             String instructor,
             List<DaysOfWeek> classTimeDays,
             Date classTimeStart,
             Date classTimeEnd,
-            Integer registered) {
+            Integer registered,
+            String classCode) {
         super(courseEntity);
-        this.code = code;
         this.instructor = instructor;
         this.classTimeDays = classTimeDays;
         this.classTimeStart = classTimeStart;
         this.classTimeEnd = classTimeEnd;
+        this.classCode = classCode;
         this.registered = registered;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public String getOfferingCode() {
+        return this.getCode() + this.classCode;
     }
 
     public String getInstructor() {
@@ -71,6 +67,18 @@ public class OfferingEntity extends CourseEntity {
 
     public Date getClassTimeEnd() {
         return classTimeEnd;
+    }
+
+    public void setClassCode(String classCode) {
+        if (classCode.length() == 1) {
+            this.classCode = "0" + classCode;
+        } else {
+            this.classCode = classCode;
+        }
+    }
+
+    public String getClassCode() {
+        return classCode;
     }
 
     public void setRegistered(Integer registered) {

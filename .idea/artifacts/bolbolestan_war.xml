@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="bolbolestan:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>bolbolestan</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="IE-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="bolbolestan:war exploded" />
+    </root>
+  </artifact>
+</component>

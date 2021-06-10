@@ -1,6 +1,8 @@
 package bolbolestan.student;
 
 import bolbolestan.bolbolestanExceptions.StudentNotFoundException;
+import bolbolestan.tools.HttpClient;
+import bolbolestan.tools.refiners.StudentRefiner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,10 @@ public class StudentStorage {
         studentEntities.remove(studentEntity);
     }
 
+    public static List<StudentEntity> getAllStudents() {
+        return studentEntities;
+    }
+
     public static StudentEntity getById(String studentId) throws StudentNotFoundException {
         for (StudentEntity entity: studentEntities) {
             if (entity.getStudentId().equals(studentId)) {
@@ -27,5 +33,20 @@ public class StudentStorage {
 
     public static void removeAll() {
         studentEntities.clear();
+    }
+
+    public static void getDataFromApi() {
+        HttpClient http = new HttpClient();
+        String fetchProjectsUrl = "students";
+
+        try {
+            String response = http.get(fetchProjectsUrl);
+            List<StudentEntity> students = new StudentRefiner(response).getRefinedEntities();
+            studentEntities.addAll(students);
+            System.out.println("Fetched " + students.size() + " students");
+        } catch (Exception e) {
+            System.out.println("error");
+            e.fillInStackTrace();
+        }
     }
 }

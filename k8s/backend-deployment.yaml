@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: ghazal-sara-ns
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - image: quay.io/ghminaei/ie_backend:new
+          imagePullPolicy: Always
+          name: backend
+          env:
+            - name: "DB_USERNAME"
+              value: "root"
+            - name: "DB_PASSWORD"
+              value: "Bolbol-1234"
+          ports:
+            - containerPort: 8081
+          resources:
+            limits:
+              memory: "300Mi"
+              cpu: "200m"
+            requests:
+              memory: "300Mi"
+              cpu: "200m"

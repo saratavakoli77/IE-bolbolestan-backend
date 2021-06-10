@@ -1,6 +1,8 @@
 package bolbolestan.offering;
 
 import bolbolestan.bolbolestanExceptions.OfferingNotFoundException;
+import bolbolestan.tools.HttpClient;
+import bolbolestan.tools.refiners.OfferingRefiner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ public class OfferingStorage {
 
     public static OfferingEntity getByCode(String code) throws OfferingNotFoundException {
         for (OfferingEntity entity: offeringEntities) {
-            if (entity.getCode().equals(code)) {
+            if (entity.getOfferingCode().equals(code)) {
                 return entity;
             }
         }
@@ -31,5 +33,20 @@ public class OfferingStorage {
 
     public static void removeAll() {
         offeringEntities.clear();
+    }
+
+    public static void getDataFromApi() {
+        HttpClient http = new HttpClient();
+        String fetchProjectsUrl = "courses";
+
+        try {
+            String response = http.get(fetchProjectsUrl);
+            List<OfferingEntity> offerings = new OfferingRefiner(response).getRefinedEntities();
+            offeringEntities.addAll(offerings);
+            System.out.println("Fetched " + offerings.size() + " courses");
+        } catch (Exception e) {
+            System.out.println("error");
+            e.fillInStackTrace();
+        }
     }
 }
