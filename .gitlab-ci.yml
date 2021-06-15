@@ -28,5 +28,5 @@ deploy:
   when: manual
   script:
   - echo $KUBE_CONFIG | base64 -d > kube.config
-  - http_proxy=$PROXY_SERVER https_proxy=$proxy_server kubectl --kubeconfig kube.config set image deployment/backend-deployment backend=quay.io/ghminaei/ie_backend:$CI_BUILD_RF
+  - http_proxy=$PROXY_SERVER https_proxy=$PROXY_SERVER kubectl --kubeconfig kube.config set image deployment/backend-deployment backend=quay.io/ghminaei/ie_backend:$CI_BUILD_RF
   - rm kube.config
