@@ -1,0 +1,32 @@
+image: quay.io/aminrf/docker-kubectl:latest
+
+variables:
+  IMAGE_TAG: quay.io/ghminaei/ie_backend:$CI_COMMIT_SHORT_SHA
+
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - deploy
+
+build:
+  image: docker
+  stage: build
+  before_script:
+    - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD quay.io
+  script:
+    - docker build ./ -t $IMAGE_TAG
+    - docker push $IMAGE_TAG
+    - docker rmi $IMAGE_TAG || true
+  after_script:
+    - docker logout quay.io
+
+deploy:
+  stage: deploy
+  when: manual
+  script:
+  - echo $KUBE_CONFIG | base64 -d > kube.config
+  - http_proxy=$PROXY_SERVER https_proxy=$proxy_server kubectl --kubeconfig kube.config set image deployment/backend-deployment backend=quay.io/ghminaei/ie_backend:$CI_BUILD_RF
+  - rm kube.config
