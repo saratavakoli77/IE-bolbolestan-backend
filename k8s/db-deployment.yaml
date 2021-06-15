@@ -1,14 +1,14 @@
 apiVersion: apps/v1
-kind: Deployment                    # Type of the kubernetes resource
+kind: Deployment
 metadata:
   name: db-deployment
 spec:
   selector:
-    matchLabels:                    # This deployment applies to the Pods matching the specified labels
+    matchLabels:
       app: db
   strategy:
     rollingUpdate:
-      maxUnavailable: 2
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -18,38 +18,22 @@ spec:
         - image: quay.io/sina/mysql:8.0
           name: db
           env:
-            - name: "MYSQL_ROOT_PASSWORD"
-              value: "Bolbol-1234"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: dbpassword
             - name: "MYSQL_DATABASE"
               value: "Bolbolestan"
-#              valueFrom:                # Read environment variables from kubernetes secrets
-#                secretKeyRef:
-#                  name: mysql-root-pass
-#                  key: password
-#            - name: MYSQL_DATABASE
-#              valueFrom:
-#                secretKeyRef:
-#                  name: mysql-db-url
-#                  key: database
-#            - name: MYSQL_USER
-#              valueFrom:
-#                secretKeyRef:
-#                  name: mysql-user-pass
-#                  key: username
-#            - name: MYSQL_PASSWORD
-#              valueFrom:
-#                secretKeyRef:
-#                  name: mysql-user-pass
-#                  key: password
           ports:
             - containerPort: 3306
               name: db
           resources:
             limits:
-              memory: "500Mi"
+              memory: 1G
               cpu: "333m"
             requests:
-              memory: "500Mi"
+              memory: 1G
               cpu: "333m"
           volumeMounts:
             - name: mysql-persistent-storage
