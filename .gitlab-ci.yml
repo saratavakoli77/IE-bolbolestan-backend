@@ -1,5 +1,9 @@
 image: quay.io/aminrf/docker-kubectl:latest
 
+variables:
+  IMAGE_TAG: quay.io/ghminaei/ie_backend:$CI_COMMIT_SHORT_SHA
+
+
 services:
   - docker:dind
 
@@ -13,9 +17,9 @@ build:
   before_script:
     - docker login -u $REGISTRY_USERNAME -p $REGISTRY_PASSWORD quay.io
   script:
-    - docker build ./ -t quay.io/ghminaei/ie_backend:$CI_BUILD_RF
-    - docker push quay.io/ghminaei/ie_backend:$CI_BUILD_RF
-    - docker rmi quay.io/ghminaei/ie_backend:$CI_BUILD_RF || true
+    - docker build ./ -t $IMAGE_TAG
+    - docker push $IMAGE_TAG
+    - docker rmi $IMAGE_TAG || true
   after_script:
     - docker logout quay.io
 
