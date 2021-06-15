@@ -21,10 +21,16 @@ spec:
           imagePullPolicy: Always
           name: backend
           env:
-            - name: "DB_USERNAME"
-              value: "root"
-            - name: "DB_PASSWORD"
-              value: "Bolbol-1234"
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: dbusername
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: dbpassword
           ports:
             - containerPort: 8081
           resources:

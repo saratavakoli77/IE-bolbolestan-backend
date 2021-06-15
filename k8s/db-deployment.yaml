@@ -18,8 +18,11 @@ spec:
         - image: quay.io/sina/mysql:8.0
           name: db
           env:
-            - name: "MYSQL_ROOT_PASSWORD"
-              value: "Bolbol-1234"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: dbpassword
             - name: "MYSQL_DATABASE"
               value: "Bolbolestan"
           ports:
