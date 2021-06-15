@@ -15,7 +15,7 @@ spec:
         app: db
     spec:
       containers:
-        - image: quay.io/aminrf/mysql:5.7.16
+        - image: quay.io/sina/mysql:8.0
           name: db
           env:
             - name: "MYSQL_ROOT_PASSWORD"
@@ -46,11 +46,11 @@ spec:
               name: db
           resources:
             limits:
-              memory: "300Mi"
-              cpu: "200m"
+              memory: "500Mi"
+              cpu: "333m"
             requests:
-              memory: "300Mi"
-              cpu: "200m"
+              memory: "500Mi"
+              cpu: "333m"
           volumeMounts:
             - name: mysql-persistent-storage
               mountPath: /var/lib/mysql
